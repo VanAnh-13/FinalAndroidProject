@@ -1,3 +1,182 @@
 <resources>
-    <string name="app_name">Base</string>
+    <string name="app_name">HealthyLife Hub</string>
+    
+    <!-- Login Screen -->
+    <string name="login_title">Đăng nhập</string>
+    <string name="email_label">Email</string>
+    <string name="email_hint">Nhập email của bạn</string>
+    <string name="password_label">Mật khẩu</string>
+    <string name="password_hint">Nhập mật khẩu của bạn</string>
+    <string name="remember_login">Ghi nhớ đăng nhập</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="or_divider">Hoặc</string>
+    <string name="google_sign_in">Đăng nhập với Google</string>
+    <string name="no_account">Chưa có tài khoản?</string>
+    <string name="sign_up">Đăng ký</string>
+    
+    <!-- Validation Messages -->
+    <string name="error_empty_email">Vui lòng nhập email</string>
+    <string name="error_invalid_email">Email không hợp lệ</string>
+    <string name="error_empty_password">Vui lòng nhập mật khẩu</string>
+    <string name="error_short_password">Mật khẩu phải có ít nhất 6 ký tự</string>
+    <string name="error_login_failed">Đăng nhập thất bại</string>
+    <string name="error_network">Lỗi kết nối mạng</string>
+    <string name="error_empty_name">Vui lòng nhập họ tên</string>
+    <string name="error_passwords_not_match">Mật khẩu không khớp</string>
+    <string name="error_empty_confirm_password">Vui lòng xác nhận mật khẩu</string>
+    <string name="error_terms_not_accepted">Vui lòng đồng ý với điều khoản dịch vụ</string>
+    <string name="error_register_failed">Đăng ký thất bại</string>
+    
+    <!-- Register Screen -->
+    <string name="register_title">Đăng ký tài khoản</string>
+    <string name="name_label">Họ và tên</string>
+    <string name="name_hint">Nhập họ và tên của bạn</string>
+    <string name="confirm_password_label">Xác nhận mật khẩu</string>
+    <string name="confirm_password_hint">Nhập lại mật khẩu</string>
+    <string name="terms_agreement">Tôi đồng ý với</string>
+    <string name="terms_of_service">Điều khoản dịch vụ</string>
+    <string name="register_button">Đăng ký</string>
+    <string name="google_sign_up">Đăng ký với Google</string>
+    <string name="already_have_account">Đã có tài khoản?</string>
+    
+    <!-- Welcome/Onboarding Screen -->
+    <string name="welcome_skip">Bỏ qua</string>
+    <string name="welcome_register">Đăng ký</string>
+    <string name="exit_dialog_title">Thoát ứng dụng</string>
+    <string name="exit_dialog_message">Bạn có chắc chắn muốn thoát không?</string>
+    <string name="exit_button">Thoát</string>
+    <string name="cancel_button">Hủy</string>
+    
+    <!-- Onboarding Slides -->
+    <string name="onboarding_title_1">Theo dõi sức khỏe</string>
+    <string name="onboarding_desc_1">Ghi lại các chỉ số sức khỏe quan trọng như huyết áp, đường huyết, cân nặng và nhiều hơn nữa.</string>
+    
+    <string name="onboarding_title_2">Nhắc nhở thông minh</string>
+    <string name="onboarding_desc_2">Không bao giờ bỏ lỡ việc uống thuốc hay tái khám với hệ thống nhắc nhở AI thông minh.</string>
+    
+    <string name="onboarding_title_3">Quản lý hồ sơ bệnh án</string>
+    <string name="onboarding_desc_3">Lưu trữ và quản lý toàn bộ hồ sơ y tế, kết quả xét nghiệm và đơn thuốc của bạn.</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="nav_dashboard">Trang chủ</string>
+    <string name="nav_metrics">Chỉ số</string>
+    <string name="nav_add">Thêm</string>
+    <string name="nav_records">Hồ sơ</string>
+    <string name="nav_profile">Cá nhân</string>
+    
+    <!-- Dashboard -->
+    <string name="good_morning">Chào buổi sáng,</string>
+    <string name="good_afternoon">Chào buổi chiều,</string>
+    <string name="good_evening">Chào buổi tối,</string>
+    <string name="welcome_subtitle">Hãy cùng kiểm tra sức khỏe hôm nay!</string>
+    
+    <!-- Metrics -->
+    <string name="blood_pressure">Huyết áp</string>
+    <string name="blood_pressure_value">120/80</string>
+    <string name="blood_pressure_unit">mmHg</string>
+    <string name="blood_sugar">Đường huyết</string>
+    <string name="blood_sugar_value">95</string>
+    <string name="blood_sugar_unit">mg/dL</string>
+    <string name="heart_rate">Nhịp tim</string>
+    <string name="heart_rate_value">72</string>
+    <string name="heart_rate_unit">BPM</string>
+    <string name="bmi">BMI</string>
+    <string name="bmi_value">22.5</string>
+    <string name="bmi_unit"></string>
+    
+    <!-- Chart -->
+    <string name="blood_pressure_trend">Xu hướng huyết áp</string>
+    <string name="period_30_days">30 Ngày</string>
+    <string name="period_7_days">7 Ngày</string>
+    <string name="period_90_days">90 Ngày</string>
+    
+    <!-- Reminders -->
+    <string name="todays_reminders">Nhắc nhở hôm nay</string>
+    <string name="snooze">Báo lại</string>
+    <string name="done">Hoàn thành</string>
+    <string name="no_reminders">Không có nhắc nhở nào</string>
+    
+    <!-- Quick Actions -->
+    <string name="quick_actions">Thao tác nhanh</string>
+    <string name="add_metric">Thêm chỉ số</string>
+    <string name="analysis">Phân tích</string>
+    <string name="reminder">Nhắc nhở</string>
+    <string name="reports">Báo cáo</string>
+    
+    <!-- Navigation Drawer -->
+    <string name="nav_header_title">Jessica Smith</string>
+    <string name="nav_header_subtitle">jessica.smith@example.com</string>
+    <string name="nav_reminders">Nhắc nhở</string>
+    <string name="nav_settings">Cài đặt</string>
+    <string name="nav_help">Trợ giúp &amp; Hỗ trợ</string>
+    <string name="nav_logout">Đăng xuất</string>
+    <string name="drawer_open">Mở menu</string>
+    <string name="drawer_close">Đóng menu</string>
+
+    <!-- Metric Detail Screen -->
+    <string name="day">Ngày</string>
+    <string name="week">Tuần</string>
+    <string name="month">Tháng</string>
+    <string name="year">Năm</string>
+    <string name="heart_rate_bpm">Nhịp tim (bpm)</string>
+    <string name="last_7_days">7 ngày qua</string>
+    <string name="average">Trung bình</string>
+    <string name="highest">Cao nhất</string>
+    <string name="lowest">Thấp nhất</string>
+    <string name="history">Lịch sử</string>
+
+    <!-- Quick Actions Screen -->
+    <string name="add_metric_desc">Ghi lại cân nặng, giấc ngủ, v.v.</string>
+    <string name="analyze_trends">Phân tích xu hướng</string>
+    <string name="analyze_trends_desc">Xem tiến trình gần đây</string>
+    <string name="set_reminder">Đặt nhắc nhở</string>
+    <string name="set_reminder_desc">Cho thuốc hoặc tập luyện</string>
+    <string name="generate_report">Tạo báo cáo</string>
+    <string name="generate_report_desc">Tạo tóm tắt hàng tuần</string>
+    <string name="start_activity">Bắt đầu hoạt động</string>
+    <string name="start_activity_desc">Theo dõi bài tập mới</string>
+    <string name="scan_food">Quét thực phẩm</string>
+    <string name="scan_food_desc">Ghi lại bữa ăn nhanh chóng</string>
+
+    <!-- Profile Screen -->
+    <string name="edit_profile">Chỉnh sửa hồ sơ</string>
+    <string name="health_information">Thông tin sức khỏe</string>
+    <string name="height">Chiều cao</string>
+    <string name="weight">Cân nặng</string>
+    <string name="blood_type">Nhóm máu</string>
+    <string name="birth_date">Ngày sinh</string>
+    <string name="gender">Giới tính</string>
+    <string name="male">Nam</string>
+    <string name="female">Nữ</string>
+    <string name="medical_history">Tiền sử bệnh án</string>
+    <string name="medical_history_sample">Dị ứng phấn hoa, Tiền sử đau dạ dày.</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="statistics">Thống kê</string>
+    <string name="metrics_tracked">Chỉ số theo dõi</string>
+    <string name="reminders_created">Lời nhắc đã tạo</string>
+    <string name="records_entered">Hồ sơ đã nhập</string>
+    <string name="actions">Hành động</string>
+    <string name="export_health_reports">Xuất báo cáo sức khỏe</string>
+    <string name="manage_notifications">Quản lý thông báo</string>
+    <string name="privacy_security">Bảo mật và quyền riêng tư</string>
+    <string name="help">Trợ giúp</string>
+
+    <!-- Edit Profile Screen -->
+    <string name="cancel">Hủy</string>
+    <string name="save">Lưu</string>
+    <string name="profile">Hồ sơ</string>
+    <string name="full_name">Họ và tên</string>
+    <string name="enter_full_name">Nhập họ và tên</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="select_birth_date">Chọn ngày sinh</string>
+    <string name="other">Khác</string>
+    <string name="enter_height">Nhập chiều cao</string>
+    <string name="enter_weight">Nhập cân nặng</string>
+    <string name="select_blood_type">Chọn nhóm máu</string>
+    <string name="enter_medical_history">Nhập tiền sử bệnh án</string>
+    <string name="please_enter_name">Vui lòng nhập họ tên</string>
+    <string name="please_enter_email">Vui lòng nhập email</string>
+    <string name="profile_updated_successfully">Cập nhật hồ sơ thành công</string>
 </resources>

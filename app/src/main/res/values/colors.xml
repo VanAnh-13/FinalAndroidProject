@@ -2,4 +2,32 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Primary Colors - Blue Theme -->
+    <color name="primary">#1976D2</color>
+    <color name="primary_blue">#1976D2</color>
+    <color name="primary_blue_dark">#1565C0</color>
+    <color name="primary_blue_light">#BBDEFB</color>
+    
+    <!-- Background Colors -->
+    <color name="background_light">#F5F5F5</color>
+    <color name="background_white">#FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+    
+    <!-- Border Colors -->
+    <color name="border_color">#E0E0E0</color>
+    <color name="border_focused">#1976D2</color>
+    
+    <!-- Error Color -->
+    <color name="error_red">#D32F2F</color>
+
+    <!-- Success Color -->
+    <color name="success_green">#4CAF50</color>
+
+    <!-- Container Colors -->
+    <color name="primary_container">#E3F2FD</color>
 </resources>

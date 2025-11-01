@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light"
+    android:padding="@dimen/padding_large">
+
+    <!-- Logo and App Name -->
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="@dimen/icon_size_medium"
+        android:layout_height="@dimen/icon_size_medium"
+        android:src="@drawable/ic_health_logo"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/margin_normal" />
+
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="@dimen/text_size_title"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginTop="@dimen/margin_medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivLogo" />
+
+    <!-- ViewPager2 for Onboarding Slides -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerOnboarding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAppName"
+        app:layout_constraintBottom_toTopOf="@id/indicatorContainer"
+        android:layout_marginTop="@dimen/margin_xl"
+        android:layout_marginBottom="@dimen/margin_normal" />
+
+    <!-- Indicator Container -->
+    <LinearLayout
+        android:id="@+id/indicatorContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnRegister"
+        android:layout_marginBottom="@dimen/margin_xl">
+        
+        <!-- Indicators will be added programmatically -->
+    </LinearLayout>
+
+    <!-- Register Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRegister"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:text="@string/welcome_register"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/primary_blue"
+        app:cornerRadius="@dimen/corner_radius_large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnLogin"
+        android:layout_marginBottom="@dimen/margin_medium" />
+
+    <!-- Login Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogin"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:text="@string/login_button"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/primary_blue"
+        android:backgroundTint="@color/primary_blue_light"
+        app:cornerRadius="@dimen/corner_radius_large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnSkip"
+        android:layout_marginBottom="@dimen/margin_medium" />
+
+    <!-- Skip Button -->
+    <TextView
+        android:id="@+id/btnSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_skip"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/primary_blue"
+        android:textStyle="bold"
+        android:padding="@dimen/padding_medium"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/margin_small" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

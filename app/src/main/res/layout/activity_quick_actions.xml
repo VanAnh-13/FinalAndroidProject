@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light">
+
+    <!-- Top Bar -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/elevation_button"
+        app:cardCornerRadius="0dp"
+        android:backgroundTint="@color/background_white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_normal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="@string/app_name"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/padding_small"
+                android:text="@string/quick_actions"
+                android:textSize="@dimen/text_size_xl"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"/>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Quick Actions Grid -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:padding="@dimen/padding_normal">
+
+            <!-- Add Metric -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_add_metric"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/padding_small"
+                app:cardElevation="@dimen/border_width"
+                app:cardCornerRadius="@dimen/corner_radius"
+                app:strokeWidth="@dimen/border_width"
+                app:strokeColor="@color/border_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/iv_add_metric_action_icon"
+                        android:layout_width="@dimen/button_height"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/padding_normal"
+                        android:background="@drawable/bg_icon_rounded"
+                        android:backgroundTint="@color/primary_container"
+                        android:contentDescription="@string/add_metric"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_metric"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/spacing_normal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_metric_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Analyze Trends -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_analyze_trends"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/padding_small"
+                app:cardElevation="@dimen/border_width"
+                app:cardCornerRadius="@dimen/corner_radius"
+                app:strokeWidth="@dimen/border_width"
+                app:strokeColor="@color/border_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/iv_analyze_trends_icon"
+                        android:layout_width="@dimen/button_height"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/padding_normal"
+                        android:background="@drawable/bg_icon_rounded"
+                        android:backgroundTint="@color/primary_container"
+                        android:contentDescription="@string/analyze_trends"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analyze_trends"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/spacing_normal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analyze_trends_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Set Reminder -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_set_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/padding_small"
+                app:cardElevation="@dimen/border_width"
+                app:cardCornerRadius="@dimen/corner_radius"
+                app:strokeWidth="@dimen/border_width"
+                app:strokeColor="@color/border_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/iv_set_reminder_icon"
+                        android:layout_width="@dimen/button_height"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/padding_normal"
+                        android:background="@drawable/bg_icon_rounded"
+                        android:backgroundTint="@color/primary_container"
+                        android:contentDescription="@string/set_reminder"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_reminder"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/spacing_normal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_reminder_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Generate Report -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_generate_report"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/padding_small"
+                app:cardElevation="@dimen/border_width"
+                app:cardCornerRadius="@dimen/corner_radius"
+                app:strokeWidth="@dimen/border_width"
+                app:strokeColor="@color/border_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/iv_generate_report_icon"
+                        android:layout_width="@dimen/button_height"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/padding_normal"
+                        android:background="@drawable/bg_icon_rounded"
+                        android:backgroundTint="@color/primary_container"
+                        android:contentDescription="@string/generate_report"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generate_report"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/spacing_normal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generate_report_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Start Activity -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_start_activity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/padding_small"
+                app:cardElevation="@dimen/border_width"
+                app:cardCornerRadius="@dimen/corner_radius"
+                app:strokeWidth="@dimen/border_width"
+                app:strokeColor="@color/border_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/iv_start_activity_icon"
+                        android:layout_width="@dimen/button_height"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/padding_normal"
+                        android:background="@drawable/bg_icon_rounded"
+                        android:backgroundTint="@color/primary_container"
+                        android:contentDescription="@string/start_activity"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/start_activity"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/spacing_normal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/start_activity_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Scan Food -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_scan_food"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/padding_small"
+                app:cardElevation="@dimen/border_width"
+                app:cardCornerRadius="@dimen/corner_radius"
+                app:strokeWidth="@dimen/border_width"
+                app:strokeColor="@color/border_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/iv_scan_food_icon"
+                        android:layout_width="@dimen/button_height"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/padding_normal"
+                        android:background="@drawable/bg_icon_rounded"
+                        android:backgroundTint="@color/primary_container"
+                        android:contentDescription="@string/scan_food"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/scan_food"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/spacing_normal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/scan_food_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

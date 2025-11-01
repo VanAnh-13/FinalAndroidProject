@@ -1,6 +1,6 @@
-# Base - Android MVVM Foundation Project
+# HealthyLife Hub - Smart Health Management App
 
-A well-structured Android application foundation built with MVVM architecture, providing reusable base classes and comprehensive documentation for rapid development.
+A comprehensive Android health tracking application built with MVVM architecture, Firebase, and Material Design 3. Track your health metrics, manage medications, set smart reminders, and maintain your medical records all in one place.
 
 ## 📋 Table of Contents
 
@@ -17,14 +17,24 @@ A well-structured Android application foundation built with MVVM architecture, p
 
 ## 🎯 Overview
 
-Base is a production-ready Android foundation project that implements:
+HealthyLife Hub is a modern health management application that helps users:
 
-- **MVVM Architecture Pattern** with LiveData and ViewModel
-- **View Binding** for type-safe view access
-- **Repository Pattern** for data management
-- **Result Pattern** with DataState for error handling
-- **Retrofit Integration** for network operations
-- **Comprehensive Documentation** for all components
+- **Track Health Metrics**: Monitor blood pressure, blood sugar, weight, BMI, and more
+- **Smart Reminders**: AI-powered medication and appointment reminders
+- **Medical Records**: Store and manage medical history, test results, and prescriptions
+- **OCR Medicine Scanning**: Add medications by scanning prescription labels
+- **Data Analytics**: Visual charts and insights into your health trends
+- **Offline Support**: Full offline functionality with cloud sync
+
+### ✨ Current Features (Implemented)
+
+- ✅ **Welcome/Onboarding Screen** - 3 swipeable slides introducing the app
+- ✅ **Login System** - Email/Password + Google Sign-In with Firebase
+- ✅ **First-Time Detection** - Smart onboarding flow
+- ✅ **Remember Login** - Persistent user sessions
+- ✅ **Material Design 3** - Modern, beautiful UI
+
+**Progress**: 2/25 screens (8%) | Phase 1 - Authentication Flow
 
 ## 🏗️ Architecture
 
@@ -54,40 +64,48 @@ Base is a production-ready Android foundation project that implements:
 - **Android SDK**: API level 24 (Android 7.0) or higher
 - **Gradle**: 8.13 or compatible version
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### 1. Clone and Setup
+### 1. Clone the Project
 
 ```bash
-# Clone the repository
-git clone <repository-url>
+git clone https://github.com/VanAnh-13/FinalAndroidProject.git
 cd Base
-
-# Open in Android Studio
-# File → Open → Select the Base folder
 ```
 
-### 2. Build the Project
+### 2. Setup Firebase (REQUIRED - 15 minutes)
+
+**📖 Detailed Guide**: See [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
+
+Quick steps:
+1. Create Firebase project at [console.firebase.google.com](https://console.firebase.google.com/)
+2. Add Android app: `com.example.healthylifehub`
+3. Download `google-services.json` → place in `app/` folder
+4. Enable Authentication (Email/Password + Google)
+5. Enable Firestore Database
+6. Get Web Client ID → Update `AuthRepository.java` line 42
+
+### 3. Build & Run
 
 ```bash
-# Clean and build
-./gradlew clean
-./gradlew assembleDebug
+# Sync Gradle
+./gradlew build
 
-# Or use Android Studio
-# Build → Clean Project
-# Build → Rebuild Project
-```
-
-### 3. Run the Application
-
-```bash
-# Install on connected device/emulator
+# Install on device/emulator
 ./gradlew installDebug
 
-# Or use Android Studio
-# Run → Run 'app'
+# Or in Android Studio: Run → Run 'app' (Shift+F10)
 ```
+
+### 4. Test the App
+
+1. ✅ Launch → See Welcome screen with 3 slides
+2. ✅ Swipe between slides
+3. ✅ Click "Đăng nhập" → Login screen
+4. ✅ Test email validation
+5. ✅ Login with test account or Google
+
+**📚 Full Guide**: See [QUICK_START.md](QUICK_START.md)
 
 ## 📁 Project Structure
 
@@ -481,15 +499,70 @@ If you encounter any issues or have questions:
 2. Review the comprehensive code documentation
 3. Refer to the implementation examples above
 
-## 🚀 Next Steps
+## 📚 Documentation
 
-After setting up the Base project:
+| Document | Description |
+|----------|-------------|
+| [QUICK_START.md](QUICK_START.md) | Quick start guide and testing |
+| [FIREBASE_SETUP.md](FIREBASE_SETUP.md) | Complete Firebase configuration guide |
+| [PROJECT_STATUS.md](PROJECT_STATUS.md) | Current implementation status and roadmap |
+| [WELCOME_SCREEN.md](WELCOME_SCREEN.md) | Onboarding screen documentation |
+| [LOGIN_IMPLEMENTATION.md](LOGIN_IMPLEMENTATION.md) | Login system technical details |
+| [SETUP_CHECKLIST.md](SETUP_CHECKLIST.md) | Step-by-step setup checklist |
 
-1. **Configure API endpoints** in `APIConstant.java`
-2. **Create your data models** following the User example
-3. **Implement your repositories** extending BaseRepository
-4. **Build your ViewModels** extending BaseViewModel
-5. **Create your UI** using BaseActivity and BaseFragment
-6. **Add your business logic** following the established patterns
+## 🚀 Roadmap
+
+### ✅ Phase 1: Authentication (Week 1) - IN PROGRESS
+- [x] Welcome/Onboarding Screen
+- [x] Login Screen
+- [ ] Register Screen
+- [ ] Forgot Password
+
+### 📋 Phase 2: Core App (Week 2-3)
+- [ ] Dashboard Home (charts, metrics overview)
+- [ ] Profile Screen
+- [ ] Settings Screen
+- [ ] Navigation Bottom Bar
+
+### 📊 Phase 3: Health Features (Week 4-6)
+- [ ] Health Metrics (5 screens)
+- [ ] Reminders System (4 screens)
+- [ ] Medical Records (5 screens)
+- [ ] Medicines Management (2 screens)
+
+### 🚀 Phase 4: Advanced (Week 7-9)
+- [ ] OCR Medicine Scanning (ML Kit)
+- [ ] AI Insights & Analytics
+- [ ] PDF Report Export
+- [ ] Offline Sync
+
+### 🎯 Phase 5: Polish (Week 10)
+- [ ] Animations & Transitions
+- [ ] Testing & Bug Fixes
+- [ ] Performance Optimization
+- [ ] Production Release
+
+## 🆘 Support & Contributing
+
+**Need Help?**
+- Check the documentation files above
+- Review [PROJECT_STATUS.md](PROJECT_STATUS.md) for current progress
+- Check issues on GitHub
+
+**Contributing:**
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push and create a Pull Request
+
+## 📄 License
+
+This project is for educational purposes (Final Android Project).
+
+---
+
+**Built with ❤️ by Van Anh**  
+**Status**: 🚧 In Development (8% complete)  
+**Next**: Register Screen + Firebase Setup
 
 Happy coding! 🎉

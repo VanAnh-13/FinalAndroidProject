@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">12dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">40dp</dimen>
+    
+    <!-- Padding -->
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">12dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_xl_large">20dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+    <dimen name="padding_xl">32dp</dimen>
+    
+    <!-- Margin -->
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">12dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_xl">32dp</dimen>
+    
+    <!-- Border/Corner Radius -->
+    <dimen name="corner_radius">12dp</dimen>
+    <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="corner_radius_xl">20dp</dimen>
+    <dimen name="corner_radius_large">28dp</dimen>
+    <dimen name="border_width">1dp</dimen>
+    
+    <!-- Button Heights -->
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="button_height_small">48dp</dimen>
+    <dimen name="button_height_medium">40dp</dimen>
+    
+    <!-- Icon Sizes -->
+    <dimen name="icon_size_small">24dp</dimen>
+    <dimen name="icon_size_medium">48dp</dimen>
+    <dimen name="icon_size_large">120dp</dimen>
+    
+    <!-- Input Field Heights -->
+    <dimen name="input_height">56dp</dimen>
+    
+    <!-- Text Sizes -->
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_normal">14sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_xl">20sp</dimen>
+    <dimen name="text_size_title">24sp</dimen>
+    <dimen name="text_size_xxl">32sp</dimen>
+    
+    <!-- Elevation -->
+    <dimen name="elevation_card">4dp</dimen>
+    <dimen name="elevation_button">2dp</dimen>
+    
+    <!-- Indicator -->
+    <dimen name="indicator_width_active">24dp</dimen>
+    <dimen name="indicator_height">8dp</dimen>
+    <dimen name="indicator_spacing">8dp</dimen>
+
+    <!-- Chart -->
+    <dimen name="chart_height">200dp</dimen>
+
+    <!-- FAB -->
+    <dimen name="margin_bottom_fab">80dp</dimen>
+</resources>

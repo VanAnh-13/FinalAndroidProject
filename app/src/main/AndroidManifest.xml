@@ -15,14 +15,52 @@
         android:theme="@style/Theme.Base"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".ui.onboarding.WelcomeActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.metrics.MetricDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.actions.QuickActionsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
