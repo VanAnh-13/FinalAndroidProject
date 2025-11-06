@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light">
+
+    <!-- Top Bar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal">
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/icon_size_medium"
+            android:layout_height="@dimen/icon_size_medium"
+            android:src="@drawable/ic_close"
+            android:padding="@dimen/padding_medium"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/close"
+            app:tint="@color/text_primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/health_alert"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@id/iv_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_normal">
+
+            <!-- Alert Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/corner_radius"
+                android:backgroundTint="@color/error_container">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal">
+
+                    <!-- Severity Badge -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/spacing_normal">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/spacing_xl"
+                            android:layout_height="@dimen/spacing_xl"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/error_red">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_small"
+                                android:layout_height="@dimen/icon_size_small"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_warning"
+                                app:tint="@color/white"/>
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/high_severity"
+                            android:textColor="@color/error_red"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="bold"
+                            android:layout_marginStart="@dimen/spacing_medium"/>
+
+                    </LinearLayout>
+
+                    <!-- Alert Title -->
+                    <TextView
+                        android:id="@+id/tv_alert_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/high_heart_rate_detected"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_title"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/spacing_small"/>
+
+                    <!-- Time -->
+                    <TextView
+                        android:id="@+id/tv_alert_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginBottom="@dimen/spacing_normal"
+                        tools:text="Today at 2:15 PM"/>
+
+                    <!-- Value Display -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/padding_normal"
+                        android:paddingBottom="@dimen/padding_normal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="@dimen/spacing_tiny">
+
+                            <TextView
+                                android:id="@+id/tv_alert_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/error_red"
+                                android:textSize="48sp"
+                                android:textStyle="bold"
+                                tools:text="145"/>
+
+                            <TextView
+                                android:id="@+id/tv_alert_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/error_red"
+                                android:textSize="@dimen/text_size_large"
+                                android:textStyle="bold"
+                                android:layout_marginStart="@dimen/spacing_small"
+                                tools:text="BPM"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_normal_range"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:layout_marginBottom="@dimen/spacing_normal"
+                            tools:text="Normal: 60-100 BPM"/>
+
+                        <TextView
+                            android:id="@+id/tv_alert_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            tools:text="Your heart rate is significantly higher than your normal resting range. Please take immediate action."/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recommended Actions -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recommended_actions"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/spacing_small"/>
+
+            <!-- Action: Rest and Monitor -->
+            <LinearLayout
+                android:id="@+id/ll_action_rest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_small"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical">
+
+                <FrameLayout
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:background="@drawable/bg_icon_rounded"
+                    android:backgroundTint="@color/background_light">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_size_small"
+                        android:layout_height="@dimen/icon_size_small"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_time"
+                        app:tint="@color/text_primary"/>
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/spacing_normal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rest_and_monitor"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rest_and_monitor_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:src="@drawable/ic_arrow_back"
+                    android:rotation="180"
+                    app:tint="@color/text_secondary"/>
+
+            </LinearLayout>
+
+            <!-- Action: Contact Healthcare -->
+            <LinearLayout
+                android:id="@+id/ll_action_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_small"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/spacing_small">
+
+                <FrameLayout
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:background="@drawable/bg_icon_rounded"
+                    android:backgroundTint="@color/background_light">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_size_small"
+                        android:layout_height="@dimen/icon_size_small"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_call"
+                        app:tint="@color/text_primary"/>
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/spacing_normal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/contact_healthcare"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/contact_healthcare_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:src="@drawable/ic_arrow_back"
+                    android:rotation="180"
+                    app:tint="@color/text_secondary"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_normal"
+        android:background="@color/background_light">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_contact_doctor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_doctor"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/corner_radius_xl"
+            app:backgroundTint="@color/error_red"
+            android:minHeight="@dimen/button_height"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_learn_more"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/learn_more"
+            android:textColor="@color/primary_blue"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/corner_radius_xl"
+            app:strokeColor="@color/primary_blue"
+            android:minHeight="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_medium"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dismiss"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ive_seen_this"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/corner_radius_xl"
+            android:minHeight="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_medium"/>
+
+    </LinearLayout>
+
+</LinearLayout>

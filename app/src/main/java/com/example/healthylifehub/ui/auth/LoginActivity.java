@@ -105,11 +105,21 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
                 showLoading(true);
             } else if (state.getStatus() == DataState.Status.SUCCESS) {
                 showLoading(false);
+                String email = getBinding().etEmail.getText().toString().trim();
+                com.example.healthylifehub.utils.SecurityUtils.resetLoginAttempts(this, email);
                 saveCredentials();
                 navigateToDashboard();
             } else if (state.getStatus() == DataState.Status.ERROR) {
                 showLoading(false);
-                showError(state.getMessage());
+                String email = getBinding().etEmail.getText().toString().trim();
+                com.example.healthylifehub.utils.SecurityUtils.recordFailedLoginAttempt(this, email);
+                
+                int remainingAttempts = com.example.healthylifehub.utils.SecurityUtils.getRemainingAttempts(this, email);
+                String errorMessage = state.getMessage();
+                if (remainingAttempts > 0 && remainingAttempts <= 3) {
+                    errorMessage += "\nCòn " + remainingAttempts + " lần thử";
+                }
+                showError(errorMessage);
             }
         });
 
@@ -127,6 +137,19 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
     private void handleLogin() {
         String email = getBinding().etEmail.getText().toString().trim();
         String password = getBinding().etPassword.getText().toString().trim();
+        
+        // Sanitize email input
+        email = com.example.healthylifehub.utils.SecurityUtils.sanitizeEmail(email);
+        
+        // Check if account is locked
+        if (com.example.healthylifehub.utils.SecurityUtils.isAccountLocked(this, email)) {
+            int remainingMinutes = com.example.healthylifehub.utils.SecurityUtils.getRemainingLockoutMinutes(this, email);
+            String message = getString(R.string.account_locked, remainingMinutes);
+            showError(message);
+            return;
+        }
+        
+        // Attempt login
         viewModel.login(email, password);
     }
 
@@ -136,8 +159,8 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
     }
 
     private void handleForgotPassword() {
-        // TODO: Navigate to Forgot Password screen
-        Toast.makeText(this, "Forgot Password - Coming soon", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ForgotPasswordActivity.class);
+        startActivity(intent);
     }
 
     private void handleSignUp() {

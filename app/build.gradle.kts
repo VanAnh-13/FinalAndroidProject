@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -15,6 +17,36 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Read Google Web Client ID from local.properties (NOT committed to Git)
+        // REQUIRED: Add this line to your local.properties: google.web.client.id=YOUR_CLIENT_ID
+        // See SECURITY_SETUP.md for detailed setup instructions
+        val localPropertiesFile = rootProject.file("local.properties")
+        val properties = Properties()
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        val googleWebClientId = properties.getProperty("google.web.client.id")
+            ?: throw GradleException(
+                """
+                |
+                |❌ ERROR: Missing 'google.web.client.id' in local.properties
+                |
+                |To fix this:
+                |1. Open or create 'local.properties' in project root
+                |2. Add this line:
+                |   google.web.client.id=YOUR_GOOGLE_WEB_CLIENT_ID
+                |
+                |3. Get your Web Client ID from:
+                |   - Firebase Console > Project Settings > General > Web App
+                |   - Or from google-services.json (oauth_client with client_type: 3)
+                |
+                |📖 See SECURITY_SETUP.md for detailed instructions
+                |
+                """.trimMargin()
+            )
+        
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
     }
 
     buildTypes {
@@ -32,6 +64,7 @@ android {
     }
     buildFeatures{
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -106,4 +139,8 @@ dependencies {
 
     // Navigation Drawer
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
+
+    // Lombok (generate getters/setters to keep models clean)
+    compileOnly("org.projectlombok:lombok:1.18.32")
+    annotationProcessor("org.projectlombok:lombok:1.18.32")
 }

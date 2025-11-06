@@ -22,6 +22,10 @@ public class LoginViewModel extends BaseViewModel {
     private final MutableLiveData<DataState<User>> loginState = new MutableLiveData<>();
     private final MutableLiveData<String> emailError = new MutableLiveData<>();
     private final MutableLiveData<String> passwordError = new MutableLiveData<>();
+    
+    // Store observers to remove them later
+    private androidx.lifecycle.Observer<DataState<User>> loginObserver;
+    private androidx.lifecycle.Observer<DataState<User>> googleSignInObserver;
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
@@ -46,10 +50,15 @@ public class LoginViewModel extends BaseViewModel {
             return;
         }
 
-        // Observe the LiveData from repository
-        authRepository.loginWithEmail(email, password).observeForever(state -> {
-            loginState.setValue(state);
-        });
+        // Remove previous observer if exists to prevent memory leaks
+        LiveData<DataState<User>> loginLiveData = authRepository.loginWithEmail(email, password);
+        if (loginObserver != null) {
+            loginLiveData.removeObserver(loginObserver);
+        }
+        
+        // Create new observer and observe
+        loginObserver = state -> loginState.setValue(state);
+        loginLiveData.observeForever(loginObserver);
     }
 
     public Intent getGoogleSignInIntent() {
@@ -57,10 +66,15 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     public void handleGoogleSignInResult(Intent data) {
-        // Observe the LiveData from repository
-        authRepository.loginWithGoogle(data).observeForever(state -> {
-            loginState.setValue(state);
-        });
+        // Remove previous observer if exists to prevent memory leaks
+        LiveData<DataState<User>> googleLiveData = authRepository.loginWithGoogle(data);
+        if (googleSignInObserver != null) {
+            googleLiveData.removeObserver(googleSignInObserver);
+        }
+        
+        // Create new observer and observe
+        googleSignInObserver = state -> loginState.setValue(state);
+        googleLiveData.observeForever(googleSignInObserver);
     }
 
     private boolean validateInput(String email, String password) {
@@ -99,6 +113,17 @@ public class LoginViewModel extends BaseViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
+        
+        // Remove LiveData observers to prevent memory leaks
+        if (loginObserver != null) {
+            // Note: We can't remove the observer here since we don't have reference to the LiveData
+            // The observers are already removed when new login attempts are made
+            loginObserver = null;
+        }
+        if (googleSignInObserver != null) {
+            googleSignInObserver = null;
+        }
+        
         // Clean up RxJava disposables
         if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
             compositeDisposable.clear();

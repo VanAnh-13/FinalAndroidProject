@@ -111,6 +111,7 @@
     <string name="nav_settings">Cài đặt</string>
     <string name="nav_help">Trợ giúp &amp; Hỗ trợ</string>
     <string name="nav_logout">Đăng xuất</string>
+    <string name="logout">Đăng xuất</string>
     <string name="drawer_open">Mở menu</string>
     <string name="drawer_close">Đóng menu</string>
 
@@ -179,4 +180,262 @@
     <string name="please_enter_name">Vui lòng nhập họ tên</string>
     <string name="please_enter_email">Vui lòng nhập email</string>
     <string name="profile_updated_successfully">Cập nhật hồ sơ thành công</string>
+<!-- Notifications -->
+    <string name="notifications">Thông báo</string>
+    <string name="all">Tất cả</string>
+    <string name="medication">Thuốc</string>
+    <string name="activity">Hoạt động</string>
+    <string name="appointments">Lịch hẹn</string>
+    <string name="insights">Thông tin</string>
+
+    <!-- Metrics -->
+    <string name="health_metrics">Chỉ số sức khỏe</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="newest">Mới nhất</string>
+    <string name="filter">Bộ lọc</string>
+    <string name="add_new_metric">Thêm chỉ số mới</string>
+    <string name="all_metrics">Tất cả</string>
+    <string name="blood_pressure_tab">Huyết áp</string>
+    <string name="blood_sugar_tab">Đường huyết</string>
+    <string name="weight_tab">Cân nặng</string>
+    <string name="heart_rate_tab">Nhịp tim</string>
+
+    <!-- Add/Edit Metric -->
+    <string name="close">Đóng</string>
+    <string name="metric_type">Loại chỉ số</string>
+    <string name="systolic">Tâm thu (Systolic)</string>
+    <string name="diastolic">Tâm trương (Diastolic)</string>
+    <string name="value">Giá trị</string>
+    <string name="measurement_date">Ngày đo</string>
+    <string name="measurement_time">Giờ đo</string>
+    <string name="notes">Ghi chú</string>
+    <string name="save_and_analyze">Lưu và phân tích</string>
+    <string name="edit_metric">Chỉnh sửa chỉ số</string>
+    <string name="select_date">Chọn ngày</string>
+    <string name="select_time">Chọn giờ</string>
+    <string name="enter_notes">Nhập ghi chú của bạn</string>
+    <string name="validation_error">Vui lòng nhập giá trị hợp lệ</string>
+
+    <!-- Metric Stats -->
+    <string name="current">Hiện tại</string>
+
+    <!-- Metric Analysis -->
+    <string name="heart_rate_analysis">Phân tích Nhịp tim</string>
+    <string name="heart_rate_trend">Xu hướng nhịp tim</string>
+    <string name="this_month">Tháng này</string>
+    <string name="key_statistics">Thống kê chính</string>
+    <string name="alerts">Cảnh báo</string>
+    <string name="recommendations">Khuyến nghị</string>
+    <string name="export_report">Xuất báo cáo</string>
+
+    <!-- Anomaly Alert -->
+    <string name="health_alert">Cảnh báo Sức khỏe</string>
+    <string name="high_severity">Mức độ Cao</string>
+    <string name="high_heart_rate_detected">Phát hiện Nhịp tim Cao bất thường</string>
+    <string name="high_heart_rate_desc">Nhịp tim của bạn đang cao hơn bình thường. Vui lòng nghỉ ngơi và theo dõi triệu chứng.</string>
+    <string name="recommended_actions">Hành động Khuyến nghị</string>
+    <string name="rest_and_monitor">Nghỉ ngơi và Theo dõi</string>
+    <string name="rest_and_monitor_desc">Ngồi xuống trong môi trường yên tĩnh và theo dõi các triệu chứng của bạn.</string>
+    <string name="contact_healthcare">Liên hệ Chuyên gia Y tế</string>
+    <string name="contact_healthcare_desc">Nếu các triệu chứng vẫn tiếp diễn, vui lòng tìm kiếm tư vấn y tế.</string>
+    <string name="contact_doctor">Liên hệ Bác sĩ</string>
+    <string name="learn_more">Tìm hiểu thêm</string>
+    <string name="ive_seen_this">Tôi đã biết</string>
+
+    <!-- Add/Edit Reminder -->
+    <string name="add_reminder">Thêm Nhắc Nhở</string>
+    <string name="edit_reminder">Chỉnh sửa Nhắc Nhở</string>
+    <string name="reminder_type">Loại nhắc nhở</string>
+    <string name="measurement">Đo chỉ số</string>
+    <string name="appointment">Tái khám</string>
+    <string name="title">Tiêu đề</string>
+    <string name="note_optional">Ghi chú (tùy chọn)</string>
+    <string name="link_medicine_optional">Liên kết với thuốc (tùy chọn)</string>
+    <string name="time">Thời gian</string>
+    <string name="repeat">Lặp lại</string>
+    <string name="save_reminder">Lưu nhắc nhở</string>
+    <string name="no_repeat">Không lặp lại</string>
+    <string name="daily">Hàng ngày</string>
+    <string name="weekly">Hàng tuần</string>
+    <string name="monthly">Hàng tháng</string>
+    <string name="custom">Tùy chỉnh</string>
+    <string name="no_medicine">Không có</string>
+    <string name="completed">Hoàn thành</string>
+    <string name="skip">Bỏ</string>
+    <string name="smart_suggestions">Gợi ý thông minh</string>
+    <string name="water_reminder_suggestion">Bạn có muốn tạo lời nhắc uống đủ nước trong ngày không?</string>
+    <string name="later">Để sau</string>
+    <string name="create_reminder">Tạo lời nhắc</string>
+
+    <!-- Reminder Detail -->
+    <string name="reminder_detail">Reminder Detail</string>
+    <string name="delete">Xóa</string>
+    <string name="mark_taken">Mark as Taken</string>
+    <string name="reschedule">Reschedule</string>
+    <string name="repeats">Repeats</string>
+    <string name="delete_reminder">Delete Reminder</string>
+
+    <!-- Smart Suggestions -->
+    <string name="optimize_reminder">Tối ưu hoá lời nhắc</string>
+    <string name="optimize_reminder_desc">Bạn thường uống thuốc lúc 8:15 AM. Thay đổi thời gian nhắc nhở thành 8:15 AM?</string>
+    <string name="apply">Áp dụng</string>
+    <string name="new_reminder_suggestion">Gợi ý lời nhắc mới</string>
+    <string name="new_reminder_suggestion_desc">Chúng tôi nhận thấy bạn ghi lại lượng nước uống. Tạo lời nhắc uống nước mỗi 2 giờ?</string>
+    <string name="create">Tạo</string>
+    <string name="merge_reminders">Gộp lời nhắc</string>
+    <string name="merge_reminders_desc">Bạn có 2 lời nhắc uống thuốc gần nhau. Gộp chúng thành một?</string>
+    <string name="merge">Gộp</string>
+    <string name="no_suggestions">Không có gợi ý mới</string>
+    <string name="no_suggestions_desc">Bạn đã xem hết các gợi ý thông minh. Hãy quay lại sau để xem các đề xuất mới!</string>
+
+    <!-- Medical Records -->
+    <string name="medical_records">Hồ sơ Y tế</string>
+    <string name="search_records">Tìm kiếm hồ sơ...</string>
+    <string name="add_record">Thêm hồ sơ</string>
+    <string name="timeline">Dòng thời gian</string>
+    <string name="medicines">Thuốc</string>
+    <string name="allergies">Dị ứng</string>
+    <string name="year_2024">2024</string>
+    <string name="year_2023">2023</string>
+    <string name="no_records_found">Không có hồ sơ</string>
+    <string name="no_records_desc">Thêm hồ sơ y tế đầu tiên để bắt đầu xây dựng dòng thời gian sức khỏe của bạn.</string>
+    <string name="add_first_record">Thêm hồ sơ đầu tiên</string>
+    
+    <!-- Record Types -->
+    <string name="cardiology_consultation">Tư vấn Tim mạch</string>
+    <string name="annual_checkup">Khám sức khỏe định kỳ</string>
+    <string name="allergy_test">Xét nghiệm dị ứng</string>
+    <string name="flu_vaccination">Tiêm phòng cúm</string>
+    
+    <!-- Sample Records -->
+    <string name="record_date_1">15 Tháng 8 2024</string>
+    <string name="record_desc_1">BS. Jane Doe, Bệnh viện Đa khoa Thành phố. Chẩn đoán: Tiếng thổi tim lành tính.</string>
+    <string name="record_date_2">22 Tháng 5 2024</string>
+    <string name="record_desc_2">BS. John Smith, Phòng khám Sức khỏe. Tất cả chỉ số bình thường.</string>
+    <string name="record_date_3">10 Tháng 2 2024</string>
+    <string name="record_desc_3">Trung tâm Chẩn đoán. Kết quả đính kèm.</string>
+    <string name="record_date_4">05 Tháng 10 2023</string>
+    <string name="record_desc_4">Nhà thuốc Cộng đồng. Tiêm bởi Y tá Davis.</string>
+
+    <!-- Add/Edit Record -->
+    <string name="add_medical_record">Thêm hồ sơ bệnh án</string>
+    <string name="edit_medical_record">Chỉnh sửa hồ sơ bệnh án</string>
+    <string name="record_title">Tiêu đề</string>
+    <string name="examination_date">Ngày khám</string>
+    <string name="hospital_clinic">Bệnh viện/Phòng khám</string>
+    <string name="doctor">Bác sĩ</string>
+    <string name="diagnosis">Chẩn đoán</string>
+    <string name="detailed_content">Nội dung chi tiết</string>
+    <string name="attachments">Tệp đính kèm</string>
+    <string name="save_record">Lưu hồ sơ</string>
+    <string name="add_file">Thêm tệp</string>
+    
+    <!-- Hospital List -->
+    <string name="hospital_vinmec">Bệnh viện Đa khoa Quốc tế Vinmec</string>
+    <string name="hospital_cho_ray">Bệnh viện Chợ Rẫy</string>
+    <string name="hospital_other">Nhập tên khác</string>
+
+    <!-- Record Detail -->
+    <string name="medical_record">Hồ sơ Y tế</string>
+    <string name="core_details">Thông tin cơ bản</string>
+    <string name="diagnosis_notes">Chẩn đoán &amp; Ghi chú</string>
+    <string name="doctor_notes">Ghi chú của bác sĩ</string>
+    <string name="prescriptions">Đơn thuốc</string>
+    <string name="no_prescriptions">Không có đơn thuốc đính kèm với hồ sơ này.</string>
+
+    <!-- Medicines -->
+    <string name="scan_medicine">Quét thuốc</string>
+    <string name="add_medicine">Thêm thuốc</string>
+    <string name="active_medicines">Đang dùng</string>
+    <string name="stopped_medicines">Đã ngưng</string>
+
+    <!-- Add Medicine -->
+    <string name="scan_prescription">Chụp đơn thuốc</string>
+    <string name="manual_entry">Nhập thủ công</string>
+    <string name="camera_preview">Camera preview</string>
+    <string name="place_prescription_in_frame">Đặt đơn thuốc vào trong khung hình</string>
+    <string name="gallery">Thư viện</string>
+    <string name="capture">Chụp</string>
+    <string name="flash">Đèn flash</string>
+    <string name="processing_prescription">Đang xử lý đơn thuốc...</string>
+    <string name="medicine_name">Tên thuốc</string>
+    <string name="dosage">Liều lượng</string>
+    <string name="usage_instructions">Hướng dẫn sử dụng</string>
+    <string name="start_date">Ngày bắt đầu</string>
+    <string name="save_medicine">Lưu thuốc</string>
+
+    <!-- Settings Screen -->
+    <string name="settings">Cài đặt</string>
+    <string name="account">Tài khoản</string>
+    <string name="general">Chung</string>
+    <string name="data_sync">Đồng bộ dữ liệu</string>
+    <string name="units">Đơn vị đo lường</string>
+    <string name="units_metric">Hệ Mét</string>
+    <string name="display">Hiển thị</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="language_vietnamese">Tiếng Việt</string>
+    <string name="theme">Chủ đề</string>
+    <string name="theme_light">Sáng</string>
+    <string name="theme_dark">Tối</string>
+    <string name="theme_system">Theo hệ thống</string>
+    <string name="about">Về ứng dụng</string>
+    <string name="delete_account">Xóa tài khoản</string>
+    <string name="navigate">Điều hướng</string>
+<!-- Export Reports Screen -->
+    <string name="export_reports">Xuất báo cáo</string>
+    <string name="select_time_range">Chọn khoảng thời gian</string>
+    <string name="last_30_days">30 ngày qua</string>
+    <string name="file_format">Định dạng file</string>
+    <string name="pdf">PDF</string>
+    <string name="excel">Excel</string>
+    <string name="report_content">Nội dung báo cáo</string>
+    <string name="personal_information">Thông tin cá nhân</string>
+    <string name="trend_charts">Biểu đồ xu hướng</string>
+    <string name="medicine_list">Danh sách thuốc</string>
+    <string name="analysis_recommendations">Phân tích &amp; Khuyến nghị</string>
+    <string name="preview">Xem trước</string>
+    <string name="report_preview">Bản xem trước báo cáo</string>
+    <string name="generated_reports">Báo cáo đã tạo</string>
+    <string name="create_report">Tạo báo cáo</string>
+    <string name="no_reports_created">Bạn chưa tạo báo cáo nào</string>
+    <string name="reports_will_appear_here">Các báo cáo bạn tạo sẽ xuất hiện ở đây.</string>
+    <string name="health_report">Báo cáo Sức khỏe</string>
+    <string name="metrics_data">Dữ liệu chỉ số</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgot_password_title">Quên mật khẩu</string>
+    <string name="forgot_password_description">Nhập email của bạn để nhận liên kết đặt lại mật khẩu</string>
+    <string name="send_reset_link">Gửi liên kết đặt lại</string>
+    <string name="back_to_login">Quay lại đăng nhập</string>
+    <string name="reset_link_sent">Liên kết đặt lại mật khẩu đã được gửi đến email của bạn</string>
+    <string name="check_email">Vui lòng kiểm tra email của bạn</string>
+    <string name="error_send_reset_link">Không thể gửi liên kết đặt lại. Vui lòng thử lại.</string>
+    
+    <!-- Reset Password Screen -->
+    <string name="reset_password_title">Đặt lại mật khẩu</string>
+    <string name="new_password">Mật khẩu mới</string>
+    <string name="new_password_hint">Nhập mật khẩu mới</string>
+    <string name="confirm_new_password">Xác nhận mật khẩu mới</string>
+    <string name="confirm_new_password_hint">Nhập lại mật khẩu mới</string>
+    <string name="reset_password_button">Đặt lại mật khẩu</string>
+    <string name="password_reset_success">Mật khẩu đã được đặt lại thành công</string>
+    <string name="error_reset_password">Không thể đặt lại mật khẩu. Vui lòng thử lại.</string>
+    
+    <!-- Password Requirements -->
+    <string name="password_requirements_title">Yêu cầu mật khẩu:</string>
+    <string name="password_req_length">• Ít nhất 8 ký tự</string>
+    <string name="password_req_uppercase">• Ít nhất 1 chữ hoa</string>
+    <string name="password_req_lowercase">• Ít nhất 1 chữ thường</string>
+    <string name="password_req_number">• Ít nhất 1 số</string>
+    <string name="password_req_special">• Ít nhất 1 ký tự đặc biệt (@$!%*?&amp;)</string>
+    <string name="password_weak">Yếu</string>
+    <string name="password_medium">Trung bình</string>
+    <string name="password_strong">Mạnh</string>
+    
+    <!-- Security -->
+    <string name="account_locked">Tài khoản đã bị khóa do nhiều lần đăng nhập thất bại. Vui lòng thử lại sau %d phút.</string>
+    <string name="too_many_attempts">Quá nhiều lần thử. Vui lòng đợi %d giây.</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
 </resources>

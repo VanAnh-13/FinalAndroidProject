@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="@dimen/spacing_normal">
+
+    <!-- Timeline Icon Column -->
+    <LinearLayout
+        android:layout_width="@dimen/icon_size_medium"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/spacing_medium">
+
+        <FrameLayout
+            android:layout_width="@dimen/icon_size_medium"
+            android:layout_height="@dimen/icon_size_medium"
+            android:background="@drawable/bg_icon_rounded"
+            android:backgroundTint="@color/primary_container">
+
+            <ImageView
+                android:id="@+id/iv_record_icon"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_heart"
+                app:tint="@color/primary"/>
+
+        </FrameLayout>
+
+        <View
+            android:id="@+id/view_timeline_line"
+            android:layout_width="@dimen/timeline_line_width"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/border_color"/>
+
+    </LinearLayout>
+
+    <!-- Content Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:cardElevation="@dimen/elevation_card"
+        app:cardCornerRadius="@dimen/corner_radius"
+        android:backgroundTint="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_normal">
+
+            <TextView
+                android:id="@+id/tv_record_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_small"
+                tools:text="15 Aug 2024"/>
+
+            <TextView
+                android:id="@+id/tv_record_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                tools:text="Cardiology Consultation"/>
+
+            <TextView
+                android:id="@+id/tv_record_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_small"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                tools:text="Dr. Jane Doe, City General Hospital."/>
+
+            <!-- Attachment (Optional) -->
+            <LinearLayout
+                android:id="@+id/ll_attachment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_attachment"
+                android:padding="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_attachment_icon"
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:src="@drawable/ic_pdf"
+                    app:tint="@color/error_red"/>
+
+                <TextView
+                    android:id="@+id/tv_attachment_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    tools:text="report.pdf"/>
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:src="@drawable/ic_download"
+                    app:tint="@color/text_secondary"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

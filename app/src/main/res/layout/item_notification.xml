@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="@dimen/corner_radius"
+    android:backgroundTint="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_normal"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical">
+
+        <!-- Icon Container -->
+        <FrameLayout
+            android:layout_width="@dimen/button_height_medium"
+            android:layout_height="@dimen/button_height_medium"
+            android:background="@drawable/bg_icon_rounded"
+            android:backgroundTint="@color/primary_container">
+
+            <ImageView
+                android:id="@+id/iv_notification_icon"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_notifications"
+                app:tint="@color/primary_blue"
+                android:contentDescription="@string/app_name"/>
+
+        </FrameLayout>
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/spacing_normal">
+
+            <TextView
+                android:id="@+id/tv_notification_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Nhắc nhở uống thuốc"/>
+
+            <TextView
+                android:id="@+id/tv_notification_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_normal"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tools:text="Đã đến giờ uống Aspirin 100mg"/>
+
+        </LinearLayout>
+
+        <!-- Time -->
+        <TextView
+            android:id="@+id/tv_notification_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_small"
+            android:layout_marginStart="@dimen/spacing_small"
+            tools:text="5m"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

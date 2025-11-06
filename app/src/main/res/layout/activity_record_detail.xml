@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_bottom_fab">
+
+            <!-- Top Bar -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:background="@color/white"
+                android:elevation="@dimen/elevation_card">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_arrow_back"
+                    android:padding="@dimen/padding_medium"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/close"
+                    app:tint="@color/text_primary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/medical_record"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:gravity="center"
+                    app:layout_constraintStart_toEndOf="@id/iv_back"
+                    app:layout_constraintEnd_toStartOf="@id/iv_more"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/iv_more"
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_menu"
+                    android:padding="@dimen/padding_medium"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/app_name"
+                    app:tint="@color/text_primary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <!-- Header -->
+                <TextView
+                    android:id="@+id/tv_record_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_xxl"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    tools:text="Annual Check-up"/>
+
+                <TextView
+                    android:id="@+id/tv_record_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    tools:text="October 26, 2023"/>
+
+                <!-- Core Details Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/core_details"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:layout_marginBottom="@dimen/spacing_small"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="@dimen/corner_radius"
+                    android:backgroundTint="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_normal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingTop="@dimen/spacing_medium"
+                            android:paddingBottom="@dimen/spacing_medium">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/hospital_clinic"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_size_normal"/>
+
+                            <TextView
+                                android:id="@+id/tv_hospital"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/text_primary"
+                                android:textSize="@dimen/text_size_normal"
+                                tools:text="Community Health Clinic"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/divider_height"
+                            android:background="@color/border_color"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingTop="@dimen/spacing_medium"
+                            android:paddingBottom="@dimen/spacing_medium">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/doctor"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_size_normal"/>
+
+                            <TextView
+                                android:id="@+id/tv_doctor"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/text_primary"
+                                android:textSize="@dimen/text_size_normal"
+                                tools:text="Dr. Eleanor Vance"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Diagnosis & Notes Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/diagnosis_notes"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:layout_marginBottom="@dimen/spacing_small"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="@dimen/corner_radius"
+                    android:backgroundTint="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_normal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/diagnosis"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="@dimen/spacing_tiny"/>
+
+                        <TextView
+                            android:id="@+id/tv_diagnosis"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_normal"
+                            android:lineSpacingExtra="@dimen/spacing_tiny"
+                            tools:text="Routine check-up, no acute issues identified."/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/divider_height"
+                            android:background="@color/border_color"
+                            android:layout_marginTop="@dimen/spacing_normal"
+                            android:layout_marginBottom="@dimen/spacing_normal"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/doctor_notes"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="@dimen/spacing_tiny"/>
+
+                        <TextView
+                            android:id="@+id/tv_notes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_normal"
+                            android:lineSpacingExtra="@dimen/spacing_tiny"
+                            tools:text="Patient reports feeling well. Vital signs are all within normal ranges."/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Attachments Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attachments"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:layout_marginBottom="@dimen/spacing_small"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_attachments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_attachment_detail"/>
+
+                <!-- Empty State for Prescriptions -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/prescriptions"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:layout_marginBottom="@dimen/spacing_small"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="@dimen/corner_radius"
+                    android:backgroundTint="@color/white">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_prescriptions"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:gravity="center"
+                        android:padding="@dimen/padding_normal"/>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- FAB Edit Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/spacing_large"
+        android:src="@drawable/ic_edit"
+        android:contentDescription="@string/edit"
+        app:backgroundTint="@color/primary"
+        app:tint="@color/white"
+        app:fabSize="normal"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

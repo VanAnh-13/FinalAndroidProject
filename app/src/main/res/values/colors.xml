@@ -3,11 +3,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Primary Colors - Blue Theme -->
-    <color name="primary">#1976D2</color>
-    <color name="primary_blue">#1976D2</color>
-    <color name="primary_blue_dark">#1565C0</color>
-    <color name="primary_blue_light">#BBDEFB</color>
+    <color name="primary">#ec1313</color>
+    <color name="primary_red">#ec1313</color>
+    <color name="primary_red_dark">#d10f0f</color>
+    <color name="primary_red_light">#ff4444</color>
+    
+    <!-- Legacy Blue Colors (for backward compatibility) -->
+    <color name="primary_blue">#ec1313</color>
+    <color name="primary_blue_dark">#d10f0f</color>
+    <color name="primary_blue_light">#ff4444</color>
     
     <!-- Background Colors -->
     <color name="background_light">#F5F5F5</color>
@@ -21,13 +25,24 @@
     <!-- Border Colors -->
     <color name="border_color">#E0E0E0</color>
     <color name="border_focused">#1976D2</color>
+    <color name="divider">#E0E0E0</color>
     
     <!-- Error Color -->
     <color name="error_red">#D32F2F</color>
+    <color name="error_container">#FFEBEE</color>
 
     <!-- Success Color -->
     <color name="success_green">#4CAF50</color>
 
     <!-- Container Colors -->
-    <color name="primary_container">#E3F2FD</color>
+    <color name="primary_container">#fde8e8</color>
+
+    <!-- Warning Color -->
+    <color name="warning_orange">#FF9800</color>
+
+    <!-- Settings Colors -->
+    <color name="surface_variant">#E0E0E0</color>
+    <color name="on_surface_variant">#616161</color>
+    <color name="delete_background">#FFEBEE</color>
+    <color name="delete_color">#D32F2F</color>
 </resources>

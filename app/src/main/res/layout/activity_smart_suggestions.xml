@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light">
+
+    <!-- Top Bar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingStart="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_normal">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/icon_size_medium"
+            android:layout_height="@dimen/icon_size_medium"
+            android:src="@drawable/ic_arrow_back"
+            android:padding="@dimen/padding_medium"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/close"
+            app:tint="@color/text_primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/smart_suggestions"
+            android:textSize="@dimen/text_size_xl"
+            android:textColor="@color/text_primary"
+            android:layout_marginStart="@dimen/spacing_small"
+            app:layout_constraintStart_toEndOf="@id/iv_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Suggestions List -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/ll_suggestions_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_normal">
+
+            <!-- Suggestion Card 1: Optimize Reminder -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/corner_radius"
+                android:backgroundTint="@color/primary_container">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/spacing_normal">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/icon_size_medium"
+                            android:layout_height="@dimen/icon_size_medium"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/primary_container">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_small"
+                                android:layout_height="@dimen/icon_size_small"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_spark"
+                                app:tint="@color/primary"/>
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/optimize_reminder"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold"
+                            android:layout_marginStart="@dimen/spacing_normal"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/optimize_reminder_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginBottom="@dimen/spacing_normal"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="end">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_skip_optimize"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:text="@string/skip"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_apply_optimize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:text="@string/apply"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"
+                            app:cornerRadius="@dimen/corner_radius_large"
+                            app:backgroundTint="@color/primary"
+                            android:layout_marginStart="@dimen/spacing_small"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Suggestion Card 2: New Reminder -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/corner_radius"
+                android:backgroundTint="@color/primary_container">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/spacing_normal">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/icon_size_medium"
+                            android:layout_height="@dimen/icon_size_medium"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/primary_container">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_small"
+                                android:layout_height="@dimen/icon_size_small"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_water_drop"
+                                app:tint="@color/primary"/>
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/new_reminder_suggestion"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold"
+                            android:layout_marginStart="@dimen/spacing_normal"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_reminder_suggestion_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginBottom="@dimen/spacing_normal"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="end">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_skip_water"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:text="@string/skip"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_create_water"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:text="@string/create"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"
+                            app:cornerRadius="@dimen/corner_radius_large"
+                            app:backgroundTint="@color/primary"
+                            android:layout_marginStart="@dimen/spacing_small"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Suggestion Card 3: Merge Reminders -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/corner_radius"
+                android:backgroundTint="@color/primary_container">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/spacing_normal">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/icon_size_medium"
+                            android:layout_height="@dimen/icon_size_medium"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/primary_container">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_small"
+                                android:layout_height="@dimen/icon_size_small"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_merge"
+                                app:tint="@color/primary"/>
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/merge_reminders"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold"
+                            android:layout_marginStart="@dimen/spacing_normal"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/merge_reminders_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_normal"
+                        android:layout_marginBottom="@dimen/spacing_normal"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="end">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_skip_merge"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:text="@string/skip"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_merge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:text="@string/merge"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_size_normal"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"
+                            app:cornerRadius="@dimen/corner_radius_large"
+                            app:backgroundTint="@color/primary"
+                            android:layout_marginStart="@dimen/spacing_small"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Empty State (Hidden by default) -->
+            <LinearLayout
+                android:id="@+id/ll_empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="@dimen/padding_xl"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_xlarge"
+                    android:layout_height="@dimen/icon_size_xlarge"
+                    android:src="@drawable/ic_lightbulb"
+                    app:tint="@color/text_secondary"
+                    android:layout_marginBottom="@dimen/spacing_normal"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_suggestions"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="@dimen/spacing_tiny"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_suggestions_desc"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

@@ -7,40 +7,35 @@
     android:background="@color/background_light">
 
     <!-- Top Bar -->
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/elevation_button"
-        app:cardCornerRadius="0dp"
-        android:backgroundTint="@color/background_white">
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_normal"
+        android:gravity="center_vertical"
+        android:background="@color/background_light">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/icon_size_medium"
+            android:layout_height="@dimen/icon_size_medium"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/padding_medium"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/text_primary"/>
+
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_normal"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:text="@string/quick_actions"
+            android:textSize="@dimen/text_size_xl"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"/>
 
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="@dimen/icon_size_small"
-                android:layout_height="@dimen/icon_size_small"
-                android:src="@drawable/ic_arrow_back"
-                android:contentDescription="@string/app_name"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/padding_small"
-                android:text="@string/quick_actions"
-                android:textSize="@dimen/text_size_xl"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"/>
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 
     <!-- Quick Actions Grid -->
     <androidx.core.widget.NestedScrollView
@@ -81,8 +76,10 @@
                         android:layout_width="@dimen/button_height"
                         android:layout_height="@dimen/button_height"
                         android:padding="@dimen/padding_normal"
+                        android:src="@drawable/ic_add"
                         android:background="@drawable/bg_icon_rounded"
                         android:backgroundTint="@color/primary_container"
+                        app:tint="@color/primary_blue"
                         android:contentDescription="@string/add_metric"/>
 
                     <TextView
@@ -131,8 +128,10 @@
                         android:layout_width="@dimen/button_height"
                         android:layout_height="@dimen/button_height"
                         android:padding="@dimen/padding_normal"
+                        android:src="@drawable/ic_analytics"
                         android:background="@drawable/bg_icon_rounded"
                         android:backgroundTint="@color/primary_container"
+                        app:tint="@color/primary_blue"
                         android:contentDescription="@string/analyze_trends"/>
 
                     <TextView
@@ -181,8 +180,10 @@
                         android:layout_width="@dimen/button_height"
                         android:layout_height="@dimen/button_height"
                         android:padding="@dimen/padding_normal"
+                        android:src="@drawable/ic_notifications_active"
                         android:background="@drawable/bg_icon_rounded"
                         android:backgroundTint="@color/primary_container"
+                        app:tint="@color/primary_blue"
                         android:contentDescription="@string/set_reminder"/>
 
                     <TextView
@@ -231,8 +232,10 @@
                         android:layout_width="@dimen/button_height"
                         android:layout_height="@dimen/button_height"
                         android:padding="@dimen/padding_normal"
+                        android:src="@drawable/ic_description"
                         android:background="@drawable/bg_icon_rounded"
                         android:backgroundTint="@color/primary_container"
+                        app:tint="@color/primary_blue"
                         android:contentDescription="@string/generate_report"/>
 
                     <TextView
@@ -281,8 +284,10 @@
                         android:layout_width="@dimen/button_height"
                         android:layout_height="@dimen/button_height"
                         android:padding="@dimen/padding_normal"
+                        android:src="@drawable/ic_directions_run"
                         android:background="@drawable/bg_icon_rounded"
                         android:backgroundTint="@color/primary_container"
+                        app:tint="@color/primary_blue"
                         android:contentDescription="@string/start_activity"/>
 
                     <TextView
@@ -331,8 +336,10 @@
                         android:layout_width="@dimen/button_height"
                         android:layout_height="@dimen/button_height"
                         android:padding="@dimen/padding_normal"
+                        android:src="@drawable/ic_barcode_scanner"
                         android:background="@drawable/bg_icon_rounded"
                         android:backgroundTint="@color/primary_container"
+                        app:tint="@color/primary_blue"
                         android:contentDescription="@string/scan_food"/>
 
                     <TextView

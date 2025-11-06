@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!-- App Bar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:elevation="2dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/export_reports"
+            app:titleTextColor="?attr/colorOnSurface" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Scrollable Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="80dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Time Range Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:text="@string/select_time_range"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/rgTimeRange"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium"
+                        app:cardCornerRadius="@dimen/corner_radius"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="@dimen/stroke_width">
+
+                        <RadioButton
+                            android:id="@+id/rbLast7Days"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:padding="@dimen/padding_normal"
+                            android:text="@string/last_7_days"
+                            android:textSize="@dimen/text_size_normal" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium"
+                        app:cardCornerRadius="@dimen/corner_radius"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/border_color"
+                        app:strokeWidth="@dimen/stroke_width">
+
+                        <RadioButton
+                            android:id="@+id/rbLast30Days"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_normal"
+                            android:text="@string/last_30_days"
+                            android:textSize="@dimen/text_size_normal" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="@dimen/corner_radius"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/border_color"
+                        app:strokeWidth="@dimen/stroke_width">
+
+                        <RadioButton
+                            android:id="@+id/rbCustom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_normal"
+                            android:text="@string/custom"
+                            android:textSize="@dimen/text_size_normal" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_small"
+                android:background="@color/background_light" />
+
+            <!-- File Format Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:text="@string/file_format"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/rgFileFormat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="@dimen/corner_radius_xl"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="@dimen/stroke_width">
+
+                        <RadioButton
+                            android:id="@+id/rbPdf"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_small"
+                            android:text="@string/pdf"
+                            android:textSize="@dimen/text_size_normal" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="@dimen/corner_radius_xl"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/border_color"
+                        app:strokeWidth="@dimen/stroke_width">
+
+                        <RadioButton
+                            android:id="@+id/rbExcel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_small"
+                            android:text="@string/excel"
+                            android:textSize="@dimen/text_size_normal" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_small"
+                android:background="@color/background_light" />
+
+            <!-- Report Content Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:text="@string/report_content"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/cbPersonalInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/personal_information"
+                    android:textSize="@dimen/text_size_normal" />
+
+                <CheckBox
+                    android:id="@+id/cbHealthMetrics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/health_metrics"
+                    android:textSize="@dimen/text_size_normal" />
+
+                <CheckBox
+                    android:id="@+id/cbTrendCharts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/trend_charts"
+                    android:textSize="@dimen/text_size_normal" />
+
+                <CheckBox
+                    android:id="@+id/cbMedicalHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/medical_history"
+                    android:textSize="@dimen/text_size_normal" />
+
+                <CheckBox
+                    android:id="@+id/cbMedicineList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/medicine_list"
+                    android:textSize="@dimen/text_size_normal" />
+
+                <CheckBox
+                    android:id="@+id/cbAnalysis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/analysis_recommendations"
+                    android:textSize="@dimen/text_size_normal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_small"
+                android:background="@color/background_light" />
+
+            <!-- Preview Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:text="@string/preview"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="192dp"
+                    app:cardCornerRadius="@dimen/corner_radius"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/border_color"
+                    app:strokeWidth="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/preview"
+                            android:src="@drawable/ic_visibility"
+                            app:tint="@color/on_surface_variant" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:text="@string/report_preview"
+                            android:textColor="@color/on_surface_variant"
+                            android:textSize="@dimen/text_size_normal" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_small"
+                android:background="@color/background_light" />
+
+            <!-- Generated Reports Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_normal"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:text="@string/generated_reports"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGeneratedReports"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+                <!-- Empty State -->
+                <LinearLayout
+                    android:id="@+id/emptyState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_xxl"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:contentDescription="@string/no_reports_created"
+                        android:src="@drawable/ic_folder"
+                        app:tint="@color/on_surface_variant" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="@string/no_reports_created"
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reports_will_appear_here"
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="@dimen/text_size_small" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Action Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCreateReport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_normal"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/create_report"
+        android:textSize="@dimen/text_size_medium"
+        app:cornerRadius="@dimen/corner_radius_xl" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

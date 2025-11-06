@@ -1,34 +1,44 @@
 package com.example.healthylifehub;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.bumptech.glide.Glide;
 import com.example.healthylifehub.base.BaseActivity;
 import com.example.healthylifehub.databinding.ActivityMainBinding;
-import com.example.healthylifehub.ui.add.AddFragment;
-import com.example.healthylifehub.ui.auth.LoginActivity;
 import com.example.healthylifehub.ui.dashboard.DashboardFragment;
-import com.example.healthylifehub.ui.metrics.MetricsFragment;
-import com.example.healthylifehub.ui.profile.ProfileFragment;
-import com.example.healthylifehub.ui.records.RecordsFragment;
+import com.example.healthylifehub.ui.metrics.list.MetricsFragment;
+import com.example.healthylifehub.ui.navigation.MainNavigator;
+import com.example.healthylifehub.ui.profile.fragment.ProfileFragment;
+import com.example.healthylifehub.ui.records.fragment.RecordsFragment;
+import com.example.healthylifehub.ui.reminders.fragment.RemindersFragment;
+import com.example.healthylifehub.utils.navigation.FragmentSwitcher;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding> {
+/**
+ * Main activity that serves as the container for bottom navigation and drawer.
+ * Delegates navigation logic to {@link MainNavigator} (Command Pattern).
+ */
+public class MainActivity extends BaseActivity<ActivityMainBinding> implements com.example.healthylifehub.utils.navigation.DrawerController {
+
+    private static final String DEFAULT_USER_NAME = "Jessica Smith";
+    private static final String DEFAULT_USER_EMAIL = "jessica.smith@example.com";
+    private static final int HEADER_VIEW_INDEX = 0;
 
     private DashboardFragment dashboardFragment;
     private MetricsFragment metricsFragment;
-    private AddFragment addFragment;
+    private RemindersFragment remindersFragment;
     private RecordsFragment recordsFragment;
     private ProfileFragment profileFragment;
+
     private Fragment currentFragment;
+    private MainNavigator mainNavigator;
 
     public MainActivity() {
         super(ActivityMainBinding::inflate);
@@ -36,45 +46,76 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     @Override
     public void initData() {
+        initializeFragments();
+        addFragmentsToContainer();
+        setupNavigator();
+        setupNavigationDrawer();
+    }
+
+    private void initializeFragments() {
         dashboardFragment = new DashboardFragment();
         metricsFragment = new MetricsFragment();
-        addFragment = new AddFragment();
+        remindersFragment = new RemindersFragment();
         recordsFragment = new RecordsFragment();
         profileFragment = new ProfileFragment();
+    }
 
+    private void addFragmentsToContainer() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_container, dashboardFragment, "dashboard");
         transaction.add(R.id.fragment_container, metricsFragment, "metrics").hide(metricsFragment);
-        transaction.add(R.id.fragment_container, addFragment, "add").hide(addFragment);
+        transaction.add(R.id.fragment_container, remindersFragment, "reminders").hide(remindersFragment);
         transaction.add(R.id.fragment_container, recordsFragment, "records").hide(recordsFragment);
         transaction.add(R.id.fragment_container, profileFragment, "profile").hide(profileFragment);
         transaction.commit();
 
         currentFragment = dashboardFragment;
-        
-        setupNavigationDrawer();
+    }
+
+    private void setupNavigator() {
+        FragmentSwitcher switcher = this::switchFragment;
+        mainNavigator = new MainNavigator(
+            this,
+            switcher,
+            dashboardFragment,
+            metricsFragment,
+            remindersFragment,
+            recordsFragment,
+            profileFragment
+        );
     }
     
     private void setupNavigationDrawer() {
-        View headerView = getBinding().navigationView.getHeaderView(0);
+        View headerView = getBinding().navigationView.getHeaderView(HEADER_VIEW_INDEX);
         ImageView avatarImageView = headerView.findViewById(R.id.nav_header_avatar);
         TextView nameTextView = headerView.findViewById(R.id.nav_header_name);
         TextView emailTextView = headerView.findViewById(R.id.nav_header_email);
         
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
-            nameTextView.setText(currentUser.getDisplayName() != null ? 
-                currentUser.getDisplayName() : "Jessica Smith");
-            emailTextView.setText(currentUser.getEmail() != null ? 
-                currentUser.getEmail() : "jessica.smith@example.com");
-            
-            if (currentUser.getPhotoUrl() != null) {
-                Glide.with(this)
-                    .load(currentUser.getPhotoUrl())
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_profile)
-                    .into(avatarImageView);
-            }
+            setUserName(nameTextView, currentUser);
+            setUserEmail(emailTextView, currentUser);
+            loadUserAvatar(avatarImageView, currentUser);
+        }
+    }
+
+    private void setUserName(TextView nameTextView, FirebaseUser user) {
+        String displayName = user.getDisplayName();
+        nameTextView.setText(displayName != null ? displayName : DEFAULT_USER_NAME);
+    }
+
+    private void setUserEmail(TextView emailTextView, FirebaseUser user) {
+        String email = user.getEmail();
+        emailTextView.setText(email != null ? email : DEFAULT_USER_EMAIL);
+    }
+
+    private void loadUserAvatar(ImageView avatarImageView, FirebaseUser user) {
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this)
+                .load(user.getPhotoUrl())
+                .circleCrop()
+                .placeholder(R.drawable.ic_profile)
+                .into(avatarImageView);
         }
     }
 
@@ -84,22 +125,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     @Override
     public void setOnClick() {
+        setupBottomNavigation();
+        setupDrawerNavigation();
+    }
+
+    private void setupBottomNavigation() {
         getBinding().bottomNavigation.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.nav_dashboard) {
-                selectedFragment = dashboardFragment;
-            } else if (itemId == R.id.nav_metrics) {
-                selectedFragment = metricsFragment;
-            } else if (itemId == R.id.nav_add) {
-                selectedFragment = addFragment;
-            } else if (itemId == R.id.nav_records) {
-                selectedFragment = recordsFragment;
-            } else if (itemId == R.id.nav_profile) {
-                selectedFragment = profileFragment;
-            }
-
+            Fragment selectedFragment = mainNavigator.getFragmentForBottomItem(item.getItemId());
             if (selectedFragment != null && selectedFragment != currentFragment) {
                 switchFragment(currentFragment, selectedFragment);
                 currentFragment = selectedFragment;
@@ -107,62 +139,42 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
             }
             return false;
         });
-
         getBinding().bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
-        
+    }
+
+    private void setupDrawerNavigation() {
         getBinding().navigationView.setNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            
-            if (itemId == R.id.nav_drawer_dashboard) {
-                switchToFragmentFromDrawer(dashboardFragment, R.id.nav_dashboard);
-            } else if (itemId == R.id.nav_drawer_metrics) {
-                switchToFragmentFromDrawer(metricsFragment, R.id.nav_metrics);
-            } else if (itemId == R.id.nav_drawer_reminders) {
-                Toast.makeText(this, "Reminders feature coming soon", Toast.LENGTH_SHORT).show();
-            } else if (itemId == R.id.nav_drawer_records) {
-                switchToFragmentFromDrawer(recordsFragment, R.id.nav_records);
-            } else if (itemId == R.id.nav_drawer_profile) {
-                switchToFragmentFromDrawer(profileFragment, R.id.nav_profile);
-            } else if (itemId == R.id.nav_drawer_settings) {
-                Toast.makeText(this, "Settings feature coming soon", Toast.LENGTH_SHORT).show();
-            } else if (itemId == R.id.nav_drawer_help) {
-                Toast.makeText(this, "Help & Support feature coming soon", Toast.LENGTH_SHORT).show();
-            } else if (itemId == R.id.nav_drawer_logout) {
-                handleLogout();
-            }
-            
+            MainNavigator.Outcome outcome = mainNavigator.onDrawerItemSelected(item.getItemId(), currentFragment);
+            handleNavigationOutcome(outcome);
             getBinding().drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
     }
-    
-    private void switchToFragmentFromDrawer(Fragment fragment, int bottomNavItemId) {
-        if (fragment != currentFragment) {
-            switchFragment(currentFragment, fragment);
-            currentFragment = fragment;
-            getBinding().bottomNavigation.setSelectedItemId(bottomNavItemId);
+
+    private void handleNavigationOutcome(MainNavigator.Outcome outcome) {
+        if (outcome == null || !outcome.handled) {
+            return;
         }
-    }
-    
-    private void handleLogout() {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        if (outcome.newCurrentFragment != null) {
+            currentFragment = outcome.newCurrentFragment;
+        }
+        if (outcome.bottomNavItemId != null) {
+            getBinding().bottomNavigation.setSelectedItemId(outcome.bottomNavItemId);
+        }
     }
 
     private void switchFragment(Fragment from, Fragment to) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.hide(from);
-        transaction.show(to);
-        transaction.commit();
+        getSupportFragmentManager()
+            .beginTransaction()
+            .hide(from)
+            .show(to)
+            .commit();
     }
-    
+
     public void openDrawer() {
         getBinding().drawerLayout.openDrawer(GravityCompat.START);
     }
-    
+
     @Override
     public void onBackPressed() {
         if (getBinding().drawerLayout.isDrawerOpen(GravityCompat.START)) {

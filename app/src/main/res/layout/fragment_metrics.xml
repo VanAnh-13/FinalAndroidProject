@@ -1,66 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_white"
+        android:background="@color/white"
         app:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!-- Top Bar -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/background_white">
-
-            <ImageView
-                android:id="@+id/iv_menu"
-                android:layout_width="@dimen/button_height_small"
-                android:layout_height="@dimen/button_height_small"
-                android:padding="@dimen/padding_medium"
-                android:src="@drawable/ic_menu"
-                android:contentDescription="@string/drawer_open"
-                android:background="?attr/selectableItemBackgroundBorderless" />
+            android:paddingStart="@dimen/padding_normal"
+            android:paddingEnd="@dimen/padding_normal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/nav_metrics"
+                android:text="@string/health_metrics"
                 android:textSize="@dimen/text_size_xl"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
-                android:layout_gravity="center" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_search"/>
 
-        </androidx.appcompat.widget.Toolbar>
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="@dimen/icon_size_medium"
+                android:layout_height="@dimen/icon_size_medium"
+                android:src="@drawable/ic_search"
+                android:padding="@dimen/padding_medium"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/search"
+                app:tint="@color/text_primary"
+                app:layout_constraintEnd_toStartOf="@id/iv_notifications"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:id="@+id/iv_notifications"
+                android:layout_width="@dimen/icon_size_medium"
+                android:layout_height="@dimen/icon_size_medium"
+                android:src="@drawable/ic_notifications"
+                android:padding="@dimen/padding_medium"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/notifications"
+                app:tint="@color/text_primary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Tabs -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:tabMode="scrollable"
+                app:tabIndicatorColor="@color/primary_blue"
+                app:tabIndicatorHeight="@dimen/spacing_tiny"
+                app:tabSelectedTextColor="@color/primary_blue"
+                app:tabTextColor="@color/text_secondary"
+                app:tabTextAppearance="@style/TabTextStyle"/>
+
+        </HorizontalScrollView>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_normal">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Filters -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Metrics list - Coming soon"
-                android:textSize="@dimen/text_size_medium"
-                android:textColor="@color/text_secondary"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_xl" />
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_normal"
+                android:background="@color/background_light">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_sort"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/button_height_medium"
+                    android:text="@string/newest"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:textAllCaps="false"
+                    app:icon="@drawable/ic_sort"
+                    app:iconTint="@color/text_secondary"
+                    app:iconGravity="start"
+                    app:cornerRadius="@dimen/corner_radius_small"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginEnd="@dimen/spacing_medium"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_filter"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/button_height_medium"
+                    android:text="@string/filter"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:textAllCaps="false"
+                    app:icon="@drawable/ic_filter"
+                    app:iconTint="@color/text_secondary"
+                    app:iconGravity="start"
+                    app:cornerRadius="@dimen/corner_radius_small"
+                    android:backgroundTint="@color/white"/>
+
+            </LinearLayout>
+
+            <!-- Metrics List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_metrics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:paddingBottom="@dimen/margin_bottom_fab"
+                android:clipToPadding="false"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_metric"/>
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_add_metric"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_large"
+        android:text="@string/add_new_metric"
+        android:textColor="@color/white"
+        app:icon="@drawable/ic_add"
+        app:iconTint="@color/white"
+        app:backgroundTint="@color/primary_blue"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

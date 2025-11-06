@@ -1,63 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="12dp"
-    android:gravity="center_vertical">
-
-    <ImageView
-        android:id="@+id/iv_reminder_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_reminder"
-        android:padding="8dp"
-        android:background="@drawable/bg_button_primary"/>
+    android:layout_marginBottom="@dimen/spacing_normal"
+    app:cardElevation="@dimen/elevation_button"
+    app:cardCornerRadius="@dimen/corner_radius"
+    android:backgroundTint="@color/white">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:padding="@dimen/padding_large">
 
-        <TextView
-            android:id="@+id/tv_reminder_title"
-            android:layout_width="wrap_content"
+        <!-- Header with Icon and Toggle -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Uống thuốc huyết áp"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/spacing_normal">
 
-        <TextView
-            android:id="@+id/tv_reminder_time"
-            android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="@dimen/icon_size_medium"
+                android:layout_height="@dimen/icon_size_medium"
+                android:background="@drawable/bg_icon_rounded"
+                android:backgroundTint="@color/primary_container">
+
+                <ImageView
+                    android:id="@+id/iv_reminder_icon"
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_medication"
+                    app:tint="@color/primary_blue"/>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/spacing_normal">
+
+                <TextView
+                    android:id="@+id/tv_reminder_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    tools:text="08:00 - Uống thuốc huyết áp"/>
+
+                <TextView
+                    android:id="@+id/tv_reminder_frequency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    tools:text="Hàng ngày"/>
+
+                <TextView
+                    android:id="@+id/tv_reminder_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_normal"
+                    tools:text="Metformin 500mg"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:thumbTint="@color/white"
+                app:trackTint="@color/primary_blue"
+                app:trackDecorationTint="@color/border_color"/>
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="08:00 AM"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/spacing_small">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_done"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height_medium"
+                android:layout_weight="1"
+                android:text="@string/completed"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_normal"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/corner_radius"
+                app:backgroundTint="@color/primary_blue"
+                android:layout_marginEnd="@dimen/spacing_small"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_skip"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height_medium"
+                android:layout_weight="1"
+                android:text="@string/skip"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_normal"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/corner_radius"
+                app:strokeColor="@color/border_color"
+                app:strokeWidth="@dimen/stroke_width"
+                android:layout_marginStart="@dimen/spacing_small"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_snooze"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/snooze"
-        android:textSize="12sp"
-        style="@style/Widget.Material3.Button.TextButton"
-        app:cornerRadius="8dp"
-        android:layout_marginEnd="4dp"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/done"
-        android:textSize="12sp"
-        style="@style/Widget.Material3.Button"
-        app:cornerRadius="8dp"/>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

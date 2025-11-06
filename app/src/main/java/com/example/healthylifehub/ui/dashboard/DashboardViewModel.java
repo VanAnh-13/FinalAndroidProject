@@ -3,24 +3,46 @@ package com.example.healthylifehub.ui.dashboard;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.base.BaseViewModel;
-import java.util.ArrayList;
+import com.example.healthylifehub.data.repository.NotificationsRepository;
+import com.example.healthylifehub.data.repository.RemindersRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import java.util.List;
 
 public class DashboardViewModel extends BaseViewModel {
 
     private final MutableLiveData<String> userName = new MutableLiveData<>();
     private final MutableLiveData<String> greeting = new MutableLiveData<>();
-    private final MutableLiveData<List<Reminder>> reminders = new MutableLiveData<>();
-    private final MutableLiveData<Integer> notificationCount = new MutableLiveData<>();
+    private final MediatorLiveData<List<Reminder>> reminders = new MediatorLiveData<>();
+    private final MediatorLiveData<Integer> notificationCount = new MediatorLiveData<>();
+    
+    private final RemindersRepository remindersRepository;
+    private final NotificationsRepository notificationsRepository;
 
     public DashboardViewModel(@NonNull Application application) {
         super(application);
-        userName.setValue("Nguyễn Văn A");
-        notificationCount.setValue(3);
+        
+        remindersRepository = new RemindersRepository();
+        notificationsRepository = new NotificationsRepository();
+        
+        loadUserName();
         updateGreeting();
         loadReminders();
+        loadNotificationCount();
+    }
+    
+    private void loadUserName() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String displayName = user.getDisplayName();
+            userName.setValue(displayName != null ? displayName : "User");
+        } else {
+            userName.setValue("User");
+        }
     }
 
     private void updateGreeting() {
@@ -35,10 +57,13 @@ public class DashboardViewModel extends BaseViewModel {
     }
 
     private void loadReminders() {
-        List<Reminder> reminderList = new ArrayList<>();
-        reminderList.add(new Reminder("Uống thuốc huyết áp", "08:00 AM"));
-        reminderList.add(new Reminder("Đo đường huyết", "02:00 PM"));
-        reminders.setValue(reminderList);
+        LiveData<List<Reminder>> source = remindersRepository.loadReminders();
+        reminders.addSource(source, reminders::setValue);
+    }
+    
+    private void loadNotificationCount() {
+        LiveData<Integer> source = notificationsRepository.getUnreadCount();
+        notificationCount.addSource(source, notificationCount::setValue);
     }
 
     public void snoozeReminder(Reminder reminder) {

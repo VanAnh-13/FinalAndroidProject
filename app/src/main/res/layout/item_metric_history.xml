@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="@dimen/padding_normal"
         android:background="?attr/selectableItemBackground">
 
         <LinearLayout
@@ -22,37 +22,43 @@
                 android:id="@+id/tv_history_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="88 bpm"
                 android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                tools:text="88 bpm"
+                xmlns:tools="http://schemas.android.com/tools"/>
 
             <TextView
                 android:id="@+id/tv_history_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today, 9:41 AM"
                 android:textColor="@color/text_secondary"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp"/>
+                android:textSize="@dimen/text_size_normal"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                tools:text="Today, 9:41 AM"
+                xmlns:tools="http://schemas.android.com/tools"/>
 
         </LinearLayout>
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_arrow_back"
-            android:rotation="180"
+            android:id="@+id/iv_more"
+            android:layout_width="@dimen/icon_size_medium"
+            android:layout_height="@dimen/icon_size_medium"
+            android:src="@drawable/ic_menu"
+            android:padding="@dimen/padding_medium"
             android:layout_gravity="center_vertical"
-            android:contentDescription="@string/app_name"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/app_name"
+            app:tint="@color/text_secondary"
+            xmlns:app="http://schemas.android.com/apk/res-auto"/>
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/border_width"
         android:background="@color/border_color"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_normal"/>
 
 </LinearLayout>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_xxl">
+
+            <!-- Top Bar -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:background="@color/white"
+                android:elevation="@dimen/elevation_card">
+
+                <TextView
+                    android:id="@+id/tv_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    android:padding="@dimen/padding_small"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:drawableStartCompat="@drawable/ic_arrow_back"
+                    app:drawableTint="@color/primary"/>
+
+                <TextView
+                    android:id="@+id/tv_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    android:padding="@dimen/padding_small"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/tv_page_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_medical_record"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_xxl"
+                android:textStyle="bold"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:paddingTop="@dimen/padding_large"
+                android:paddingBottom="@dimen/padding_medium"/>
+
+            <!-- Form Fields -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <!-- Title Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:hint="@string/record_title"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Date Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:hint="@string/examination_date"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_calendar">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Hospital/Clinic Dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_hospital"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:hint="@string/hospital_clinic"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/act_hospital"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Doctor Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_doctor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:hint="@string/doctor"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_doctor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Diagnosis Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_diagnosis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:hint="@string/diagnosis"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_diagnosis"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Details Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:hint="@string/detailed_content"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:minLines="4"
+                        android:gravity="top"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Attachments Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attachments"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:layout_marginBottom="@dimen/spacing_normal"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_attachments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_attachment"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Save Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save_record"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/padding_normal"
+        android:text="@string/save_record"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        app:cornerRadius="@dimen/corner_radius_large"
+        app:backgroundTint="@color/primary"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Top Bar -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal">
+
+                <ImageView
+                    android:id="@+id/iv_close"
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_close"
+                    android:padding="@dimen/padding_medium"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/close"
+                    app:tint="@color/text_primary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_reminder"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:gravity="center"
+                    app:layout_constraintStart_toEndOf="@id/iv_close"
+                    app:layout_constraintEnd_toStartOf="@id/btn_save"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/btn_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:padding="@dimen/padding_medium"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Form Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal"
+                android:paddingBottom="@dimen/padding_xl">
+
+                <!-- Reminder Type Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reminder_type"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_medium"
+                    android:layout_marginBottom="@dimen/spacing_medium"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_medicine"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/medication"
+                        android:checked="true"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_measurement"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/measurement"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_appointment"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/appointment"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_other"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/other"/>
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <!-- Title TextField -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/title"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Note TextField -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/note_optional"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:gravity="top"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Link with Medicine Dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_medicine"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/link_medicine_optional"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/act_medicine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Time and Repeat Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/spacing_large">
+
+                    <!-- Time Picker -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/spacing_small"
+                        android:hint="@string/time"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                        app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                        app:boxStrokeColor="@color/primary"
+                        app:hintTextColor="@color/primary"
+                        app:endIconMode="custom"
+                        app:endIconDrawable="@drawable/ic_time">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textColor="@color/text_primary"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Repeat Dropdown -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_repeat"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/spacing_small"
+                        android:hint="@string/repeat"
+                        app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                        app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                        app:boxStrokeColor="@color/primary"
+                        app:hintTextColor="@color/primary">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/act_repeat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textColor="@color/text_primary"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Save Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save_reminder"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_margin="@dimen/padding_normal"
+                android:text="@string/save_reminder"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/corner_radius_large"
+                app:backgroundTint="@color/primary"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

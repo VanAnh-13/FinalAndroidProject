@@ -1,7 +1,7 @@
 package com.example.healthylifehub.ui.actions;
 
+import android.content.Intent;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
 import com.example.healthylifehub.base.BaseActivity;
 import com.example.healthylifehub.databinding.ActivityQuickActionsBinding;
 
@@ -18,8 +18,7 @@ public class QuickActionsActivity extends BaseActivity<ActivityQuickActionsBindi
 
     @Override
     public void bindData() {
-        // Load icons from internet using Glide
-        loadActionIcons();
+        // Icons are now using Material Symbols text
     }
 
     @Override
@@ -27,61 +26,32 @@ public class QuickActionsActivity extends BaseActivity<ActivityQuickActionsBindi
         getBinding().ivBack.setOnClickListener(v -> finish());
 
         getBinding().cardAddMetric.setOnClickListener(v -> {
-            Toast.makeText(this, "Add Metric - Coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, com.example.healthylifehub.ui.metrics.add_edit.AddEditMetricActivity.class);
+            startActivity(intent);
         });
 
         getBinding().cardAnalyzeTrends.setOnClickListener(v -> {
-            Toast.makeText(this, "Analyze Trends - Coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, com.example.healthylifehub.ui.metrics.analysis.MetricAnalysisActivity.class);
+            intent.putExtra(com.example.healthylifehub.ui.metrics.analysis.MetricAnalysisActivity.EXTRA_METRIC_TYPE, "heart_rate");
+            startActivity(intent);
         });
 
         getBinding().cardSetReminder.setOnClickListener(v -> {
-            Toast.makeText(this, "Set Reminder - Coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, com.example.healthylifehub.ui.reminders.add_edit.AddEditReminderActivity.class);
+            startActivity(intent);
         });
 
         getBinding().cardGenerateReport.setOnClickListener(v -> {
-            Toast.makeText(this, "Generate Report - Coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, com.example.healthylifehub.ui.profile.reports.ExportReportsActivity.class);
+            startActivity(intent);
         });
 
         getBinding().cardStartActivity.setOnClickListener(v -> {
-            Toast.makeText(this, "Start Activity - Coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Bắt đầu hoạt động - Sắp ra mắt", Toast.LENGTH_SHORT).show();
         });
 
         getBinding().cardScanFood.setOnClickListener(v -> {
-            Toast.makeText(this, "Scan Food - Coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Quét thực phẩm - Sắp ra mắt", Toast.LENGTH_SHORT).show();
         });
-    }
-
-    private void loadActionIcons() {
-        // Load action icons from internet using Glide
-
-        // Add Metric Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/plus-math.png")
-                .into(getBinding().ivAddMetricActionIcon);
-
-        // Analyze Trends Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/analytics.png")
-                .into(getBinding().ivAnalyzeTrendsIcon);
-
-        // Set Reminder Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/appointment-reminders.png")
-                .into(getBinding().ivSetReminderIcon);
-
-        // Generate Report Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/document.png")
-                .into(getBinding().ivGenerateReportIcon);
-
-        // Start Activity Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/running.png")
-                .into(getBinding().ivStartActivityIcon);
-
-        // Scan Food Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/barcode.png")
-                .into(getBinding().ivScanFoodIcon);
     }
 }

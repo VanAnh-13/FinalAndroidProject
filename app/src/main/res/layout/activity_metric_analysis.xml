@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
+
+    <!-- Top Bar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_light"
+        app:elevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingStart="@dimen/padding_normal"
+            android:paddingEnd="@dimen/padding_normal">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/icon_size_medium"
+                android:layout_height="@dimen/icon_size_medium"
+                android:src="@drawable/ic_arrow_back"
+                android:padding="@dimen/padding_medium"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/close"
+                app:tint="@color/text_primary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/heart_rate_analysis"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center"
+                app:layout_constraintStart_toEndOf="@id/iv_back"
+                app:layout_constraintEnd_toStartOf="@id/iv_filter"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:id="@+id/iv_filter"
+                android:layout_width="@dimen/icon_size_medium"
+                android:layout_height="@dimen/icon_size_medium"
+                android:src="@drawable/ic_filter"
+                android:padding="@dimen/padding_medium"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/filter"
+                app:tint="@color/text_primary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_bottom_fab">
+
+            <!-- Period Selector -->
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/period_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_period_selector"
+                android:layout_margin="@dimen/spacing_normal"
+                android:padding="@dimen/spacing_tiny"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_week"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height_medium"
+                    android:layout_weight="1"
+                    android:text="@string/week"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:textAllCaps="false"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:checkable="true"
+                    app:cornerRadius="@dimen/corner_radius_xl"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_month"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height_medium"
+                    android:layout_weight="1"
+                    android:text="@string/month"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:textAllCaps="false"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:checkable="true"
+                    app:cornerRadius="@dimen/corner_radius_xl"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_year"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height_medium"
+                    android:layout_weight="1"
+                    android:text="@string/year"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_normal"
+                    android:textAllCaps="false"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:checkable="true"
+                    app:cornerRadius="@dimen/corner_radius_xl"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <!-- Trend Chart Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_normal"
+                app:cardElevation="@dimen/elevation_button"
+                app:cardCornerRadius="@dimen/corner_radius"
+                android:backgroundTint="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_normal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/heart_rate_trend"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tv_trend_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_xxl"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        tools:text="85 bpm"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/spacing_tiny">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/this_month"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/text_size_medium"/>
+
+                        <TextView
+                            android:id="@+id/tv_trend_change"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/success_green"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            tools:text="+5%"/>
+                    </LinearLayout>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/line_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/chart_height"
+                        android:layout_marginTop="@dimen/spacing_large"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Key Statistics -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/key_statistics"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginBottom="@dimen/spacing_small"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                app:cardElevation="@dimen/elevation_button"
+                app:cardCornerRadius="@dimen/corner_radius"
+                android:backgroundTint="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:divider="@drawable/divider_horizontal"
+                    android:showDividers="middle">
+
+                    <!-- Average -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_normal"
+                        android:gravity="center_vertical">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/button_height_medium"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/background_light">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_small"
+                                android:layout_height="@dimen/icon_size_small"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_trending_up"
+                                app:tint="@color/text_primary"/>
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/average"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:layout_marginStart="@dimen/spacing_normal"/>
+
+                        <TextView
+                            android:id="@+id/tv_stat_average"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold"
+                            tools:text="85 bpm"/>
+
+                    </LinearLayout>
+
+                    <!-- Highest -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_normal"
+                        android:gravity="center_vertical">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/button_height_medium"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/background_light">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_small"
+                                android:layout_height="@dimen/icon_size_small"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_arrow_up"
+                                app:tint="@color/text_primary"/>
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/highest"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:layout_marginStart="@dimen/spacing_normal"/>
+
+                        <TextView
+                            android:id="@+id/tv_stat_highest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold"
+                            tools:text="110 bpm"/>
+
+                    </LinearLayout>
+
+                    <!-- Lowest -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_normal"
+                        android:gravity="center_vertical">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/button_height_medium"
+                            android:layout_height="@dimen/button_height_medium"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/background_light">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_small"
+                                android:layout_height="@dimen/icon_size_small"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_arrow_down"
+                                app:tint="@color/text_primary"/>
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/lowest"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:layout_marginStart="@dimen/spacing_normal"/>
+
+                        <TextView
+                            android:id="@+id/tv_stat_lowest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold"
+                            tools:text="65 bpm"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Alerts Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alerts"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/spacing_small"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_alerts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_alert"/>
+
+            <!-- Recommendations Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recommendations"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/spacing_small"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_recommendations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_recommendation"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Export Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_export"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/padding_normal"
+        android:text="@string/export_report"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        app:icon="@drawable/ic_share"
+        app:iconTint="@color/white"
+        app:cornerRadius="@dimen/corner_radius_xl"
+        app:backgroundTint="@color/primary_blue"
+        android:minHeight="@dimen/button_height"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

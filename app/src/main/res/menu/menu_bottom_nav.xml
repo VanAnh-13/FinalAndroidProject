@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_dashboard"
-        android:icon="@drawable/ic_health_tracking"
+        android:icon="@drawable/ic_dashboard"
         android:title="@string/nav_dashboard" />
     
     <item
         android:id="@+id/nav_metrics"
-        android:icon="@drawable/ic_person"
+        android:icon="@drawable/ic_metrics"
         android:title="@string/nav_metrics" />
     
     <item
-        android:id="@+id/nav_add"
+        android:id="@+id/nav_reminders"
         android:icon="@drawable/ic_reminder"
-        android:title="@string/nav_add" />
+        android:title="@string/nav_reminders" />
     
     <item
         android:id="@+id/nav_records"

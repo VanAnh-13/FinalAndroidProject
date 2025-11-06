@@ -39,13 +39,19 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="false"
             android:theme="@style/Theme.Base"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.metrics.MetricDetailActivity"
+            android:name=".ui.metrics.detail.MetricDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.Base"
             android:screenOrientation="portrait" />
@@ -57,7 +63,91 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.profile.EditProfileActivity"
+            android:name=".ui.profile.edit.EditProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.notifications.center.NotificationsCenterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.metrics.add_edit.AddEditMetricActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.reminders.add_edit.AddEditReminderActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.reminders.detail.ReminderDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.reminders.suggestions.SmartSuggestionsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.records.timeline.RecordsTimelineActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.records.add_edit.AddEditRecordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.records.detail.RecordDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.medicines.list.MedicinesListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.medicines.add.AddMedicineActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.profile.settings.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.profile.reports.ExportReportsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.metrics.analysis.MetricAnalysisActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.metrics.anomaly.AnomalyAlertActivity"
             android:exported="false"
             android:theme="@style/Theme.Base"
             android:screenOrientation="portrait" />

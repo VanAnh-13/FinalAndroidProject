@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="@dimen/corner_radius"
+    android:backgroundTint="@color/primary_container">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_normal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_recommendation_icon"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
+                android:src="@drawable/ic_lightbulb"
+                app:tint="@color/primary_blue"/>
+
+            <TextView
+                android:id="@+id/tv_recommendation_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/primary_blue"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/spacing_small"
+                tools:text="Thư giãn &amp; Giảm stress"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_recommendation_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_normal"
+            android:layout_marginTop="@dimen/spacing_small"
+            tools:text="Nhịp tim trung bình của bạn hơi cao. Hãy thử các bài tập thở hoặc thiền 10 phút mỗi ngày để giảm căng thẳng."/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

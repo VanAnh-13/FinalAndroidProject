@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light">
+
+    <!-- Top Bar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal">
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/icon_size_medium"
+            android:layout_height="@dimen/icon_size_medium"
+            android:src="@drawable/ic_close"
+            android:padding="@dimen/padding_medium"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/close"
+            app:tint="@color/text_primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add_medicine"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@id/iv_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Segmented Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_segmented_button"
+        android:layout_margin="@dimen/spacing_normal"
+        android:padding="@dimen/spacing_tiny">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_ocr"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_small"
+            android:layout_weight="1"
+            android:text="@string/scan_prescription"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/white"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="@dimen/corner_radius"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_manual"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_small"
+            android:layout_weight="1"
+            android:text="@string/manual_entry"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_small"
+            android:textAllCaps="false"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="@dimen/corner_radius"/>
+
+    </LinearLayout>
+
+    <!-- Content Container -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- OCR Camera View -->
+        <LinearLayout
+            android:id="@+id/ll_camera_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_normal">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_camera_preview"
+                android:layout_marginTop="@dimen/spacing_normal">
+
+                <ImageView
+                    android:id="@+id/iv_camera_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:alpha="0.6"
+                    android:contentDescription="@string/camera_preview"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/spacing_large"
+                    android:background="@drawable/bg_camera_frame"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/place_prescription_in_frame"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="@dimen/spacing_normal"/>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="@dimen/padding_normal">
+
+                <ImageView
+                    android:id="@+id/iv_gallery"
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_gallery"
+                    android:padding="@dimen/padding_medium"
+                    android:background="@drawable/bg_camera_button"
+                    android:contentDescription="@string/gallery"
+                    app:tint="@color/white"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_capture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_camera"
+                    android:layout_marginStart="@dimen/spacing_large"
+                    android:layout_marginEnd="@dimen/spacing_large"
+                    android:contentDescription="@string/capture"
+                    app:backgroundTint="@color/white"
+                    app:tint="@color/text_primary"
+                    app:fabSize="normal"/>
+
+                <ImageView
+                    android:id="@+id/iv_flash"
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
+                    android:src="@drawable/ic_flash"
+                    android:padding="@dimen/padding_medium"
+                    android:background="@drawable/bg_camera_button"
+                    android:contentDescription="@string/flash"
+                    app:tint="@color/white"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Processing View -->
+        <LinearLayout
+            android:id="@+id/ll_processing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="@dimen/icon_size_xlarge"
+                android:layout_height="@dimen/icon_size_xlarge"
+                android:indeterminateTint="@color/primary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/processing_prescription"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_medium"
+                android:layout_marginTop="@dimen/spacing_normal"/>
+
+        </LinearLayout>
+
+        <!-- Manual Entry Form -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/sv_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <!-- Medicine Name -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_medicine_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/medicine_name"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_check"
+                    app:endIconTint="@color/success_green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_medicine_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Dosage -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_dosage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/dosage"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_check"
+                    app:endIconTint="@color/success_green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_dosage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Instructions -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_instructions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/usage_instructions"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_warning"
+                    app:endIconTint="@color/warning_orange">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_instructions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Start Date -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_start_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/start_date"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_calendar">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_start_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <!-- Save Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_save_medicine"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/save_medicine"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    app:cornerRadius="@dimen/corner_radius_large"
+                    app:backgroundTint="@color/primary"/>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+
+</LinearLayout>

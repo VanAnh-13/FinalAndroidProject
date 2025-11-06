@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.healthylifehub.BuildConfig;
 import com.example.healthylifehub.base.BaseRepository;
 import com.example.healthylifehub.base.DataState;
 import com.example.healthylifehub.data.model.User;
@@ -52,13 +53,23 @@ public class AuthRepository extends BaseRepository {
         this.firestore = FirebaseFirestore.getInstance();
         this.compositeDisposable = new CompositeDisposable();
 
-        // Configure Google Sign-In
+        String webClientId = getWebClientIdFromGoogleServices();
+        
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("YOUR_WEB_CLIENT_ID") // Replace with your web client ID from Firebase Console
+                .requestIdToken(webClientId)
                 .requestEmail()
                 .build();
 
         this.googleSignInClient = GoogleSignIn.getClient(context, gso);
+    }
+    
+    /**
+     * Extract Web Client ID from BuildConfig
+     * The Web Client ID is configured in build.gradle.kts and extracted from google-services.json
+     * This is more secure than hardcoding it directly in the code
+     */
+    private String getWebClientIdFromGoogleServices() {
+        return BuildConfig.GOOGLE_WEB_CLIENT_ID;
     }
 
     public LiveData<DataState<User>> loginWithEmail(String email, String password) {

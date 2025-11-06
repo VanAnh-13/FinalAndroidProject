@@ -67,4 +67,34 @@
 
     <!-- FAB -->
     <dimen name="margin_bottom_fab">80dp</dimen>
+
+    <!-- Tab Indicator -->
+    <dimen name="tab_indicator_height">3dp</dimen>
+
+    <!-- Stroke Width -->
+    <dimen name="stroke_width">1dp</dimen>
+
+    <!-- Icon Size XLarge -->
+    <dimen name="icon_size_xlarge">96dp</dimen>
+
+    <!-- List Item -->
+    <dimen name="list_item_height">56dp</dimen>
+
+    <!-- Divider -->
+    <dimen name="divider_height">1dp</dimen>
+
+    <!-- Timeline -->
+    <dimen name="timeline_line_width">2dp</dimen>
+
+    <!-- Attachment -->
+    <dimen name="attachment_size">100dp</dimen>
+
+    <!-- Padding XXL -->
+    <dimen name="padding_xxl">80dp</dimen>
+
+    <!-- Settings -->
+    <dimen name="settings_icon_container_size">40dp</dimen>
+    <dimen name="settings_icon_size">24dp</dimen>
+    <dimen name="settings_item_min_height">56dp</dimen>
+    <dimen name="settings_section_margin_top">24dp</dimen>
 </resources>

@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import com.bumptech.glide.Glide;
+import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.base.BaseFragment;
 import com.example.healthylifehub.base.BaseViewModel;
 import com.example.healthylifehub.databinding.FragmentDashboardBinding;
 import com.example.healthylifehub.ui.actions.QuickActionsActivity;
-import com.example.healthylifehub.ui.metrics.MetricDetailActivity;
+import com.example.healthylifehub.ui.dashboard.adapter.RemindersAdapter;
+import com.example.healthylifehub.ui.notifications.center.NotificationsCenterActivity;
+import com.example.healthylifehub.ui.metrics.detail.MetricDetailActivity;
 
 public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
 
@@ -33,69 +35,23 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
 
     @Override
     public void bindData() {
-        remindersAdapter = new RemindersAdapter(new RemindersAdapter.OnReminderActionListener() {
-            @Override
-            public void onSnoozeClicked(Reminder reminder) {
-                viewModel.snoozeReminder(reminder);
-                Toast.makeText(getContext(), "Đã báo lại nhắc nhở", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onDoneClicked(Reminder reminder) {
-                viewModel.completeReminder(reminder);
-                Toast.makeText(getContext(), "Đã hoàn thành", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        getBinding().rvReminders.setLayoutManager(new LinearLayoutManager(getContext()));
-        getBinding().rvReminders.setAdapter(remindersAdapter);
-
-        // Load icons from internet using Glide
+        setupRemindersList();
+        // Load icons from local vector drawables (no network)
         loadDashboardIcons();
     }
 
     private void loadDashboardIcons() {
-        // Load metric icons - Using high quality medical icons from CDN
-        // Blood Pressure Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/blood-pressure.png")
-                .into(getBinding().ivBloodPressureIcon);
-
-        // Blood Sugar Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/drop-of-blood.png")
-                .into(getBinding().ivBloodSugarIcon);
-
-        // Heart Rate Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/cardiogram.png")
-                .into(getBinding().ivHeartRateIcon);
-
-        // BMI Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/weight-scale.png")
-                .into(getBinding().ivBmiIcon);
+        // Metric icons
+        getBinding().ivBloodPressureIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_blood_test);
+        getBinding().ivBloodSugarIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_water_drop);
+        getBinding().ivHeartRateIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_heart);
+        getBinding().ivBmiIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_metrics);
 
         // Quick action icons
-        // Add Metric Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/plus-math.png")
-                .into(getBinding().ivAddMetricIcon);
-
-        // Analysis Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/combo-chart.png")
-                .into(getBinding().ivAnalysisIcon);
-
-        // Reminder Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/appointment-reminders.png")
-                .into(getBinding().ivReminderIcon);
-
-        // Reports Icon
-        Glide.with(this)
-                .load("https://img.icons8.com/color/96/medical-report.png")
-                .into(getBinding().ivReportsIcon);
+        getBinding().ivAddMetricIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_add_circle);
+        getBinding().ivAnalysisIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_analytics);
+        getBinding().ivReminderIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_reminder);
+        getBinding().ivReportsIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_report);
     }
 
     @Override
@@ -121,52 +77,59 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
 
     @Override
     public void setOnClick() {
+        setupHeaderClicks();
+        setupQuickActionClicks();
+        setupMetricCardsClicks();
+    }
+
+    private void setupRemindersList() {
+        remindersAdapter = new RemindersAdapter(new RemindersAdapter.OnReminderActionListener() {
+            @Override
+            public void onSnoozeClicked(Reminder reminder) {
+                viewModel.snoozeReminder(reminder);
+                Toast.makeText(getContext(), "Đã báo lại nhắc nhở", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDoneClicked(Reminder reminder) {
+                viewModel.completeReminder(reminder);
+                Toast.makeText(getContext(), "Đã hoàn thành", Toast.LENGTH_SHORT).show();
+            }
+        });
+        getBinding().rvReminders.setLayoutManager(new LinearLayoutManager(getContext()));
+        getBinding().rvReminders.setAdapter(remindersAdapter);
+    }
+
+    private void setupHeaderClicks() {
         getBinding().ivMenu.setOnClickListener(v -> {
-            if (getActivity() instanceof com.example.healthylifehub.MainActivity) {
-                ((com.example.healthylifehub.MainActivity) getActivity()).openDrawer();
+            if (getActivity() instanceof com.example.healthylifehub.utils.navigation.DrawerController) {
+                ((com.example.healthylifehub.utils.navigation.DrawerController) getActivity()).openDrawer();
             }
         });
 
         getBinding().ivNotifications.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Notifications clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), NotificationsCenterActivity.class);
+            startActivity(intent);
         });
 
         getBinding().tvPeriodSelector.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Period selector clicked", Toast.LENGTH_SHORT).show();
         });
+    }
 
-        getBinding().actionAddMetric.setOnClickListener(v -> {
-            openQuickActions();
-        });
+    private void setupQuickActionClicks() {
+        android.view.View.OnClickListener quickActions = v -> openQuickActions();
+        getBinding().actionAddMetric.setOnClickListener(quickActions);
+        getBinding().actionAnalysis.setOnClickListener(quickActions);
+        getBinding().actionReminder.setOnClickListener(quickActions);
+        getBinding().actionReports.setOnClickListener(quickActions);
+    }
 
-        getBinding().actionAnalysis.setOnClickListener(v -> {
-            openQuickActions();
-        });
-
-        getBinding().actionReminder.setOnClickListener(v -> {
-            openQuickActions();
-        });
-
-        getBinding().actionReports.setOnClickListener(v -> {
-            openQuickActions();
-        });
-
-        // Metric cards click listeners
-        getBinding().cardBloodPressure.setOnClickListener(v -> {
-            openMetricDetail(MetricDetailActivity.METRIC_BLOOD_PRESSURE);
-        });
-
-        getBinding().cardBloodSugar.setOnClickListener(v -> {
-            openMetricDetail(MetricDetailActivity.METRIC_BLOOD_SUGAR);
-        });
-
-        getBinding().cardHeartRate.setOnClickListener(v -> {
-            openMetricDetail(MetricDetailActivity.METRIC_HEART_RATE);
-        });
-
-        getBinding().cardBmi.setOnClickListener(v -> {
-            openMetricDetail(MetricDetailActivity.METRIC_BMI);
-        });
+    private void setupMetricCardsClicks() {
+        getBinding().cardBloodPressure.setOnClickListener(v -> openMetricDetail(MetricDetailActivity.METRIC_BLOOD_PRESSURE));
+        getBinding().cardBloodSugar.setOnClickListener(v -> openMetricDetail(MetricDetailActivity.METRIC_BLOOD_SUGAR));
+        getBinding().cardHeartRate.setOnClickListener(v -> openMetricDetail(MetricDetailActivity.METRIC_HEART_RATE));
+        getBinding().cardBmi.setOnClickListener(v -> openMetricDetail(MetricDetailActivity.METRIC_BMI));
     }
 
     private void openMetricDetail(String metricType) {
