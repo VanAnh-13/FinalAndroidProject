@@ -39,7 +39,25 @@ public class DashboardViewModel extends BaseViewModel {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String displayName = user.getDisplayName();
-            userName.setValue(displayName != null ? displayName : "User");
+            
+            if (displayName != null && !displayName.isEmpty()) {
+                userName.setValue(displayName);
+            } else {
+                // Load from Firestore if displayName is null
+                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(user.getUid())
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                String name = documentSnapshot.getString("displayName");
+                                userName.setValue(name != null ? name : "User");
+                            } else {
+                                userName.setValue("User");
+                            }
+                        })
+                        .addOnFailureListener(e -> userName.setValue("User"));
+            }
         } else {
             userName.setValue("User");
         }

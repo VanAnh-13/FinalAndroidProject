@@ -101,7 +101,25 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
 
     private void setUserName(TextView nameTextView, FirebaseUser user) {
         String displayName = user.getDisplayName();
-        nameTextView.setText(displayName != null ? displayName : DEFAULT_USER_NAME);
+        
+        if (displayName != null && !displayName.isEmpty()) {
+            nameTextView.setText(displayName);
+        } else {
+            // Load from Firestore if displayName is null
+            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(user.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String name = documentSnapshot.getString("displayName");
+                            nameTextView.setText(name != null ? name : DEFAULT_USER_NAME);
+                        } else {
+                            nameTextView.setText(DEFAULT_USER_NAME);
+                        }
+                    })
+                    .addOnFailureListener(e -> nameTextView.setText(DEFAULT_USER_NAME));
+        }
     }
 
     private void setUserEmail(TextView emailTextView, FirebaseUser user) {
