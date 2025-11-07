@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -266,9 +267,36 @@ public class AuthRepository extends BaseRepository {
         return firebaseAuth.getCurrentUser();
     }
 
-    public void signOut() {
+    public LiveData<DataState<Void>> signOut() {
+        MutableLiveData<DataState<Void>> result = new MutableLiveData<>();
+        result.setValue(DataState.loading());
+
         firebaseAuth.signOut();
-        googleSignInClient.signOut();
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                result.setValue(DataState.success(null));
+            } else {
+                Log.w(TAG, "Google sign-out failed, but Firebase sign-out was successful.", task.getException());
+                result.setValue(DataState.success(null));
+            }
+        });
+        return result;
+    }
+
+    public LiveData<DataState<Void>> sendPasswordResetEmail(String email) {
+        MutableLiveData<DataState<Void>> result = new MutableLiveData<>();
+        result.setValue(DataState.loading());
+
+        firebaseAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        result.setValue(DataState.success(null));
+                    } else {
+                        String errorMessage = task.getException() != null ? task.getException().getMessage() : "Failed to send password reset email";
+                        result.setValue(DataState.error(errorMessage));
+                    }
+                });
+        return result;
     }
 
     private void saveUserToFirestore(User user) {

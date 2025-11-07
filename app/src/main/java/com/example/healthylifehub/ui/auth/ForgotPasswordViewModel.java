@@ -1,36 +1,30 @@
 package com.example.healthylifehub.ui.auth;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.Transformations;
 
 import com.example.healthylifehub.base.DataState;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.example.healthylifehub.data.repository.AuthRepository;
 
 /**
  * ForgotPasswordViewModel - Handles password reset logic
  * Implements UC-HLH-01 security requirements
+ * Follows MVVM architecture by delegating to AuthRepository
  */
-public class ForgotPasswordViewModel extends ViewModel {
+public class ForgotPasswordViewModel extends AndroidViewModel {
 
-    private final FirebaseAuth firebaseAuth;
-    private final ExecutorService executorService;
-
-    private final MutableLiveData<DataState<Void>> resetPasswordState = new MutableLiveData<>();
+    private final AuthRepository authRepository;
     private final MutableLiveData<String> emailError = new MutableLiveData<>();
+    private final MutableLiveData<String> emailTrigger = new MutableLiveData<>();
 
-    public ForgotPasswordViewModel() {
-        this.firebaseAuth = FirebaseAuth.getInstance();
-        this.executorService = Executors.newSingleThreadExecutor();
-    }
-
-    public LiveData<DataState<Void>> getResetPasswordState() {
-        return resetPasswordState;
+    public ForgotPasswordViewModel(@NonNull Application application) {
+        super(application);
+        this.authRepository = new AuthRepository(application.getApplicationContext());
     }
 
     public LiveData<String> getEmailError() {
@@ -38,41 +32,50 @@ public class ForgotPasswordViewModel extends ViewModel {
     }
 
     /**
+     * Get reset password state as LiveData
+     * Uses Transformations.switchMap to react to email trigger changes
+     */
+    public LiveData<DataState<Void>> getResetPasswordState() {
+        return Transformations.switchMap(emailTrigger, email -> {
+            if (email == null || email.isEmpty()) {
+                MutableLiveData<DataState<Void>> emptyState = new MutableLiveData<>();
+                emptyState.setValue(DataState.error("Email không được để trống"));
+                return emptyState;
+            }
+            return authRepository.sendPasswordResetEmail(email);
+        });
+    }
+
+    /**
      * Send password reset email
-     * Uses Firebase Authentication's built-in password reset
+     * Validates email and triggers repository call
      * @param email User's email address
      */
     public void sendPasswordResetEmail(String email) {
-        resetPasswordState.setValue(DataState.loading());
-
-        CompletableFuture.supplyAsync(() -> {
-            try {
-                Task<Void> task = firebaseAuth.sendPasswordResetEmail(email);
-                
-                // Wait for task to complete
-                while (!task.isComplete()) {
-                    Thread.sleep(100);
-                }
-
-                if (task.isSuccessful()) {
-                    return DataState.success(null);
-                } else {
-                    String errorMessage = task.getException() != null 
-                        ? task.getException().getMessage() 
-                        : "Không thể gửi email đặt lại mật khẩu";
-                    return DataState.<Void>error(errorMessage);
-                }
-            } catch (Exception e) {
-                return DataState.<Void>error(e.getMessage());
-            }
-        }, executorService).thenAccept(state -> {
-            resetPasswordState.postValue((DataState<Void>) state);
-        });
+        // Clear previous errors
+        emailError.setValue(null);
+        
+        // Validate email
+        if (email == null || email.trim().isEmpty()) {
+            emailError.setValue("Vui lòng nhập email");
+            return;
+        }
+        
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailError.setValue("Email không hợp lệ");
+            return;
+        }
+        
+        // Trigger repository call through LiveData transformation
+        emailTrigger.setValue(email);
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        executorService.shutdown();
+        // Clean up repository resources
+        if (authRepository != null) {
+            authRepository.cleanup();
+        }
     }
 }
