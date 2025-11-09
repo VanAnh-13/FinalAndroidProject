@@ -33,7 +33,7 @@ public class RemindersViewModel extends BaseViewModel {
         List<Reminder> currentList = reminders.getValue();
         if (currentList != null && position < currentList.size()) {
             Reminder reminder = currentList.get(position);
-            reminder.setCompleted(!reminder.isCompleted());
+            reminder.setActive(!reminder.isActive());
             reminders.setValue(currentList);
         }
     }

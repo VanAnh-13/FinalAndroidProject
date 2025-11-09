@@ -96,13 +96,18 @@ dependencies {
 
     // Room component
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-rxjava3:2.6.1") // RxJava3 support for Room
+    
+    // Lombok MUST be processed BEFORE Room
+    compileOnly("org.projectlombok:lombok:1.18.32")
+    annotationProcessor("org.projectlombok:lombok:1.18.32")
+    
+    // Room compiler AFTER Lombok
     annotationProcessor("androidx.room:room-compiler:2.6.1")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-
-    // Logging
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Firebase BOM
@@ -139,8 +144,7 @@ dependencies {
 
     // Navigation Drawer
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
-
-    // Lombok (generate getters/setters to keep models clean)
-    compileOnly("org.projectlombok:lombok:1.18.32")
-    annotationProcessor("org.projectlombok:lombok:1.18.32")
+    
+    // WorkManager for background tasks
+    implementation("androidx.work:work-runtime:2.9.0")
 }

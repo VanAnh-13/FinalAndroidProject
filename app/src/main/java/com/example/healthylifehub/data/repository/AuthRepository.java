@@ -301,17 +301,30 @@ public class AuthRepository extends BaseRepository {
 
     private void saveUserToFirestore(User user) {
         Map<String, Object> userData = new HashMap<>();
-        userData.put("uid", user.getUid());
+        userData.put("userId", user.getUid());
         userData.put("email", user.getEmail());
         userData.put("displayName", user.getDisplayName());
-        userData.put("photoUrl", user.getPhotoUrl());
-        userData.put("createdAt", user.getCreatedAt());
-        userData.put("lastLogin", user.getLastLogin());
+        userData.put("photoURL", user.getPhotoUrl());
+        userData.put("role", "user");
+        userData.put("createdAt", com.google.firebase.Timestamp.now());
+        userData.put("updatedAt", com.google.firebase.Timestamp.now());
+        
+        // Create empty profile nested object according to Project_Summary.md structure
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("fullName", user.getDisplayName() != null ? user.getDisplayName() : "");
+        profile.put("dateOfBirth", null);
+        profile.put("gender", "");
+        profile.put("height", 0);
+        profile.put("weight", 0);
+        profile.put("bloodType", "");
+        profile.put("medicalHistory", "");
+        
+        userData.put("profile", profile);
 
         firestore.collection(USERS_COLLECTION)
                 .document(user.getUid())
                 .set(userData)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "User saved to Firestore"))
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "User saved to Firestore with profile structure"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error saving user", e));
     }
 
@@ -320,12 +333,25 @@ public class AuthRepository extends BaseRepository {
      */
     private void saveUserToFirestoreSync(User user) throws Exception {
         Map<String, Object> userData = new HashMap<>();
-        userData.put("uid", user.getUid());
+        userData.put("userId", user.getUid());
         userData.put("email", user.getEmail());
         userData.put("displayName", user.getDisplayName());
-        userData.put("photoUrl", user.getPhotoUrl());
-        userData.put("createdAt", user.getCreatedAt());
-        userData.put("lastLogin", user.getLastLogin());
+        userData.put("photoURL", user.getPhotoUrl());
+        userData.put("role", "user");
+        userData.put("createdAt", com.google.firebase.Timestamp.now());
+        userData.put("updatedAt", com.google.firebase.Timestamp.now());
+        
+        // Create empty profile nested object according to Project_Summary.md structure
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("fullName", user.getDisplayName() != null ? user.getDisplayName() : "");
+        profile.put("dateOfBirth", null);
+        profile.put("gender", "");
+        profile.put("height", 0);
+        profile.put("weight", 0);
+        profile.put("bloodType", "");
+        profile.put("medicalHistory", "");
+        
+        userData.put("profile", profile);
 
         Task<Void> task = firestore.collection(USERS_COLLECTION)
                 .document(user.getUid())
@@ -335,7 +361,7 @@ public class AuthRepository extends BaseRepository {
         if (!task.isSuccessful()) {
             throw new Exception("Failed to save user to Firestore");
         }
-        Log.d(TAG, "User saved to Firestore");
+        Log.d(TAG, "User saved to Firestore with profile structure");
     }
 
     private void updateLastLogin(String uid) {

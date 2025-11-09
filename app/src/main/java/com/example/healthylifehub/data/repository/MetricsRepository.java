@@ -55,10 +55,10 @@ public class MetricsRepository extends FirebaseRepository {
                             String unit = doc.getString("unit");
                             String note = doc.getString("note");
                             com.google.firebase.Timestamp measuredAt = doc.getTimestamp("measuredAt");
-                            Map<String, Object> valueMap = (Map<String, Object>) doc.get("value");
+                            Object valueObj = doc.get("value");
                             
-                            if (type != null && valueMap != null && measuredAt != null) {
-                                String displayValue = formatMetricValue(type, valueMap, unit);
+                            if (type != null && valueObj != null && measuredAt != null) {
+                                String displayValue = formatMetricValue(type, valueObj, unit);
                                 String displayTitle = getMetricTitle(type);
                                 String displayTime = dateFormat.format(measuredAt.toDate());
                                 
@@ -107,10 +107,10 @@ public class MetricsRepository extends FirebaseRepository {
                         try {
                             String unit = doc.getString("unit");
                             com.google.firebase.Timestamp measuredAt = doc.getTimestamp("measuredAt");
-                            Map<String, Object> valueMap = (Map<String, Object>) doc.get("value");
+                            Object valueObj = doc.get("value");
                             
-                            if (valueMap != null && measuredAt != null) {
-                                String displayValue = formatMetricValue(metricType, valueMap, unit);
+                            if (valueObj != null && measuredAt != null) {
+                                String displayValue = formatMetricValue(metricType, valueObj, unit);
                                 String displayTime = formatHistoryTime(measuredAt.toDate());
                                 
                                 history.add(new MetricHistory(displayValue, displayTime, unit));
@@ -127,43 +127,68 @@ public class MetricsRepository extends FirebaseRepository {
     }
     
     /**
-     * Format metric value based on type and value map
+     * Format metric value based on type and value object
+     * Updated to match HealthMetricRepository format:
+     * - blood_pressure: value = {systolic, diastolic} (Map)
+     * - other types: value = number (Number)
      */
-    private String formatMetricValue(String type, Map<String, Object> valueMap, String unit) {
-        switch (type) {
-            case "blood_pressure":
-                Object systolic = valueMap.get("systolic");
-                Object diastolic = valueMap.get("diastolic");
-                if (systolic != null && diastolic != null) {
-                    return systolic + "/" + diastolic + " " + (unit != null ? unit : "mmHg");
-                }
-                break;
-            case "heart_rate":
-                Object bpm = valueMap.get("bpm");
-                if (bpm != null) {
-                    return bpm + " " + (unit != null ? unit : "bpm");
-                }
-                break;
-            case "blood_sugar":
-                Object level = valueMap.get("level");
-                if (level != null) {
-                    return level + " " + (unit != null ? unit : "mg/dL");
-                }
-                break;
-            case "weight":
-                Object weight = valueMap.get("weight");
-                if (weight != null) {
-                    return weight + " " + (unit != null ? unit : "kg");
-                }
-                break;
-            case "temperature":
-                Object celsius = valueMap.get("celsius");
-                if (celsius != null) {
-                    return celsius + " " + (unit != null ? unit : "°C");
-                }
-                break;
+    private String formatMetricValue(String type, Object valueObj, String unit) {
+        try {
+            switch (type) {
+                case "blood_pressure":
+                    // Blood pressure: value = {systolic, diastolic}
+                    if (valueObj instanceof Map) {
+                        Map<String, Object> valueMap = (Map<String, Object>) valueObj;
+                        Object systolic = valueMap.get("systolic");
+                        Object diastolic = valueMap.get("diastolic");
+                        if (systolic != null && diastolic != null) {
+                            return systolic + "/" + diastolic + " " + (unit != null ? unit : "mmHg");
+                        }
+                    }
+                    break;
+                    
+                case "heart_rate":
+                case "blood_sugar":
+                case "weight":
+                    // Other types: value = number (direct)
+                    if (valueObj instanceof Number) {
+                        int intValue = ((Number) valueObj).intValue();
+                        return intValue + " " + (unit != null ? unit : getDefaultUnit(type));
+                    } else if (valueObj instanceof Long) {
+                        return valueObj + " " + (unit != null ? unit : getDefaultUnit(type));
+                    } else if (valueObj instanceof Double) {
+                        int intValue = ((Double) valueObj).intValue();
+                        return intValue + " " + (unit != null ? unit : getDefaultUnit(type));
+                    }
+                    break;
+                    
+                case "temperature":
+                    if (valueObj instanceof Map) {
+                        Map<String, Object> valueMap = (Map<String, Object>) valueObj;
+                        Object celsius = valueMap.get("celsius");
+                        if (celsius != null) {
+                            return celsius + " " + (unit != null ? unit : "°C");
+                        }
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            // Return N/A if parsing fails
         }
         return "N/A";
+    }
+    
+    /**
+     * Get default unit for metric type
+     */
+    private String getDefaultUnit(String type) {
+        switch (type) {
+            case "heart_rate": return "bpm";
+            case "blood_sugar": return "mg/dL";
+            case "weight": return "kg";
+            case "temperature": return "°C";
+            default: return "";
+        }
     }
     
     /**

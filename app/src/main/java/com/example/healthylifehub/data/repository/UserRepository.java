@@ -3,9 +3,21 @@ package com.example.healthylifehub.data.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.healthylifehub.data.model.UserProfile;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Repository for User Profile data from Firebase Firestore.
@@ -15,6 +27,7 @@ import java.util.Map;
 public class UserRepository extends FirebaseRepository {
     
     private static final String COLLECTION_USERS = "users";
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
     
     /**
      * Load user profile data
@@ -39,10 +52,54 @@ public class UserRepository extends FirebaseRepository {
                 
                 if (snapshot != null && snapshot.exists()) {
                     profileLiveData.setValue(snapshot.getData());
+                } else {
+                    // Document doesn't exist, create it with default structure
+                    createDefaultUserProfile(userId);
                 }
             });
         
         return profileLiveData;
+    }
+    
+    /**
+     * Create default user profile structure if it doesn't exist
+     * This handles cases where user was created before profile structure was implemented
+     */
+    private void createDefaultUserProfile(String userId) {
+        if (auth.getCurrentUser() == null) {
+            return;
+        }
+        
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("userId", userId);
+        userData.put("email", auth.getCurrentUser().getEmail());
+        userData.put("displayName", auth.getCurrentUser().getDisplayName());
+        userData.put("photoURL", auth.getCurrentUser().getPhotoUrl() != null ? 
+                auth.getCurrentUser().getPhotoUrl().toString() : null);
+        userData.put("role", "user");
+        userData.put("createdAt", Timestamp.now());
+        userData.put("updatedAt", Timestamp.now());
+        
+        // Create empty profile nested object
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("fullName", auth.getCurrentUser().getDisplayName() != null ? 
+                auth.getCurrentUser().getDisplayName() : "");
+        profile.put("dateOfBirth", null);
+        profile.put("gender", "");
+        profile.put("height", 0);
+        profile.put("weight", 0);
+        profile.put("bloodType", "");
+        profile.put("medicalHistory", "");
+        
+        userData.put("profile", profile);
+        
+        db.collection(COLLECTION_USERS)
+            .document(userId)
+            .set(userData, SetOptions.merge())
+            .addOnSuccessListener(aVoid -> 
+                android.util.Log.d("UserRepository", "Default profile created for user: " + userId))
+            .addOnFailureListener(e -> 
+                android.util.Log.e("UserRepository", "Error creating default profile", e));
     }
     
     /**
@@ -71,6 +128,298 @@ public class UserRepository extends FirebaseRepository {
             });
         
         return fieldLiveData;
+    }
+    
+    /**
+     * Update user profile in Firestore
+     * Following the structure from Project_Summary.md:
+     * users/{userId} with nested profile object
+     * 
+     * @param userProfile UserProfile object with updated data
+     * @return CompletableFuture<Boolean> indicating success/failure
+     */
+    public CompletableFuture<Boolean> updateUserProfile(UserProfile userProfile) {
+        return CompletableFuture.supplyAsync(() -> {
+            String userId = getCurrentUserId();
+            if (userId == null) {
+                return false;
+            }
+            
+            try {
+                // Create profile nested object according to Firestore structure
+                Map<String, Object> profileData = new HashMap<>();
+                
+                if (userProfile.getFullName() != null) {
+                    profileData.put("fullName", userProfile.getFullName());
+                }
+                if (userProfile.getBirthDate() != null) {
+                    // Convert date string to Timestamp
+                    Timestamp birthTimestamp = convertDateStringToTimestamp(userProfile.getBirthDate());
+                    if (birthTimestamp != null) {
+                        profileData.put("dateOfBirth", birthTimestamp);
+                    }
+                }
+                if (userProfile.getGender() != null) {
+                    // Convert to lowercase English for Firestore
+                    String gender = convertGenderToEnglish(userProfile.getGender());
+                    profileData.put("gender", gender);
+                }
+                if (userProfile.getHeight() != null) {
+                    // Extract numeric value and store as Number
+                    double height = extractNumericValue(userProfile.getHeight());
+                    profileData.put("height", height);
+                }
+                if (userProfile.getWeight() != null) {
+                    // Extract numeric value and store as Number
+                    double weight = extractNumericValue(userProfile.getWeight());
+                    profileData.put("weight", weight);
+                }
+                if (userProfile.getBloodType() != null) {
+                    profileData.put("bloodType", userProfile.getBloodType());
+                }
+                if (userProfile.getMedicalHistory() != null) {
+                    profileData.put("medicalHistory", userProfile.getMedicalHistory());
+                }
+                
+                // Update the nested profile object and updatedAt timestamp
+                Map<String, Object> updateData = new HashMap<>();
+                updateData.put("profile", profileData);
+                updateData.put("updatedAt", Timestamp.now());
+                
+                // Also update displayName at root level if fullName is provided
+                if (userProfile.getFullName() != null) {
+                    updateData.put("displayName", userProfile.getFullName());
+                }
+                
+                // Perform Firestore update with merge option
+                Task<Void> task = db.collection(COLLECTION_USERS)
+                        .document(userId)
+                        .set(updateData, SetOptions.merge());
+                
+                // Wait for completion (blocking on background thread)
+                while (!task.isComplete()) {
+                    Thread.sleep(100);
+                }
+                
+                return task.isSuccessful();
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }, executorService);
+    }
+    
+    /**
+     * Update user profile with email and photo URL
+     * Also updates Firebase Auth profile
+     * 
+     * @param fullName User's full name
+     * @param email User's email
+     * @param photoUrl User's photo URL
+     * @return CompletableFuture<Boolean> indicating success/failure
+     */
+    public CompletableFuture<Boolean> updateUserProfileWithAuth(String fullName, String email, String photoUrl) {
+        return CompletableFuture.supplyAsync(() -> {
+            String userId = getCurrentUserId();
+            if (userId == null || auth.getCurrentUser() == null) {
+                return false;
+            }
+            
+            try {
+                // Update Firestore
+                Map<String, Object> updateData = new HashMap<>();
+                updateData.put("displayName", fullName);
+                updateData.put("email", email);
+                if (photoUrl != null && !photoUrl.isEmpty()) {
+                    updateData.put("photoURL", photoUrl);
+                }
+                updateData.put("updatedAt", Timestamp.now());
+                
+                Task<Void> firestoreTask = db.collection(COLLECTION_USERS)
+                        .document(userId)
+                        .set(updateData, SetOptions.merge());
+                
+                // Wait for Firestore update
+                while (!firestoreTask.isComplete()) {
+                    Thread.sleep(100);
+                }
+                
+                if (!firestoreTask.isSuccessful()) {
+                    return false;
+                }
+                
+                // Update Firebase Auth profile
+                com.google.firebase.auth.UserProfileChangeRequest.Builder profileUpdates = 
+                    new com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                        .setDisplayName(fullName);
+                
+                if (photoUrl != null && !photoUrl.isEmpty()) {
+                    profileUpdates.setPhotoUri(android.net.Uri.parse(photoUrl));
+                }
+                
+                Task<Void> authTask = auth.getCurrentUser()
+                        .updateProfile(profileUpdates.build());
+                
+                // Wait for Auth update
+                while (!authTask.isComplete()) {
+                    Thread.sleep(100);
+                }
+                
+                return authTask.isSuccessful();
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }, executorService);
+    }
+    
+    /**
+     * Convert date string (dd/MM/yyyy) to Firestore Timestamp
+     */
+    private Timestamp convertDateStringToTimestamp(String dateString) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            Date date = sdf.parse(dateString);
+            return date != null ? new Timestamp(date) : null;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * Convert Vietnamese gender to English lowercase
+     */
+    private String convertGenderToEnglish(String gender) {
+        if (gender == null) return "other";
+        
+        String lowerGender = gender.toLowerCase();
+        if (lowerGender.contains("nam") || lowerGender.equals("male")) {
+            return "male";
+        } else if (lowerGender.contains("nữ") || lowerGender.contains("nu") || lowerGender.equals("female")) {
+            return "female";
+        } else {
+            return "other";
+        }
+    }
+    
+    /**
+     * Extract numeric value from string (e.g., "175 cm" -> 175.0)
+     */
+    private double extractNumericValue(String value) {
+        if (value == null || value.isEmpty()) {
+            return 0.0;
+        }
+        
+        try {
+            // Remove all non-numeric characters except decimal point
+            String numericValue = value.replaceAll("[^0-9.]", "");
+            return Double.parseDouble(numericValue);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0.0;
+        }
+    }
+    
+    // ==================== MEDICAL HISTORY METHODS ====================
+    
+    /**
+     * Load medical history for current user (as simple String)
+     * @return LiveData of medical history string
+     */
+    public LiveData<String> loadMedicalHistory() {
+        MutableLiveData<String> historyLiveData = new MutableLiveData<>();
+        
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            historyLiveData.setValue("");
+            return historyLiveData;
+        }
+        
+        db.collection(COLLECTION_USERS)
+            .document(userId)
+            .addSnapshotListener((snapshot, error) -> {
+                if (error != null || snapshot == null || !snapshot.exists()) {
+                    historyLiveData.setValue("");
+                    return;
+                }
+                
+                // Get from nested profile.medicalHistory
+                Map<String, Object> profileData = (Map<String, Object>) snapshot.get("profile");
+                if (profileData != null && profileData.containsKey("medicalHistory")) {
+                    Object history = profileData.get("medicalHistory");
+                    if (history instanceof String) {
+                        historyLiveData.setValue((String) history);
+                    } else {
+                        historyLiveData.setValue("");
+                    }
+                } else {
+                    historyLiveData.setValue("");
+                }
+            });
+        
+        return historyLiveData;
+    }
+    
+    /**
+     * Update medical history for current user (as simple String)
+     * @param medicalHistory Medical history text
+     * @return CompletableFuture<Boolean> indicating success/failure
+     */
+    public CompletableFuture<Boolean> updateMedicalHistory(String medicalHistory) {
+        return CompletableFuture.supplyAsync(() -> {
+            String userId = getCurrentUserId();
+            if (userId == null) {
+                return false;
+            }
+            
+            try {
+                // Get current profile data first
+                Task<DocumentSnapshot> getTask = db.collection(COLLECTION_USERS)
+                        .document(userId)
+                        .get();
+                
+                while (!getTask.isComplete()) {
+                    Thread.sleep(50);
+                }
+                
+                if (!getTask.isSuccessful()) {
+                    return false;
+                }
+                
+                DocumentSnapshot snapshot = getTask.getResult();
+                Map<String, Object> profileData = (Map<String, Object>) snapshot.get("profile");
+                if (profileData == null) {
+                    profileData = new HashMap<>();
+                }
+                
+                // Update medicalHistory in profile
+                profileData.put("medicalHistory", medicalHistory != null ? medicalHistory : "");
+                
+                // Update entire profile object
+                Map<String, Object> updateData = new HashMap<>();
+                updateData.put("profile", profileData);
+                updateData.put("updatedAt", Timestamp.now());
+                
+                // Perform Firestore update
+                Task<Void> task = db.collection(COLLECTION_USERS)
+                        .document(userId)
+                        .set(updateData, SetOptions.merge());
+                
+                // Wait for completion
+                while (!task.isComplete()) {
+                    Thread.sleep(100);
+                }
+                
+                return task.isSuccessful();
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }, executorService);
     }
 }
 

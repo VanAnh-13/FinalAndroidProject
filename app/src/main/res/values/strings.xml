@@ -180,6 +180,15 @@
     <string name="please_enter_name">Vui lòng nhập họ tên</string>
     <string name="please_enter_email">Vui lòng nhập email</string>
     <string name="profile_updated_successfully">Cập nhật hồ sơ thành công</string>
+    
+    <!-- Profile Validation -->
+    <string name="error_invalid_height">Chiều cao phải từ 50cm đến 300cm</string>
+    <string name="error_invalid_weight">Cân nặng phải từ 10kg đến 500kg</string>
+    <string name="error_invalid_age">Tuổi phải từ 1 đến 150</string>
+    <string name="error_future_birth_date">Ngày sinh không thể là ngày trong tương lai</string>
+    <string name="error_invalid_email_format">Định dạng email không hợp lệ</string>
+    <string name="error_name_too_short">Họ tên phải có ít nhất 2 ký tự</string>
+    <string name="error_name_too_long">Họ tên không được quá 100 ký tự</string>
 <!-- Notifications -->
     <string name="notifications">Thông báo</string>
     <string name="all">Tất cả</string>

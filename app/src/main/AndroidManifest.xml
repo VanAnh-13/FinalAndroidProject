@@ -69,6 +69,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.profile.history.MedicalHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.notifications.center.NotificationsCenterActivity"
             android:exported="false"
             android:theme="@style/Theme.Base"

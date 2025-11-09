@@ -142,6 +142,30 @@ public class EditProfileActivity extends BaseActivity<ActivityEditProfileBinding
                 getBinding().etMedicalHistory.setText(history);
             }
         });
+        
+        // Observe save result
+        viewModel.getSaveResult().observe(this, success -> {
+            if (success != null) {
+                if (success) {
+                    Toast.makeText(this, R.string.profile_updated_successfully, Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, "Lưu thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        
+        // Observe loading state
+        viewModel.getIsSaving().observe(this, isSaving -> {
+            if (isSaving != null) {
+                // Disable/enable save button based on loading state
+                getBinding().tvSave.setEnabled(!isSaving);
+                getBinding().tvSave.setAlpha(isSaving ? 0.5f : 1.0f);
+                
+                // You can also show a progress bar if you have one in the layout
+                // getBinding().progressBar.setVisibility(isSaving ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     public void observeData() {
@@ -209,53 +233,181 @@ public class EditProfileActivity extends BaseActivity<ActivityEditProfileBinding
             gender = getString(R.string.other);
         }
 
-        // Validate required fields
+        // ========== VALIDATION ==========
+        
+        // 1. Validate full name
         if (fullName.isEmpty()) {
             Toast.makeText(this, R.string.please_enter_name, Toast.LENGTH_SHORT).show();
             getBinding().etFullName.requestFocus();
             return;
         }
+        
+        if (fullName.length() < 2) {
+            Toast.makeText(this, R.string.error_name_too_short, Toast.LENGTH_SHORT).show();
+            getBinding().etFullName.requestFocus();
+            return;
+        }
+        
+        if (fullName.length() > 100) {
+            Toast.makeText(this, R.string.error_name_too_long, Toast.LENGTH_SHORT).show();
+            getBinding().etFullName.requestFocus();
+            return;
+        }
 
+        // 2. Validate email
         if (email.isEmpty()) {
             Toast.makeText(this, R.string.please_enter_email, Toast.LENGTH_SHORT).show();
             getBinding().etEmail.requestFocus();
             return;
         }
+        
+        if (!isValidEmail(email)) {
+            Toast.makeText(this, R.string.error_invalid_email_format, Toast.LENGTH_SHORT).show();
+            getBinding().etEmail.requestFocus();
+            return;
+        }
 
-        // Update ViewModel
-        if (!height.isEmpty()) {
-            viewModel.updateHeight(height + " cm");
-        }
-        if (!weight.isEmpty()) {
-            viewModel.updateWeight(weight + " kg");
-        }
-        if (!bloodType.isEmpty()) {
-            viewModel.updateBloodType(bloodType);
-        }
+        // 3. Validate birth date (if provided)
         if (!birthDate.isEmpty()) {
-            viewModel.updateBirthDate(birthDate);
+            if (!isValidBirthDate(birthDate)) {
+                Toast.makeText(this, R.string.error_future_birth_date, Toast.LENGTH_SHORT).show();
+                getBinding().etBirthDate.requestFocus();
+                return;
+            }
+            
+            int age = calculateAge(birthDate);
+            if (age < 1 || age > 150) {
+                Toast.makeText(this, R.string.error_invalid_age, Toast.LENGTH_SHORT).show();
+                getBinding().etBirthDate.requestFocus();
+                return;
+            }
         }
-        viewModel.updateGender(gender);
-        viewModel.updateMedicalHistory(medicalHistory);
 
-        // Calculate and update BMI if both height and weight are provided
+        // 4. Validate height (if provided)
+        if (!height.isEmpty()) {
+            try {
+                double heightValue = Double.parseDouble(height);
+                if (heightValue < 50 || heightValue > 300) {
+                    Toast.makeText(this, R.string.error_invalid_height, Toast.LENGTH_SHORT).show();
+                    getBinding().etHeight.requestFocus();
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, R.string.error_invalid_height, Toast.LENGTH_SHORT).show();
+                getBinding().etHeight.requestFocus();
+                return;
+            }
+        }
+
+        // 5. Validate weight (if provided)
+        if (!weight.isEmpty()) {
+            try {
+                double weightValue = Double.parseDouble(weight);
+                if (weightValue < 10 || weightValue > 500) {
+                    Toast.makeText(this, R.string.error_invalid_weight, Toast.LENGTH_SHORT).show();
+                    getBinding().etWeight.requestFocus();
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, R.string.error_invalid_weight, Toast.LENGTH_SHORT).show();
+                getBinding().etWeight.requestFocus();
+                return;
+            }
+        }
+
+        // ========== END VALIDATION ==========
+
+        // Prepare data with units
+        String heightWithUnit = height.isEmpty() ? "" : height + " cm";
+        String weightWithUnit = weight.isEmpty() ? "" : weight + " kg";
+        
+        // Calculate BMI if both height and weight are provided
+        String bmi = "";
         if (!height.isEmpty() && !weight.isEmpty()) {
             try {
                 double heightInMeters = Double.parseDouble(height) / 100.0;
                 double weightInKg = Double.parseDouble(weight);
-                double bmi = weightInKg / (heightInMeters * heightInMeters);
-                viewModel.updateBmi(String.format(Locale.getDefault(), "%.1f", bmi));
+                double bmiValue = weightInKg / (heightInMeters * heightInMeters);
+                bmi = String.format(Locale.getDefault(), "%.1f", bmiValue);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
         }
 
-        // TODO: Update Firebase user profile with name and avatar
-        // This would require Firebase Storage for avatar upload
-
-        Toast.makeText(this, R.string.profile_updated_successfully, Toast.LENGTH_SHORT).show();
-
-        // Return to previous screen
-        finish();
+        // Save to Firestore via ViewModel (async operation)
+        // This will trigger the observers in bindData() when complete
+        viewModel.saveProfile(
+            fullName,
+            email,
+            birthDate,
+            gender,
+            heightWithUnit,
+            weightWithUnit,
+            bloodType,
+            medicalHistory,
+            bmi
+        );
+        
+        // Also update Firebase Auth profile with name and email
+        // Photo URL will be handled separately when avatar upload is implemented
+        viewModel.saveProfileWithAuth(fullName, email, null);
+    }
+    
+    /**
+     * Validate email format
+     */
+    private boolean isValidEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
+    }
+    
+    /**
+     * Validate birth date is not in the future
+     */
+    private boolean isValidBirthDate(String birthDate) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            sdf.setLenient(false);
+            java.util.Date date = sdf.parse(birthDate);
+            
+            if (date == null) {
+                return false;
+            }
+            
+            // Check if date is not in the future
+            return !date.after(new java.util.Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Calculate age from birth date
+     */
+    private int calculateAge(String birthDate) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            java.util.Date date = sdf.parse(birthDate);
+            
+            if (date == null) {
+                return 0;
+            }
+            
+            Calendar birthCalendar = Calendar.getInstance();
+            birthCalendar.setTime(date);
+            
+            Calendar today = Calendar.getInstance();
+            
+            int age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR);
+            
+            // Adjust if birthday hasn't occurred this year yet
+            if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
+            
+            return age;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

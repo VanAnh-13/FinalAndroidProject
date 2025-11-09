@@ -31,6 +31,100 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
     @Override
     public void initData() {
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        
+        // Force create profile structure if it doesn't exist
+        // This is a one-time fix for existing users
+        forceCreateProfileIfNeeded();
+    }
+    
+    /**
+     * Force create profile structure for existing users
+     * This ensures old users get the new profile structure
+     */
+    private void forceCreateProfileIfNeeded() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            
+            // Check if document exists
+            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        // Document doesn't exist, create it
+                        createUserDocument(userId, currentUser);
+                    } else {
+                        // Check if profile field exists
+                        Object profile = documentSnapshot.get("profile");
+                        if (profile == null) {
+                            // Profile field doesn't exist, update document
+                            updateUserDocumentWithProfile(userId, currentUser);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    android.util.Log.e("ProfileFragment", "Error checking document", e);
+                });
+        }
+    }
+    
+    private void createUserDocument(String userId, FirebaseUser user) {
+        java.util.Map<String, Object> userData = new java.util.HashMap<>();
+        userData.put("userId", userId);
+        userData.put("email", user.getEmail());
+        userData.put("displayName", user.getDisplayName());
+        userData.put("photoURL", user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
+        userData.put("role", "user");
+        userData.put("createdAt", com.google.firebase.Timestamp.now());
+        userData.put("updatedAt", com.google.firebase.Timestamp.now());
+        
+        // Create profile nested object
+        java.util.Map<String, Object> profile = new java.util.HashMap<>();
+        profile.put("fullName", user.getDisplayName() != null ? user.getDisplayName() : "");
+        profile.put("dateOfBirth", null);
+        profile.put("gender", "");
+        profile.put("height", 0);
+        profile.put("weight", 0);
+        profile.put("bloodType", "");
+        profile.put("medicalHistory", "");
+        
+        userData.put("profile", profile);
+        
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .set(userData)
+            .addOnSuccessListener(aVoid -> 
+                android.util.Log.d("ProfileFragment", "User document created successfully"))
+            .addOnFailureListener(e -> 
+                android.util.Log.e("ProfileFragment", "Error creating user document", e));
+    }
+    
+    private void updateUserDocumentWithProfile(String userId, FirebaseUser user) {
+        // Create profile nested object
+        java.util.Map<String, Object> profile = new java.util.HashMap<>();
+        profile.put("fullName", user.getDisplayName() != null ? user.getDisplayName() : "");
+        profile.put("dateOfBirth", null);
+        profile.put("gender", "");
+        profile.put("height", 0);
+        profile.put("weight", 0);
+        profile.put("bloodType", "");
+        profile.put("medicalHistory", "");
+        
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        updates.put("profile", profile);
+        updates.put("updatedAt", com.google.firebase.Timestamp.now());
+        
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .update(updates)
+            .addOnSuccessListener(aVoid -> 
+                android.util.Log.d("ProfileFragment", "Profile field added successfully"))
+            .addOnFailureListener(e -> 
+                android.util.Log.e("ProfileFragment", "Error updating document", e));
     }
 
     @Override
@@ -38,29 +132,45 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
         // Load user data from Firebase
         loadUserProfile();
     }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reload user profile when returning to this fragment
+        // This ensures data is refreshed after editing profile
+        loadUserProfile();
+    }
 
     private void loadUserProfile() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
-            // Load user name
-            String displayName = currentUser.getDisplayName();
-            if (displayName != null && !displayName.isEmpty()) {
-                getBinding().tvProfileName.setText(displayName);
-            }
+            // Reload current user to get latest data
+            currentUser.reload().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && getBinding() != null) {
+                    FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (refreshedUser != null) {
+                        // Load user name
+                        String displayName = refreshedUser.getDisplayName();
+                        if (displayName != null && !displayName.isEmpty()) {
+                            getBinding().tvProfileName.setText(displayName);
+                        }
 
-            // Load user email
-            String email = currentUser.getEmail();
-            if (email != null && !email.isEmpty()) {
-                getBinding().tvProfileEmail.setText(email);
-            }
+                        // Load user email
+                        String email = refreshedUser.getEmail();
+                        if (email != null && !email.isEmpty()) {
+                            getBinding().tvProfileEmail.setText(email);
+                        }
 
-            // Load profile avatar
-            if (currentUser.getPhotoUrl() != null) {
-                Glide.with(this)
-                        .load(currentUser.getPhotoUrl())
-                        .circleCrop()
-                        .into(getBinding().ivProfileAvatar);
-            }
+                        // Load profile avatar
+                        if (refreshedUser.getPhotoUrl() != null) {
+                            Glide.with(this)
+                                    .load(refreshedUser.getPhotoUrl())
+                                    .circleCrop()
+                                    .into(getBinding().ivProfileAvatar);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -122,6 +232,13 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
             Intent intent = new Intent(getContext(), SettingsActivity.class);
             startActivity(intent);
         });
+        
+        // DEBUG: Long press on avatar to force create profile
+        getBinding().ivProfileAvatar.setOnLongClickListener(v -> {
+            forceCreateProfileIfNeeded();
+            Toast.makeText(getContext(), "Đang tạo profile structure...", Toast.LENGTH_SHORT).show();
+            return true;
+        });
 
         // Edit profile button
         getBinding().btnEditProfile.setOnClickListener(v -> {
@@ -131,7 +248,8 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
 
         // Edit medical history button
         getBinding().btnEditMedicalHistory.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Edit medical history coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), com.example.healthylifehub.ui.profile.history.MedicalHistoryActivity.class);
+            startActivity(intent);
         });
 
         // Export reports action
