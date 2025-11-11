@@ -36,6 +36,25 @@ public class NotificationsCenterActivity extends BaseActivity<ActivityNotificati
         adapter = new NotificationsAdapter(notification -> {
             Toast.makeText(this, "Clicked: " + notification.getTitle(), Toast.LENGTH_SHORT).show();
         });
+        
+        // Set delete listener
+        adapter.setDeleteListener((notification, position) -> {
+            // Delete from Firestore using document ID
+            if (notification.getId() != null) {
+                notificationsRepository.deleteNotification(notification.getId())
+                    .thenAccept(success -> {
+                        if (success) {
+                            Toast.makeText(NotificationsCenterActivity.this, "✅ Đã xóa thông báo", Toast.LENGTH_SHORT).show();
+                            allNotifications.remove(position);
+                            adapter.notifyItemRemoved(position);
+                        } else {
+                            Toast.makeText(NotificationsCenterActivity.this, "❌ Lỗi khi xóa", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            } else {
+                Toast.makeText(NotificationsCenterActivity.this, "❌ Không thể xóa", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

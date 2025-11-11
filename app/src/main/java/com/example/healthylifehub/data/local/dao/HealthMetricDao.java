@@ -156,4 +156,10 @@ public interface HealthMetricDao {
      */
     @Query("SELECT * FROM health_metrics WHERE needsSync = 1")
     Single<List<HealthMetric>> getMetricsNeedingSyncRx();
+    
+    /**
+     * Delete all metrics
+     */
+    @Query("DELETE FROM health_metrics")
+    void deleteAll();
 }

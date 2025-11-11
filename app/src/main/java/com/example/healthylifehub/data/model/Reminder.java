@@ -2,6 +2,7 @@ package com.example.healthylifehub.data.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class Reminder {
 	private long updatedAt;             // Last update timestamp
 	
 	// For backward compatibility
+	@Ignore
 	public Reminder(String title, String time) {
 		this.title = title;
 		this.reminderTime = System.currentTimeMillis();

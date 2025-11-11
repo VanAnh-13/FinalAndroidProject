@@ -1,5 +1,6 @@
 package com.example.healthylifehub.data.repository;
 
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -8,6 +9,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Repository for Notifications data from Firebase Firestore.
@@ -43,6 +45,7 @@ public class NotificationsRepository extends FirebaseRepository {
                 if (value != null) {
                     List<NotificationItem> notifications = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : value) {
+                        String id = doc.getId(); // Get document ID
                         String title = doc.getString("title");
                         String message = doc.getString("message");
                         String time = doc.getString("time");
@@ -64,6 +67,7 @@ public class NotificationsRepository extends FirebaseRepository {
                                 isRead != null ? isRead : false,
                                 notificationType
                             );
+                            item.setId(id); // Set document ID
                             notifications.add(item);
                         }
                     }
@@ -100,6 +104,68 @@ public class NotificationsRepository extends FirebaseRepository {
             });
         
         return countLiveData;
+    }
+    
+    /**
+     * Delete notification by ID
+     * @param notificationId ID of notification to delete
+     * @return CompletableFuture<Boolean> success status
+     */
+    public CompletableFuture<Boolean> deleteNotification(String notificationId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            future.complete(false);
+            return future;
+        }
+        
+        db.collection("users")
+            .document(userId)
+            .collection(COLLECTION_NOTIFICATIONS)
+            .document(notificationId)
+            .delete()
+            .addOnSuccessListener(aVoid -> {
+                Log.d("NotificationsRepository", "✅ Deleted notification: " + notificationId);
+                future.complete(true);
+            })
+            .addOnFailureListener(e -> {
+                Log.e("NotificationsRepository", "❌ Failed to delete notification", e);
+                future.complete(false);
+            });
+        
+        return future;
+    }
+    
+    /**
+     * Mark notification as read
+     * @param notificationId ID of notification
+     * @return CompletableFuture<Boolean> success status
+     */
+    public CompletableFuture<Boolean> markAsRead(String notificationId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            future.complete(false);
+            return future;
+        }
+        
+        db.collection("users")
+            .document(userId)
+            .collection(COLLECTION_NOTIFICATIONS)
+            .document(notificationId)
+            .update("isRead", true)
+            .addOnSuccessListener(aVoid -> {
+                Log.d("NotificationsRepository", "✅ Marked as read: " + notificationId);
+                future.complete(true);
+            })
+            .addOnFailureListener(e -> {
+                Log.e("NotificationsRepository", "❌ Failed to mark as read", e);
+                future.complete(false);
+            });
+        
+        return future;
     }
 }
 

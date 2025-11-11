@@ -53,4 +53,22 @@ public class HealthMetric {
         this.needsSync = true;
         this.lastSyncedAt = new Date();
     }
+    
+    /**
+     * Get value as double for analytics
+     * @param fieldName "value", "systolic", "diastolic"
+     * @param defaultValue Default if field not available
+     */
+    @Ignore
+    public double getValueAsDouble(String fieldName, double defaultValue) {
+        switch (fieldName) {
+            case "systolic":
+                return systolic > 0 ? systolic : defaultValue;
+            case "diastolic":
+                return diastolic > 0 ? diastolic : defaultValue;
+            case "value":
+            default:
+                return value > 0 ? value : defaultValue;
+        }
+    }
 }

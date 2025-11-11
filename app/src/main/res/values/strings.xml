@@ -61,6 +61,7 @@
     <!-- Bottom Navigation -->
     <string name="nav_dashboard">Trang chủ</string>
     <string name="nav_metrics">Chỉ số</string>
+    <string name="nav_analytics">Thống kê</string>
     <string name="nav_add">Thêm</string>
     <string name="nav_records">Hồ sơ</string>
     <string name="nav_profile">Cá nhân</string>

@@ -45,11 +45,34 @@ public class RecordDetailActivity extends BaseActivity<ActivityRecordDetailBindi
             Toast.makeText(this, "Menu", Toast.LENGTH_SHORT).show();
         });
 
-        getBinding().fabEdit.setOnClickListener(v -> {
+        // Edit button
+        getBinding().btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddEditRecordActivity.class);
             intent.putExtra("record_id", recordId);
             startActivity(intent);
         });
+
+        // Delete button
+        getBinding().btnDelete.setOnClickListener(v -> {
+            showDeleteConfirmation();
+        });
+    }
+
+    private void showDeleteConfirmation() {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Xóa hồ sơ bệnh án")
+            .setMessage("Bạn có chắc chắn muốn xóa hồ sơ này? Hành động này không thể hoàn tác.")
+            .setPositiveButton("Xóa", (dialog, which) -> {
+                deleteRecord();
+            })
+            .setNegativeButton("Hủy", null)
+            .show();
+    }
+
+    private void deleteRecord() {
+        // TODO: Delete from database
+        Toast.makeText(this, "Đã xóa hồ sơ", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void loadRecordData() {

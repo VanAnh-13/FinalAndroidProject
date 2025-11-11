@@ -15,11 +15,21 @@ import com.example.healthylifehub.databinding.FragmentRemindersBinding;
 import com.example.healthylifehub.ui.reminders.RemindersViewModel;
 import com.example.healthylifehub.ui.reminders.fragment.adapter.RemindersAdapter;
 import com.example.healthylifehub.ui.reminders.add_edit.AddEditReminderActivity;
+import com.example.healthylifehub.ui.reminders.detail.ReminderDetailActivity;
+import com.example.healthylifehub.data.repository.RemindersRepository;
+import com.example.healthylifehub.data.repository.SuggestionsRepository;
+import com.example.healthylifehub.data.model.SmartSuggestion;
+import com.example.healthylifehub.ui.shared.AppSharedViewModel;
+import android.widget.Toast;
 
 public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
 
     private RemindersViewModel viewModel;
+    private AppSharedViewModel appSharedViewModel;
     private RemindersAdapter adapter;
+    private RemindersRepository remindersRepository;
+    private SuggestionsRepository suggestionsRepository;
+    private SmartSuggestion currentSuggestion;
 
     public RemindersFragment() {
         super(FragmentRemindersBinding::inflate);
@@ -35,14 +45,59 @@ public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
         super.onViewCreated(view, savedInstanceState);
         initData();
         bindData();
+        observeData();  // ✅ GỌI OBSERVE DATA ĐỂ LOAD DỮ LIỆU TỪ FIREBASE
         setOnClick();
     }
 
     @Override
     public void initData() {
         viewModel = new ViewModelProvider(this).get(RemindersViewModel.class);
+        // Get shared ViewModel from Activity scope for app-wide data synchronization
+        appSharedViewModel = new ViewModelProvider(requireActivity()).get(AppSharedViewModel.class);
+        remindersRepository = new RemindersRepository();
+        suggestionsRepository = new SuggestionsRepository();
+        
         adapter = new RemindersAdapter(reminder -> {
-            // Navigate to reminder detail
+            Intent intent = new Intent(requireContext(), ReminderDetailActivity.class);
+            intent.putExtra("reminderId", reminder.getReminderId());
+            startActivity(intent);
+        });
+        
+        adapter.setToggleStatusListener((reminderId, isActive) -> {
+            remindersRepository.toggleReminderStatus(reminderId, isActive)
+                .thenAccept(success -> {
+                    requireActivity().runOnUiThread(() -> {
+                        if (success) {
+                            String message = isActive ? "✅ Đã bật nhắc nhở" : "⏸️ Đã tắt nhắc nhở";
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(), "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+        });
+        
+        // Xử lý nút "Hoàn thành" và "Bỏ qua" - dùng shared ViewModel để sync
+        adapter.setActionListener(new RemindersAdapter.OnReminderActionListener() {
+            @Override
+            public void onReminderCompleted(com.example.healthylifehub.data.model.Reminder reminder) {
+                // Dùng shared ViewModel để cập nhật tất cả observers
+                appSharedViewModel.completeReminder(reminder);
+                Toast.makeText(requireContext(), "✅ Đã hoàn thành nhắc nhở", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onReminderSkipped(com.example.healthylifehub.data.model.Reminder reminder) {
+                // Bỏ qua nhắc nhở
+                Toast.makeText(requireContext(), "⏭️ Đã bỏ qua nhắc nhở", Toast.LENGTH_SHORT).show();
+            }
+            
+            @Override
+            public void onReminderDeleted(com.example.healthylifehub.data.model.Reminder reminder) {
+                // Xóa nhắc nhở - dùng shared ViewModel để sync
+                appSharedViewModel.deleteReminder(reminder);
+                Toast.makeText(requireContext(), "🗑️ Đã xóa nhắc nhở", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -54,10 +109,28 @@ public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
 
     @Override
     public void observeData() {
-        // Observe reminders data
-        viewModel.getReminders().observe(getViewLifecycleOwner(), reminders -> {
+        // Observe shared reminders for real-time sync
+        appSharedViewModel.getReminders().observe(getViewLifecycleOwner(), reminders -> {
             adapter.setReminders(reminders);
         });
+        
+        suggestionsRepository.loadPendingSuggestions().observe(getViewLifecycleOwner(), suggestions -> {
+            if (suggestions != null && !suggestions.isEmpty()) {
+                currentSuggestion = suggestions.get(0);
+                showSuggestion(currentSuggestion);
+            } else {
+                hideSuggestion();
+            }
+        });
+    }
+    
+    private void showSuggestion(SmartSuggestion suggestion) {
+        getBinding().cardSmartSuggestion.setVisibility(View.VISIBLE);
+        getBinding().tvSuggestionText.setText(suggestion.getTitle() + "\n" + suggestion.getDescription());
+    }
+    
+    private void hideSuggestion() {
+        getBinding().cardSmartSuggestion.setVisibility(View.GONE);
     }
 
     @Override
@@ -68,8 +141,22 @@ public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
         });
         
         getBinding().btnSuggestionCreate.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), AddEditReminderActivity.class);
-            startActivity(intent);
+            if (currentSuggestion != null) {
+                Intent intent = new Intent(requireContext(), AddEditReminderActivity.class);
+                intent.putExtra("suggestionId", currentSuggestion.getSuggestionId());
+                intent.putExtra("suggestedTitle", currentSuggestion.getSuggestedTitle());
+                intent.putExtra("suggestedTime", currentSuggestion.getSuggestedTime());
+                intent.putExtra("suggestedFrequency", currentSuggestion.getSuggestedFrequency());
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(requireContext(), AddEditReminderActivity.class);
+                startActivity(intent);
+            }
+        });
+        
+        getBinding().btnSuggestionLater.setOnClickListener(v -> {
+            hideSuggestion();
+            Toast.makeText(requireContext(), "Đã ẩn gợi ý", Toast.LENGTH_SHORT).show();
         });
     }
 }

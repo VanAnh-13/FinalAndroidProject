@@ -14,14 +14,23 @@ public class NotificationsAdapter extends BaseAdapter<NotificationItem, ItemNoti
 
     private List<NotificationItem> notifications = new ArrayList<>();
     private final OnNotificationClickListener listener;
+    private OnNotificationDeleteListener deleteListener;
 
     public interface OnNotificationClickListener {
         void onNotificationClick(NotificationItem notification);
+    }
+    
+    public interface OnNotificationDeleteListener {
+        void onNotificationDelete(NotificationItem notification, int position);
     }
 
     public NotificationsAdapter(OnNotificationClickListener listener) {
         super(ItemNotificationBinding::inflate);
         this.listener = listener;
+    }
+    
+    public void setDeleteListener(OnNotificationDeleteListener deleteListener) {
+        this.deleteListener = deleteListener;
     }
 
     @Override
@@ -75,6 +84,15 @@ public class NotificationsAdapter extends BaseAdapter<NotificationItem, ItemNoti
                 listener.onNotificationClick(notification);
             }
         });
+        
+        // Delete button
+        if (binding.btnDelete != null) {
+            binding.btnDelete.setOnClickListener(v -> {
+                if (deleteListener != null) {
+                    deleteListener.onNotificationDelete(notification, position);
+                }
+            });
+        }
     }
 
     private int getIconForType(NotificationItem.NotificationType type) {

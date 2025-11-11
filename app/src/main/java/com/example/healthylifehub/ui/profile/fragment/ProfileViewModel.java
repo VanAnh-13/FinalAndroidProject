@@ -31,7 +31,7 @@ public class ProfileViewModel extends BaseViewModel {
 
     public ProfileViewModel(@NonNull Application application) {
         super(application);
-        userRepository = new UserRepository();
+        userRepository = new UserRepository(application.getApplicationContext());
         loadProfileData();
     }
 

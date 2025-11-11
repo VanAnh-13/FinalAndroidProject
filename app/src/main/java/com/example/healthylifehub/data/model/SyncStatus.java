@@ -2,6 +2,7 @@ package com.example.healthylifehub.data.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import lombok.AllArgsConstructor;
 import lombok.Data;

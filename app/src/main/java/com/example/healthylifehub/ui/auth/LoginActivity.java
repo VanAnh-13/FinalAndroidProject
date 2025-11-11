@@ -46,20 +46,21 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
     @Override
     public void initData() {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        observeViewModel();
         loadSavedCredentials();
+    }
+
+    @Override
+    public void bindData() {
+        // Load Google icon on main thread
         loadGoogleIcon();
+        // Observe ViewModel after UI is ready
+        observeViewModel();
     }
 
     private void loadGoogleIcon() {
         Glide.with(this)
                 .load("https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png")
                 .into(getBinding().ivGoogleIcon);
-    }
-
-    @Override
-    public void bindData() {
-        // Initial data binding (if needed)
     }
 
     @Override
