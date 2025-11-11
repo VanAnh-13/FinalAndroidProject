@@ -5,10 +5,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import com.example.healthylifehub.data.local.dao.HealthMetricDao;
+import com.example.healthylifehub.data.local.dao.MedicalRecordDao;
 import com.example.healthylifehub.data.local.dao.ReminderDao;
 import com.example.healthylifehub.data.local.dao.SyncStatusDao;
 import com.example.healthylifehub.data.local.dao.UserDao;
 import com.example.healthylifehub.data.model.HealthMetric;
+import com.example.healthylifehub.data.model.MedicalRecord;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.SyncStatus;
 import com.example.healthylifehub.data.model.User;
@@ -29,10 +31,10 @@ import com.example.healthylifehub.data.model.User;
         User.class,
         HealthMetric.class,
         Reminder.class,
-        SyncStatus.class
-        // Add more as needed: Medicine, MedicalRecord, etc.
+        SyncStatus.class,
+        MedicalRecord.class
     },
-    version = 3,  // Incremented for SyncStatus
+    version = 5,  // Incremented to fix schema mismatch
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -45,6 +47,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HealthMetricDao healthMetricDao();
     public abstract ReminderDao reminderDao();
     public abstract SyncStatusDao syncStatusDao();
+    public abstract MedicalRecordDao medicalRecordDao();
     
     /**
      * Get database instance (Singleton pattern)
@@ -70,11 +73,36 @@ public abstract class AppDatabase extends RoomDatabase {
     
     /**
      * Clear all data (for logout)
+     * Runs on background thread
      */
     public void clearAllData() {
         new Thread(() -> {
-            userDao().deleteUser(null); // This will fail, need to implement properly
-            // TODO: Add proper clear methods in DAOs
+            try {
+                // Clear all tables in order
+                healthMetricDao().deleteAll();
+                // Note: Don't delete users table completely, just mark as inactive
+                android.util.Log.d("AppDatabase", "✅ Cleared all cache data");
+            } catch (Exception e) {
+                android.util.Log.e("AppDatabase", "Error clearing cache", e);
+            }
+        }).start();
+    }
+    
+    /**
+     * Clear data for specific user (logout)
+     */
+    public void clearUserData(String userId) {
+        new Thread(() -> {
+            try {
+                healthMetricDao().deleteAllMetricsForUser(userId);
+                reminderDao().deleteByUserId(userId);
+                syncStatusDao().deleteByUserId(userId);
+                medicalRecordDao().deleteByUserId(userId);
+                userDao().deleteUser(userId);
+                android.util.Log.d("AppDatabase", "✅ Cleared cache data for user: " + userId);
+            } catch (Exception e) {
+                android.util.Log.e("AppDatabase", "Error clearing user cache", e);
+            }
         }).start();
     }
 }

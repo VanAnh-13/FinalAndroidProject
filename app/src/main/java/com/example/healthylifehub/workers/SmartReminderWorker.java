@@ -12,7 +12,14 @@ import com.example.healthylifehub.data.model.SmartSuggestion;
 import com.example.healthylifehub.data.model.UserBehavior;
 import com.example.healthylifehub.data.repository.RemindersRepository;
 import com.example.healthylifehub.services.SmartReminderAI;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -28,11 +35,15 @@ public class SmartReminderWorker extends Worker {
     private static final String TAG = "SmartReminderWorker";
     private final RemindersRepository repository;
     private final ExecutorService executor;
+    private final FirebaseFirestore db;
+    private final FirebaseAuth auth;
     
     public SmartReminderWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
         this.repository = new RemindersRepository();
         this.executor = Executors.newFixedThreadPool(3);
+        this.db = FirebaseFirestore.getInstance();
+        this.auth = FirebaseAuth.getInstance();
     }
     
     @NonNull
@@ -88,75 +99,164 @@ public class SmartReminderWorker extends Worker {
         }
     }
     
-    /**
-     * Fetch active reminders from repository
-     */
     private List<Reminder> fetchActiveReminders() {
         try {
-            // Note: This is a simplified version
-            // In production, you'd need to convert LiveData to blocking call
-            // or use a different approach for background workers
+            FirebaseUser currentUser = auth.getCurrentUser();
+            if (currentUser == null) {
+                Log.w(TAG, "No authenticated user");
+                return new ArrayList<>();
+            }
             
-            Log.d(TAG, "Fetching active reminders...");
-            // TODO: Implement proper blocking fetch from Firestore
-            // For now, return empty list
-            return List.of();
+            String userId = currentUser.getUid();
+            Log.d(TAG, "Fetching active reminders for user: " + userId);
+            
+            QuerySnapshot snapshot = Tasks.await(
+                db.collection("users")
+                    .document(userId)
+                    .collection("reminders")
+                    .whereEqualTo("isActive", true)
+                    .get()
+            );
+            
+            List<Reminder> reminders = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : snapshot) {
+                Reminder reminder = parseReminderFromFirestore(doc);
+                if (reminder != null) {
+                    reminders.add(reminder);
+                }
+            }
+            
+            Log.d(TAG, "Fetched " + reminders.size() + " active reminders");
+            return reminders;
             
         } catch (Exception e) {
             Log.e(TAG, "Error fetching active reminders", e);
-            return List.of();
+            return new ArrayList<>();
         }
     }
     
-    /**
-     * Fetch all reminders for behavior analysis
-     */
     private List<Reminder> fetchAllReminders() {
         try {
-            Log.d(TAG, "Fetching all reminders...");
-            // TODO: Implement proper blocking fetch from Firestore
-            return List.of();
+            FirebaseUser currentUser = auth.getCurrentUser();
+            if (currentUser == null) {
+                Log.w(TAG, "No authenticated user");
+                return new ArrayList<>();
+            }
+            
+            String userId = currentUser.getUid();
+            Log.d(TAG, "Fetching all reminders for user: " + userId);
+            
+            QuerySnapshot snapshot = Tasks.await(
+                db.collection("users")
+                    .document(userId)
+                    .collection("reminders")
+                    .get()
+            );
+            
+            List<Reminder> reminders = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : snapshot) {
+                Reminder reminder = parseReminderFromFirestore(doc);
+                if (reminder != null) {
+                    reminders.add(reminder);
+                }
+            }
+            
+            Log.d(TAG, "Fetched " + reminders.size() + " total reminders");
+            return reminders;
             
         } catch (Exception e) {
             Log.e(TAG, "Error fetching all reminders", e);
-            return List.of();
+            return new ArrayList<>();
         }
     }
     
-    /**
-     * Process generated suggestions
-     * - Save to local database
-     * - Send notifications to user
-     * - Update analytics
-     */
+    private Reminder parseReminderFromFirestore(QueryDocumentSnapshot doc) {
+        try {
+            Reminder reminder = new Reminder();
+            reminder.setReminderId(doc.getId());
+            reminder.setUserId(doc.getString("userId"));
+            reminder.setTitle(doc.getString("title"));
+            reminder.setDescription(doc.getString("description"));
+            
+            Object timeObj = doc.get("reminderTime");
+            if (timeObj instanceof com.google.firebase.Timestamp) {
+                reminder.setReminderTime(((com.google.firebase.Timestamp) timeObj).toDate().getTime());
+            } else if (timeObj instanceof Long) {
+                reminder.setReminderTime((Long) timeObj);
+            }
+            
+            reminder.setFrequency(doc.getString("frequency"));
+            reminder.setActive(Boolean.TRUE.equals(doc.getBoolean("isActive")));
+            reminder.setMedicineId(doc.getString("medicineId"));
+            
+            Object createdObj = doc.get("createdAt");
+            if (createdObj instanceof com.google.firebase.Timestamp) {
+                reminder.setCreatedAt(((com.google.firebase.Timestamp) createdObj).toDate().getTime());
+            } else if (createdObj instanceof Long) {
+                reminder.setCreatedAt((Long) createdObj);
+            }
+            
+            Object updatedObj = doc.get("updatedAt");
+            if (updatedObj instanceof com.google.firebase.Timestamp) {
+                reminder.setUpdatedAt(((com.google.firebase.Timestamp) updatedObj).toDate().getTime());
+            } else if (updatedObj instanceof Long) {
+                reminder.setUpdatedAt((Long) updatedObj);
+            }
+            
+            return reminder;
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing reminder", e);
+            return null;
+        }
+    }
+    
     private void processSuggestions(List<SmartSuggestion> suggestions) {
         if (suggestions.isEmpty()) {
             Log.d(TAG, "No suggestions to process");
             return;
         }
         
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            Log.w(TAG, "No authenticated user, cannot save suggestions");
+            return;
+        }
+        
+        String userId = currentUser.getUid();
+        
         for (SmartSuggestion suggestion : suggestions) {
             Log.d(TAG, "Processing suggestion: " + suggestion.getTitle());
             
-            // TODO: Save suggestion to database
-            // TODO: Send notification to user
-            // TODO: Update analytics
-            
-            switch (suggestion.getType()) {
-                case "optimize_time":
-                    Log.d(TAG, "  → Optimize time suggestion");
-                    break;
-                case "create_reminder":
-                    Log.d(TAG, "  → Create reminder suggestion");
-                    break;
-                case "merge_reminders":
-                    Log.d(TAG, "  → Merge reminders suggestion");
-                    break;
-                case "change_frequency":
-                    Log.d(TAG, "  → Change frequency suggestion");
-                    break;
+            try {
+                String suggestionId = db.collection("users")
+                    .document(userId)
+                    .collection("suggestions")
+                    .document()
+                    .getId();
+                
+                suggestion.setSuggestionId(suggestionId);
+                suggestion.setUserId(userId);
+                suggestion.setCreatedAt(System.currentTimeMillis());
+                suggestion.setStatus("pending");
+                suggestion.setAppliedAt(0);
+                suggestion.setDismissedAt(0);
+                
+                Tasks.await(
+                    db.collection("users")
+                        .document(userId)
+                        .collection("suggestions")
+                        .document(suggestionId)
+                        .set(suggestion)
+                );
+                
+                Log.d(TAG, "Saved suggestion: " + suggestionId);
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error saving suggestion", e);
             }
         }
+        
+        Log.d(TAG, "Processed " + suggestions.size() + " suggestions successfully");
     }
     
     @Override

@@ -1,9 +1,15 @@
 package com.example.healthylifehub.data.repository;
 
+import android.content.Context;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.healthylifehub.data.cache.CacheManager;
+import com.example.healthylifehub.data.model.User;
 import com.example.healthylifehub.data.model.UserProfile;
+import com.example.healthylifehub.data.sync.SyncManager;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,15 +25,37 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 /**
  * Repository for User Profile data from Firebase Firestore.
  * Collection structure: users/{userId}
  * Matches the provided JSON structure with profile nested object
+ * 
+ * Architecture: Offline-First with Room + RxJava
+ * - All reads from Room (instant, works offline)
+ * - All writes to Room first, then sync to Firestore
+ * - Uses CacheManager for centralized cache logic
+ * - Uses SyncManager for background sync
  */
 public class UserRepository extends FirebaseRepository {
     
+    private static final String TAG = "UserRepository";
     private static final String COLLECTION_USERS = "users";
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final CacheManager cacheManager;
+    private final SyncManager syncManager;
+    
+    /**
+     * Constructor with dependency injection
+     */
+    public UserRepository(Context context) {
+        this.cacheManager = CacheManager.getInstance(context);
+        this.syncManager = SyncManager.getInstance(context);
+    }
     
     /**
      * Load user profile data
@@ -420,6 +448,95 @@ public class UserRepository extends FirebaseRepository {
                 return false;
             }
         }, executorService);
+    }
+    
+    // ==================== RxJava METHODS (Offline-First) ====================
+    
+    /**
+     * Get current user (reactive - from cache)
+     */
+    public Flowable<User> getCurrentUserRx() {
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            return Flowable.empty();
+        }
+        
+        return cacheManager.getUser(userId)
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext(user -> Log.d(TAG, "📱 Loaded user: " + user.getUid()));
+    }
+    
+    /**
+     * Cache current user
+     */
+    public Completable cacheCurrentUser(User user) {
+        return cacheManager.cacheUser(user)
+            .doOnComplete(() -> {
+                Log.d(TAG, "✅ Cached user: " + user.getUid());
+                // Trigger background sync if network available
+                if (syncManager.isNetworkAvailable()) {
+                    syncManager.syncAll()
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                            () -> Log.d(TAG, "✅ User synced to Firestore"),
+                            error -> Log.w(TAG, "⚠️ User sync failed", error)
+                        );
+                }
+            });
+    }
+    
+    /**
+     * Update user profile (offline-first)
+     */
+    public Completable updateUserProfileRx(UserProfile userProfile) {
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            return Completable.error(new IllegalStateException("User not logged in"));
+        }
+        
+        return Completable.fromRunnable(() -> {
+            // Create User object from profile
+            User user = new User();
+            user.setUid(userId);
+            user.setDisplayName(userProfile.getFullName());
+            user.setNeedsSync(true);
+            
+            // Cache to Room
+            cacheManager.cacheUser(user)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    () -> Log.d(TAG, "✅ Updated user profile in cache"),
+                    error -> Log.e(TAG, "❌ Error updating user profile", error)
+                );
+        })
+        .subscribeOn(Schedulers.io())
+        .doOnComplete(() -> {
+            Log.d(TAG, "✅ Updated user profile");
+            // Trigger background sync
+            if (syncManager.isNetworkAvailable()) {
+                syncManager.syncAll()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        () -> Log.d(TAG, "✅ Profile update synced"),
+                        error -> Log.w(TAG, "⚠️ Profile update sync failed", error)
+                    );
+            }
+        });
+    }
+    
+    /**
+     * Sync all pending user changes
+     */
+    public Completable syncPendingChanges() {
+        return syncManager.syncAll()
+            .doOnComplete(() -> Log.d(TAG, "✅ Synced pending user changes"));
+    }
+    
+    /**
+     * Get sync events (for UI updates)
+     */
+    public io.reactivex.rxjava3.core.Observable<SyncManager.SyncEvent> getSyncEvents() {
+        return syncManager.getSyncEvents();
     }
 }
 

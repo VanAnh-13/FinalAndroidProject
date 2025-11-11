@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📊 Health Analytics"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+        
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔄 Refresh"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Cache Info -->
+    <TextView
+        android:id="@+id/tv_cache_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📦 Cached (5s old)"
+        android:textSize="12sp"
+        android:textColor="@android:color/darker_gray"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Time Range Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+        
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_7_days"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="7 Days"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+        
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_30_days"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="30 Days"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+        
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_90_days"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="90 Days"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+    </LinearLayout>
+
+    <!-- Loading Progress -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminate="true" />
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:spacing="16dp">
+
+            <!-- Blood Pressure Chart -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_background"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp">
+                
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🩸 Blood Pressure (mmHg)"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+                
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chart_blood_pressure"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+                
+                <TextView
+                    android:id="@+id/tv_blood_pressure_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Avg: 120/80 | Min: 110 | Max: 140 | Trend: ➡️ +2.0"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- Blood Sugar Chart -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_background"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp">
+                
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🍬 Blood Sugar (mg/dL)"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+                
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chart_blood_sugar"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+                
+                <TextView
+                    android:id="@+id/tv_blood_sugar_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Avg: 100.0 | Min: 80.0 | Max: 140.0 | Trend: 📉 -5.0 mg/dL"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- Weight Chart -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_background"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp">
+                
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="⚖️ Weight (kg)"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+                
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chart_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+                
+                <TextView
+                    android:id="@+id/tv_weight_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Avg: 70.0 | Min: 68.5 | Max: 72.0 | Trend: 📈 +0.5 kg"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- Heart Rate Chart -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_background"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp">
+                
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="❤️ Heart Rate (bpm)"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+                
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chart_heart_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+                
+                <TextView
+                    android:id="@+id/tv_heart_rate_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Avg: 72.0 | Min: 60.0 | Max: 90.0 | Trend: ➡️ +1.0 bpm"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

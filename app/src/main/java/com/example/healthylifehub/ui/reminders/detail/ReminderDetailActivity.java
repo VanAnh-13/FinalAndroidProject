@@ -1,5 +1,6 @@
 package com.example.healthylifehub.ui.reminders.detail;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,8 +12,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.healthylifehub.R;
+import com.example.healthylifehub.data.model.Reminder;
+import com.example.healthylifehub.data.repository.RemindersRepository;
 import com.example.healthylifehub.ui.reminders.add_edit.AddEditReminderActivity;
+import com.example.healthylifehub.utils.ReminderAlarmManager;
 import com.google.android.material.button.MaterialButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class ReminderDetailActivity extends AppCompatActivity {
 
@@ -23,12 +31,8 @@ public class ReminderDetailActivity extends AppCompatActivity {
     private MaterialButton btnEditReminder, btnDeleteReminder;
 
     private String reminderId;
-    private String reminderTitle;
-    private String reminderDescription;
-    private String reminderTime;
-    private String reminderRepeat;
-    private String reminderMedication;
-    private String reminderNotes;
+    private Reminder currentReminder;
+    private RemindersRepository remindersRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,34 +59,65 @@ public class ReminderDetailActivity extends AppCompatActivity {
         btnReschedule = findViewById(R.id.btn_reschedule);
         btnEditReminder = findViewById(R.id.btn_edit_reminder);
         btnDeleteReminder = findViewById(R.id.btn_delete_reminder);
+        
+        remindersRepository = new RemindersRepository();
     }
 
     private void loadReminderData() {
-        // Get data from intent
         Intent intent = getIntent();
-        reminderId = intent.getStringExtra("reminder_id");
-        reminderTitle = intent.getStringExtra("reminder_title");
-        reminderDescription = intent.getStringExtra("reminder_description");
-        reminderTime = intent.getStringExtra("reminder_time");
-        reminderRepeat = intent.getStringExtra("reminder_repeat");
-        reminderMedication = intent.getStringExtra("reminder_medication");
-        reminderNotes = intent.getStringExtra("reminder_notes");
-
-        // Set default values for demo
-        if (reminderTitle == null) reminderTitle = "Morning Medication";
-        if (reminderDescription == null) reminderDescription = "Take with a full glass of water, 30 minutes before breakfast.";
-        if (reminderTime == null) reminderTime = "08:00 AM, Today";
-        if (reminderRepeat == null) reminderRepeat = "Daily";
-        if (reminderMedication == null) reminderMedication = "Metformin 500mg";
-        if (reminderNotes == null) reminderNotes = "Remember to check blood sugar levels before taking this medication, especially if feeling dizzy.";
-
-        // Display data
-        tvReminderTitle.setText(reminderTitle);
-        tvReminderDescription.setText(reminderDescription);
-        tvTimeValue.setText(reminderTime);
-        tvRepeatValue.setText(reminderRepeat);
-        tvMedicationValue.setText(reminderMedication);
-        tvNotes.setText(reminderNotes);
+        reminderId = intent.getStringExtra("reminderId");
+        
+        if (reminderId != null) {
+            remindersRepository.getReminderById(reminderId)
+                .thenAccept(reminder -> {
+                    runOnUiThread(() -> {
+                        if (reminder != null) {
+                            currentReminder = reminder;
+                            displayReminderData(reminder);
+                        } else {
+                            Toast.makeText(this, "Không tìm thấy nhắc nhở", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+                });
+        } else {
+            String title = intent.getStringExtra("reminderTitle");
+            String description = intent.getStringExtra("reminderDescription");
+            
+            if (title != null) {
+                tvReminderTitle.setText(title);
+                tvReminderDescription.setText(description != null ? description : "");
+            }
+        }
+    }
+    
+    private void displayReminderData(Reminder reminder) {
+        tvReminderTitle.setText(reminder.getTitle());
+        tvReminderDescription.setText(reminder.getDescription() != null ? reminder.getDescription() : "");
+        
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm, dd/MM/yyyy", Locale.getDefault());
+        tvTimeValue.setText(timeFormat.format(reminder.getReminderTime()));
+        
+        String frequency = getFrequencyText(reminder.getFrequency());
+        tvRepeatValue.setText(frequency);
+        
+        if (reminder.getMedicineId() != null && !reminder.getMedicineId().isEmpty()) {
+            tvMedicationValue.setText(reminder.getMedicineId());
+        } else {
+            tvMedicationValue.setText("Không có");
+        }
+        
+        tvNotes.setText(reminder.getDescription() != null ? reminder.getDescription() : "Không có ghi chú");
+    }
+    
+    private String getFrequencyText(String frequency) {
+        if (frequency == null) return "Một lần";
+        switch (frequency) {
+            case "daily": return "Hàng ngày";
+            case "weekly": return "Hàng tuần";
+            case "monthly": return "Hàng tháng";
+            default: return "Một lần";
+        }
     }
 
     private void setupListeners() {
@@ -92,28 +127,163 @@ public class ReminderDetailActivity extends AppCompatActivity {
 
         btnMarkTaken.setOnClickListener(v -> {
             selectSegmentedButton(btnMarkTaken);
-            Toast.makeText(this, "Marked as taken", Toast.LENGTH_SHORT).show();
+            markReminderAsTaken();
         });
 
         btnSkipReminder.setOnClickListener(v -> {
             selectSegmentedButton(btnSkipReminder);
-            Toast.makeText(this, "Reminder skipped", Toast.LENGTH_SHORT).show();
+            skipReminder();
         });
 
         btnReschedule.setOnClickListener(v -> {
             selectSegmentedButton(btnReschedule);
-            Toast.makeText(this, "Reschedule reminder", Toast.LENGTH_SHORT).show();
+            showRescheduleDialog();
         });
 
         btnEditReminder.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddEditReminderActivity.class);
-            intent.putExtra("reminder_id", reminderId);
-            intent.putExtra("reminder_title", reminderTitle);
-            intent.putExtra("reminder_description", reminderDescription);
-            startActivity(intent);
+            if (currentReminder != null) {
+                Intent intent = new Intent(this, AddEditReminderActivity.class);
+                intent.putExtra("reminderId", currentReminder.getReminderId());
+                intent.putExtra("mode", "edit");
+                startActivity(intent);
+            }
         });
 
         btnDeleteReminder.setOnClickListener(v -> showDeleteConfirmation());
+    }
+    
+    private void markReminderAsTaken() {
+        if (currentReminder == null) {
+            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        if ("once".equals(currentReminder.getFrequency())) {
+            currentReminder.setActive(false);
+            remindersRepository.updateReminder(currentReminder)
+                .thenAccept(success -> {
+                    runOnUiThread(() -> {
+                        if (success) {
+                            ReminderAlarmManager.cancelReminder(this, currentReminder.getReminderId());
+                            Toast.makeText(this, "✅ Đã đánh dấu hoàn thành", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(currentReminder.getReminderTime());
+            
+            switch (currentReminder.getFrequency()) {
+                case "daily":
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    break;
+                case "weekly":
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                    break;
+                case "monthly":
+                    calendar.add(Calendar.MONTH, 1);
+                    break;
+            }
+            
+            currentReminder.setReminderTime(calendar.getTimeInMillis());
+            remindersRepository.updateReminder(currentReminder)
+                .thenAccept(success -> {
+                    runOnUiThread(() -> {
+                        if (success) {
+                            ReminderAlarmManager.scheduleReminder(this, currentReminder);
+                            Toast.makeText(this, "✅ Đã đánh dấu hoàn thành. Lịch nhắc tiếp theo đã được đặt", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+        }
+    }
+    
+    private void skipReminder() {
+        if (currentReminder == null) {
+            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentReminder.getReminderTime());
+        
+        switch (currentReminder.getFrequency()) {
+            case "daily":
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                break;
+            case "weekly":
+                calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                break;
+            case "monthly":
+                calendar.add(Calendar.MONTH, 1);
+                break;
+            default:
+                calendar.add(Calendar.HOUR_OF_DAY, 1);
+                break;
+        }
+        
+        currentReminder.setReminderTime(calendar.getTimeInMillis());
+        remindersRepository.updateReminder(currentReminder)
+            .thenAccept(success -> {
+                runOnUiThread(() -> {
+                    if (success) {
+                        ReminderAlarmManager.scheduleReminder(this, currentReminder);
+                        Toast.makeText(this, "⏭️ Đã bỏ qua. Lịch nhắc tiếp theo đã được đặt", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+    }
+    
+    private void showRescheduleDialog() {
+        if (currentReminder == null) {
+            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+            this,
+            (view, hourOfDay, minuteOfHour) -> {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minuteOfHour);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                
+                if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                }
+                
+                currentReminder.setReminderTime(calendar.getTimeInMillis());
+                remindersRepository.updateReminder(currentReminder)
+                    .thenAccept(success -> {
+                        runOnUiThread(() -> {
+                            if (success) {
+                                ReminderAlarmManager.scheduleReminder(this, currentReminder);
+                                Toast.makeText(this, "🔔 Đã đặt lại lịch nhắc", Toast.LENGTH_SHORT).show();
+                                displayReminderData(currentReminder);
+                            } else {
+                                Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
+            },
+            hour,
+            minute,
+            true
+        );
+        timePickerDialog.show();
     }
 
     private void selectSegmentedButton(MaterialButton selectedButton) {
@@ -133,13 +303,27 @@ public class ReminderDetailActivity extends AppCompatActivity {
     }
 
     private void showDeleteConfirmation() {
+        if (currentReminder == null) {
+            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         new AlertDialog.Builder(this)
             .setTitle(R.string.delete_reminder)
-            .setMessage("Are you sure you want to delete this reminder?")
+            .setMessage("Bạn có chắc chắn muốn xóa nhắc nhở này?")
             .setPositiveButton(R.string.delete, (dialog, which) -> {
-                // TODO: Delete reminder from database
-                Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show();
-                finish();
+                remindersRepository.deleteReminder(currentReminder.getReminderId())
+                    .thenAccept(success -> {
+                        runOnUiThread(() -> {
+                            if (success) {
+                                ReminderAlarmManager.cancelReminder(this, currentReminder.getReminderId());
+                                Toast.makeText(this, "🗑️ Đã xóa nhắc nhở", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Toast.makeText(this, "❌ Lỗi khi xóa", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
             })
             .setNegativeButton(R.string.cancel, null)
             .show();

@@ -35,13 +35,14 @@ public class RegisterActivity extends BaseActivity<ActivityRegisterBinding> {
     @Override
     public void initData() {
         viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
-        observeViewModel();
-        loadGoogleIcon();
     }
 
     @Override
     public void bindData() {
-        // Initial data binding
+        // Load Google icon on main thread
+        loadGoogleIcon();
+        // Observe ViewModel after UI is ready
+        observeViewModel();
     }
 
     @Override

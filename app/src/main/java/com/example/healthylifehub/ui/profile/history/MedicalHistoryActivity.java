@@ -23,7 +23,7 @@ public class MedicalHistoryActivity extends BaseActivity<ActivityMedicalHistoryB
 
     @Override
     public void initData() {
-        repository = new UserRepository();
+        repository = new UserRepository(this);
         loadMedicalHistory();
     }
 

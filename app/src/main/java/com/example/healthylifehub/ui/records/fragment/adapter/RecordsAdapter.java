@@ -132,6 +132,8 @@ public class RecordsAdapter extends BaseAdapter<MedicalRecord, ItemRecordTimelin
     }
 
     private int getIconForType(MedicalRecord.RecordType type) {
+        if (type == null) return R.drawable.ic_medication;
+        
         switch (type) {
             case CARDIOLOGY:
                 return R.drawable.ic_heart;
@@ -145,4 +147,5 @@ public class RecordsAdapter extends BaseAdapter<MedicalRecord, ItemRecordTimelin
                 return R.drawable.ic_medication;
         }
     }
+
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -85,7 +86,9 @@ public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
     protected Dialog getLoadingDialog() {
         if (loadingDialog == null && getContext() != null) {
             loadingDialog = new Dialog(getContext());
-            // TODO: Configure loading dialog appearance and behavior
+            loadingDialog.setContentView(new ProgressBar(getContext()));
+            loadingDialog.setCancelable(false);
+            loadingDialog.setTitle("Loading...");
         }
         return loadingDialog;
     }
@@ -137,11 +140,11 @@ public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
             if (isLoading) {
                 Dialog dialog = getLoadingDialog();
                 if (dialog != null && !dialog.isShowing()) {
-                    // TODO: Show loading dialog with appropriate configuration
+                    dialog.show();
                 }
             } else {
                 Dialog dialog = getLoadingDialog();
-                if (dialog != null) {
+                if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
             }

@@ -13,6 +13,7 @@ public class NotificationItem {
         GENERAL
     }
 
+    private String id; // Firestore document ID
     private String title;
     private String message;
     private String time;

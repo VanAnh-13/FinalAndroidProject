@@ -1,17 +1,20 @@
 package com.example.healthylifehub.data.repository;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+
+import com.example.healthylifehub.data.local.AppDatabase;
+import com.example.healthylifehub.data.local.dao.ReminderDao;
 import com.example.healthylifehub.data.model.Reminder;
-import com.example.healthylifehub.data.model.UserBehavior;
+import com.example.healthylifehub.utils.ApplicationContextProvider;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,102 +22,77 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Repository for Reminder data from Firebase Firestore.
- * Collection structure: users/{userId}/reminders/{reminderId}
- * Supports CRUD operations and AI behavior analysis
- */
 public class RemindersRepository extends FirebaseRepository {
     
+    private static final String TAG = "RemindersRepository";
     private static final String COLLECTION_REMINDERS = "reminders";
+    
+    private final ReminderDao reminderDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     
-    // ==================== READ OPERATIONS ====================
+    public RemindersRepository() {
+        super();
+        this.reminderDao = AppDatabase.getInstance(ApplicationContextProvider.getContext()).reminderDao();
+    }
     
-    /**
-     * Load all reminders for current user
-     * @return LiveData list of reminders
-     */
     public LiveData<List<Reminder>> loadReminders() {
-        MutableLiveData<List<Reminder>> remindersLiveData = new MutableLiveData<>();
-        
         String userId = getCurrentUserId();
         if (userId == null) {
-            remindersLiveData.setValue(new ArrayList<>());
-            return remindersLiveData;
+            return new MediatorLiveData<>();
         }
         
-        db.collection("users")
-            .document(userId)
-            .collection(COLLECTION_REMINDERS)
-            .orderBy("reminderTime", com.google.firebase.firestore.Query.Direction.ASCENDING)
-            .addSnapshotListener((value, error) -> {
-                if (error != null) {
-                    remindersLiveData.setValue(new ArrayList<>());
-                    return;
-                }
-                
-                if (value != null) {
-                    List<Reminder> reminders = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : value) {
-                        Reminder reminder = parseReminder(doc);
-                        if (reminder != null) {
-                            reminders.add(reminder);
-                        }
-                    }
-                    remindersLiveData.setValue(reminders);
-                }
-            });
+        LiveData<List<Reminder>> localData = reminderDao.getAllReminders(userId);
         
-        return remindersLiveData;
+        fetchRemindersFromFirebase(userId);
+        
+        return localData;
     }
     
-    /**
-     * Load only active reminders
-     * @return LiveData list of active reminders
-     */
     public LiveData<List<Reminder>> loadActiveReminders() {
-        MutableLiveData<List<Reminder>> remindersLiveData = new MutableLiveData<>();
-        
         String userId = getCurrentUserId();
         if (userId == null) {
-            remindersLiveData.setValue(new ArrayList<>());
-            return remindersLiveData;
+            return new MediatorLiveData<>();
         }
         
-        db.collection("users")
-            .document(userId)
-            .collection(COLLECTION_REMINDERS)
-            .whereEqualTo("isActive", true)
-            .orderBy("reminderTime", com.google.firebase.firestore.Query.Direction.ASCENDING)
-            .addSnapshotListener((value, error) -> {
-                if (error != null) {
-                    remindersLiveData.setValue(new ArrayList<>());
-                    return;
-                }
-                
-                if (value != null) {
-                    List<Reminder> reminders = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : value) {
-                        Reminder reminder = parseReminder(doc);
-                        if (reminder != null) {
-                            reminders.add(reminder);
-                        }
-                    }
-                    remindersLiveData.setValue(reminders);
-                }
-            });
+        LiveData<List<Reminder>> localData = reminderDao.getActiveReminders(userId);
         
-        return remindersLiveData;
+        fetchRemindersFromFirebase(userId);
+        
+        return localData;
     }
     
-    /**
-     * Get single reminder by ID
-     * @param reminderId Reminder ID
-     * @return CompletableFuture with Reminder
-     */
+    private void fetchRemindersFromFirebase(String userId) {
+        executorService.execute(() -> {
+            db.collection("users")
+                .document(userId)
+                .collection(COLLECTION_REMINDERS)
+                .orderBy("reminderTime", com.google.firebase.firestore.Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    executorService.execute(() -> {
+                        for (QueryDocumentSnapshot doc : querySnapshot) {
+                            Reminder reminder = parseReminder(doc);
+                            if (reminder != null) {
+                                reminderDao.insert(reminder);
+                            }
+                        }
+                        Log.d(TAG, "✅ Synced " + querySnapshot.size() + " reminders from Firebase");
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "❌ Failed to fetch from Firebase (offline mode)", e);
+                });
+        });
+    }
+    
     public CompletableFuture<Reminder> getReminderById(String reminderId) {
         return CompletableFuture.supplyAsync(() -> {
+            Reminder localReminder = reminderDao.getReminderById(reminderId);
+            if (localReminder != null) {
+                Log.d(TAG, "📱 Loaded from local cache: " + reminderId);
+                return localReminder;
+            }
+            
             String userId = getCurrentUserId();
             if (userId == null) return null;
             
@@ -130,30 +108,27 @@ public class RemindersRepository extends FirebaseRepository {
                 }
                 
                 if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
-                    return parseReminder(task.getResult());
+                    Reminder reminder = parseReminder(task.getResult());
+                    if (reminder != null) {
+                        reminderDao.insert(reminder);
+                        Log.d(TAG, "☁️ Fetched from Firebase and cached: " + reminderId);
+                    }
+                    return reminder;
                 }
                 return null;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error fetching reminder", e);
                 return null;
             }
         }, executorService);
     }
     
-    // ==================== CREATE/UPDATE OPERATIONS ====================
-    
-    /**
-     * Create new reminder
-     * @param reminder Reminder object
-     * @return CompletableFuture with reminder ID
-     */
     public CompletableFuture<String> createReminder(Reminder reminder) {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
             if (userId == null) return null;
             
             try {
-                // Generate new ID
                 String reminderId = db.collection("users")
                         .document(userId)
                         .collection(COLLECTION_REMINDERS)
@@ -164,6 +139,9 @@ public class RemindersRepository extends FirebaseRepository {
                 reminder.setUserId(userId);
                 reminder.setCreatedAt(System.currentTimeMillis());
                 reminder.setUpdatedAt(System.currentTimeMillis());
+                
+                reminderDao.insert(reminder);
+                Log.d(TAG, "📱 Saved to local DB first: " + reminderId);
                 
                 Map<String, Object> reminderData = toMap(reminder);
                 
@@ -177,19 +155,20 @@ public class RemindersRepository extends FirebaseRepository {
                     Thread.sleep(50);
                 }
                 
-                return task.isSuccessful() ? reminderId : null;
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "☁️ Synced to Firebase: " + reminderId);
+                } else {
+                    Log.w(TAG, "⚠️ Offline mode - will sync later: " + reminderId);
+                }
+                
+                return reminderId;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error creating reminder", e);
                 return null;
             }
         }, executorService);
     }
     
-    /**
-     * Update existing reminder
-     * @param reminder Reminder object with updated data
-     * @return CompletableFuture<Boolean> success status
-     */
     public CompletableFuture<Boolean> updateReminder(Reminder reminder) {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
@@ -197,6 +176,10 @@ public class RemindersRepository extends FirebaseRepository {
             
             try {
                 reminder.setUpdatedAt(System.currentTimeMillis());
+                
+                reminderDao.update(reminder);
+                Log.d(TAG, "📱 Updated local DB: " + reminder.getReminderId());
+                
                 Map<String, Object> reminderData = toMap(reminder);
                 
                 Task<Void> task = db.collection("users")
@@ -209,26 +192,29 @@ public class RemindersRepository extends FirebaseRepository {
                     Thread.sleep(50);
                 }
                 
-                return task.isSuccessful();
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "☁️ Synced update to Firebase");
+                } else {
+                    Log.w(TAG, "⚠️ Offline mode - will sync later");
+                }
+                
+                return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error updating reminder", e);
                 return false;
             }
         }, executorService);
     }
     
-    /**
-     * Toggle reminder active status
-     * @param reminderId Reminder ID
-     * @param isActive New active status
-     * @return CompletableFuture<Boolean> success status
-     */
     public CompletableFuture<Boolean> toggleReminderStatus(String reminderId, boolean isActive) {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
             if (userId == null) return false;
             
             try {
+                reminderDao.updateStatus(reminderId, isActive);
+                Log.d(TAG, "📱 Toggled status in local DB: " + reminderId);
+                
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("isActive", isActive);
                 updates.put("updatedAt", Timestamp.now());
@@ -243,27 +229,29 @@ public class RemindersRepository extends FirebaseRepository {
                     Thread.sleep(50);
                 }
                 
-                return task.isSuccessful();
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "☁️ Synced status to Firebase");
+                } else {
+                    Log.w(TAG, "⚠️ Offline mode - will sync later");
+                }
+                
+                return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error toggling status", e);
                 return false;
             }
         }, executorService);
     }
     
-    // ==================== DELETE OPERATIONS ====================
-    
-    /**
-     * Delete reminder
-     * @param reminderId Reminder ID
-     * @return CompletableFuture<Boolean> success status
-     */
     public CompletableFuture<Boolean> deleteReminder(String reminderId) {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
             if (userId == null) return false;
             
             try {
+                reminderDao.deleteById(reminderId);
+                Log.d(TAG, "📱 Deleted from local DB: " + reminderId);
+                
                 Task<Void> task = db.collection("users")
                         .document(userId)
                         .collection(COLLECTION_REMINDERS)
@@ -274,40 +262,63 @@ public class RemindersRepository extends FirebaseRepository {
                     Thread.sleep(50);
                 }
                 
-                return task.isSuccessful();
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "☁️ Deleted from Firebase");
+                } else {
+                    Log.w(TAG, "⚠️ Offline mode - deletion marked locally");
+                }
+                
+                return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error deleting reminder", e);
                 return false;
             }
         }, executorService);
     }
     
-    // ==================== HELPER METHODS ====================
-    
-    /**
-     * Parse Firestore document to Reminder object
-     */
     private Reminder parseReminder(DocumentSnapshot doc) {
         try {
+            // Validate critical fields
+            String reminderId = doc.getId();
+            String userId = doc.getString("userId");
+            String title = doc.getString("title");
+            String frequency = doc.getString("frequency");
+            
+            if (userId == null || userId.isEmpty()) {
+                Log.e(TAG, "Invalid userId in reminder document");
+                return null;
+            }
+            if (title == null || title.isEmpty()) {
+                Log.e(TAG, "Invalid title in reminder document");
+                return null;
+            }
+            if (frequency == null || frequency.isEmpty()) {
+                Log.e(TAG, "Invalid frequency in reminder document");
+                return null;
+            }
+            
             Reminder reminder = new Reminder();
-            reminder.setReminderId(doc.getId());
-            reminder.setUserId(doc.getString("userId"));
-            reminder.setTitle(doc.getString("title"));
+            reminder.setReminderId(reminderId);
+            reminder.setUserId(userId);
+            reminder.setTitle(title);
             reminder.setDescription(doc.getString("description"));
             
-            // Parse timestamp
+            // Parse reminderTime
             Object timeObj = doc.get("reminderTime");
             if (timeObj instanceof Timestamp) {
                 reminder.setReminderTime(((Timestamp) timeObj).toDate().getTime());
             } else if (timeObj instanceof Long) {
                 reminder.setReminderTime((Long) timeObj);
+            } else {
+                Log.w(TAG, "Invalid reminderTime format");
+                return null;
             }
             
-            reminder.setFrequency(doc.getString("frequency"));
+            reminder.setFrequency(frequency);
             reminder.setActive(Boolean.TRUE.equals(doc.getBoolean("isActive")));
             reminder.setMedicineId(doc.getString("medicineId"));
             
-            // Parse created/updated timestamps
+            // Parse createdAt
             Object createdObj = doc.get("createdAt");
             if (createdObj instanceof Timestamp) {
                 reminder.setCreatedAt(((Timestamp) createdObj).toDate().getTime());
@@ -315,6 +326,7 @@ public class RemindersRepository extends FirebaseRepository {
                 reminder.setCreatedAt((Long) createdObj);
             }
             
+            // Parse updatedAt
             Object updatedObj = doc.get("updatedAt");
             if (updatedObj instanceof Timestamp) {
                 reminder.setUpdatedAt(((Timestamp) updatedObj).toDate().getTime());
@@ -324,27 +336,33 @@ public class RemindersRepository extends FirebaseRepository {
             
             return reminder;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error parsing reminder", e);
             return null;
         }
     }
     
-    /**
-     * Convert Reminder to Firestore map
-     */
     private Map<String, Object> toMap(Reminder reminder) {
         Map<String, Object> map = new HashMap<>();
         map.put("reminderId", reminder.getReminderId());
         map.put("userId", reminder.getUserId());
         map.put("title", reminder.getTitle());
         map.put("description", reminder.getDescription());
-        map.put("reminderTime", new Timestamp(reminder.getReminderTime() / 1000, 0));
+        
+        // Convert milliseconds to seconds for Firestore Timestamp
+        long reminderSeconds = reminder.getReminderTime() / 1000;
+        map.put("reminderTime", new Timestamp(reminderSeconds, 0));
+        
         map.put("frequency", reminder.getFrequency());
         map.put("isActive", reminder.isActive());
         map.put("medicineId", reminder.getMedicineId());
-        map.put("createdAt", new Timestamp(reminder.getCreatedAt() / 1000, 0));
-        map.put("updatedAt", new Timestamp(reminder.getUpdatedAt() / 1000, 0));
+        
+        // Convert milliseconds to seconds for Firestore Timestamp
+        long createdSeconds = reminder.getCreatedAt() / 1000;
+        map.put("createdAt", new Timestamp(createdSeconds, 0));
+        
+        long updatedSeconds = reminder.getUpdatedAt() / 1000;
+        map.put("updatedAt", new Timestamp(updatedSeconds, 0));
+        
         return map;
     }
 }
-
