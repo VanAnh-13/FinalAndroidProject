@@ -6,11 +6,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import com.example.healthylifehub.data.local.dao.HealthMetricDao;
 import com.example.healthylifehub.data.local.dao.MedicalRecordDao;
+import com.example.healthylifehub.data.local.dao.NotificationSettingsDao;
 import com.example.healthylifehub.data.local.dao.ReminderDao;
 import com.example.healthylifehub.data.local.dao.SyncStatusDao;
 import com.example.healthylifehub.data.local.dao.UserDao;
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.example.healthylifehub.data.model.MedicalRecord;
+import com.example.healthylifehub.data.model.NotificationSettings;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.SyncStatus;
 import com.example.healthylifehub.data.model.User;
@@ -32,9 +34,10 @@ import com.example.healthylifehub.data.model.User;
         HealthMetric.class,
         Reminder.class,
         SyncStatus.class,
-        MedicalRecord.class
+        MedicalRecord.class,
+        NotificationSettings.class
     },
-    version = 5,  // Incremented to fix schema mismatch
+    version = 8,  // Incremented for NotificationSettings table
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -48,6 +51,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ReminderDao reminderDao();
     public abstract SyncStatusDao syncStatusDao();
     public abstract MedicalRecordDao medicalRecordDao();
+    public abstract NotificationSettingsDao notificationSettingsDao();
     
     /**
      * Get database instance (Singleton pattern)

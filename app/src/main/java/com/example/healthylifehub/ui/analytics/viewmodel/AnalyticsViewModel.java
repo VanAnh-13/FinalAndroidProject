@@ -1,9 +1,11 @@
 package com.example.healthylifehub.ui.analytics.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import com.example.healthylifehub.base.BaseViewModel;
 import com.example.healthylifehub.data.model.AnalyticsData;
@@ -30,17 +32,22 @@ public class AnalyticsViewModel extends BaseViewModel {
     // Current time range (7, 30, 90 days)
     private final MutableLiveData<Integer> selectedDayRange = new MutableLiveData<>(7);
     
-    // Analytics data
-    private final MutableLiveData<AnalyticsData> analyticsData = new MutableLiveData<>();
-    
     // Loading state
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     
     // Error message
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     
-    // Current analytics LiveData (changes when time range changes)
-    private LiveData<AnalyticsData> currentAnalyticsLiveData;
+    // Analytics data - uses switchMap to automatically update when dayRange changes
+    private final LiveData<AnalyticsData> analyticsData = Transformations.switchMap(
+        selectedDayRange,
+        dayRange -> {
+            Log.d(TAG, "📊 Loading analytics for " + dayRange + " days");
+            isLoading.setValue(true);
+            errorMessage.setValue(null);
+            return analyticsRepository.getAnalyticsData(dayRange);
+        }
+    );
     
     /**
      * Get analytics data for current time range
@@ -74,23 +81,9 @@ public class AnalyticsViewModel extends BaseViewModel {
      * Load analytics data for specified time range
      */
     public void loadAnalyticsData(int dayRange) {
-        isLoading.setValue(true);
-        errorMessage.setValue(null);
+        Log.d(TAG, "🔄 loadAnalyticsData called with dayRange: " + dayRange);
         selectedDayRange.setValue(dayRange);
-        
-        // Fetch from repository (which handles cache internally)
-        currentAnalyticsLiveData = analyticsRepository.getAnalyticsData(dayRange);
-        
-        // Observe and forward to UI
-        currentAnalyticsLiveData.observeForever(data -> {
-            if (data != null) {
-                analyticsData.setValue(data);
-                isLoading.setValue(false);
-            } else {
-                errorMessage.setValue("Failed to load analytics data");
-                isLoading.setValue(false);
-            }
-        });
+        isLoading.setValue(false);
     }
     
     /**

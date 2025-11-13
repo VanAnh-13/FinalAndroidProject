@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "healthylifehub-filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "."
+      ],
+      "env": {
+        "DEBUG": "mcp*"
+      }
+    },
+    "healthylifehub-git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git@latest",
+        "."
+      ]
+    }
+  }
+}

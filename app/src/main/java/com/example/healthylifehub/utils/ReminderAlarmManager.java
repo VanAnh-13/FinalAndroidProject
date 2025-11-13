@@ -155,4 +155,42 @@ public class ReminderAlarmManager {
         
         Log.d(TAG, "Reminder rescheduled to: " + newTime);
     }
+    
+    /**
+     * Schedule one-time alarm (for snooze functionality)
+     * @param context Application context
+     * @param intent Intent to broadcast
+     * @param triggerTime When to trigger the alarm
+     * @param requestCode Unique request code
+     */
+    public static void scheduleOneTimeAlarm(Context context, Intent intent, long triggerTime, int requestCode) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            Log.e(TAG, "AlarmManager is null");
+            return;
+        }
+        
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
+            );
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
+            );
+        }
+        
+        Log.d(TAG, "One-time alarm scheduled for: " + new java.util.Date(triggerTime));
+    }
 }

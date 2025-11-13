@@ -2,6 +2,7 @@ package com.example.healthylifehub.ui.reminders.add_edit;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.data.model.Reminder;
@@ -27,6 +30,9 @@ import java.util.Locale;
 
 public class AddEditReminderActivity extends AppCompatActivity {
 
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    private static final String NOTIFICATION_PERMISSION = "android.permission.POST_NOTIFICATIONS";
+    
     private ImageView ivClose;
     private TextView btnSave;
     private ChipGroup chipGroupType;
@@ -227,6 +233,19 @@ public class AddEditReminderActivity extends AppCompatActivity {
             return;
         }
 
+        // Request notification permission for new reminders (Android 13+)
+        if (!isEditMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, NOTIFICATION_PERMISSION)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{NOTIFICATION_PERMISSION},
+                    PERMISSION_REQUEST_CODE
+                );
+                return; // Wait for permission result
+            }
+        }
+
         int selectedChipId = chipGroupType.getCheckedChipId();
         Chip selectedChip = findViewById(selectedChipId);
         String reminderType = selectedChip != null ? selectedChip.getText().toString() : "";
@@ -353,6 +372,117 @@ public class AddEditReminderActivity extends AppCompatActivity {
             return calendar.getTimeInMillis();
         } catch (Exception e) {
             return System.currentTimeMillis();
+        }
+    }
+    
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, proceed with saving
+                Toast.makeText(this, "✅ Đã cấp quyền thông báo", Toast.LENGTH_SHORT).show();
+                saveReminderAfterPermission();
+            } else {
+                // Permission denied
+                Toast.makeText(this, "⚠️ Cần cấp quyền thông báo để nhắc nhở hoạt động", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    
+    /**
+     * Save reminder after permission is granted
+     * This is called after permission request completes
+     */
+    private void saveReminderAfterPermission() {
+        String title = etTitle.getText().toString().trim();
+        
+        int selectedChipId = chipGroupType.getCheckedChipId();
+        Chip selectedChip = findViewById(selectedChipId);
+        String reminderType = selectedChip != null ? selectedChip.getText().toString() : "";
+
+        String description = etNote.getText().toString().trim();
+        String medicine = actMedicine.getText().toString();
+        String repeatText = actRepeat.getText().toString();
+        
+        String frequency = convertRepeatToFrequency(repeatText);
+        long reminderTime = convertTimeToTimestamp(selectedTime);
+
+        Reminder reminder;
+        if (isEditMode && currentReminder != null) {
+            reminder = currentReminder;
+            reminder.setTitle(title);
+            reminder.setDescription(description);
+            reminder.setReminderTime(reminderTime);
+            reminder.setFrequency(frequency);
+        } else {
+            reminder = new Reminder();
+            reminder.setTitle(title);
+            reminder.setDescription(description);
+            reminder.setReminderTime(reminderTime);
+            reminder.setFrequency(frequency);
+            reminder.setActive(true);
+        }
+        
+        if (medicine != null && !medicine.equals(getString(R.string.no_medicine))) {
+            reminder.setMedicineId(medicine);
+        }
+        
+        btnSaveReminder.setEnabled(false);
+        btnSaveReminder.setText(isEditMode ? "Đang cập nhật..." : "Đang lưu...");
+        
+        if (isEditMode) {
+            remindersRepository.updateReminder(reminder)
+                .thenAccept(success -> {
+                    runOnUiThread(() -> {
+                        if (success) {
+                            ReminderAlarmManager.cancelReminder(this, reminder.getReminderId());
+                            ReminderAlarmManager.scheduleReminder(this, reminder);
+                            
+                            Toast.makeText(this, "✅ Đã cập nhật nhắc nhở!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            btnSaveReminder.setEnabled(true);
+                            btnSaveReminder.setText("Cập nhật nhắc nhở");
+                        }
+                    });
+                })
+                .exceptionally(throwable -> {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        btnSaveReminder.setEnabled(true);
+                        btnSaveReminder.setText("Cập nhật nhắc nhở");
+                    });
+                    return null;
+                });
+        } else {
+            remindersRepository.createReminder(reminder)
+                .thenAccept(reminderId -> {
+                    runOnUiThread(() -> {
+                        if (reminderId != null) {
+                            reminder.setReminderId(reminderId);
+                            
+                            ReminderAlarmManager.scheduleReminder(this, reminder);
+                            
+                            Toast.makeText(this, "✅ Đã tạo nhắc nhở thành công!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(this, "❌ Lỗi khi tạo nhắc nhở", Toast.LENGTH_SHORT).show();
+                            btnSaveReminder.setEnabled(true);
+                            btnSaveReminder.setText("Lưu nhắc nhở");
+                        }
+                    });
+                })
+                .exceptionally(throwable -> {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        btnSaveReminder.setEnabled(true);
+                        btnSaveReminder.setText("Lưu nhắc nhở");
+                    });
+                    return null;
+                });
         }
     }
 }

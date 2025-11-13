@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -32,6 +33,12 @@ public interface MedicalRecordDao {
      */
     @Insert
     void insertAll(List<MedicalRecord> records);
+    
+    /**
+     * Insert or update multiple medical records (upsert)
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void upsertAll(List<MedicalRecord> records);
     
     /**
      * Update an existing medical record

@@ -1,14 +1,16 @@
 package com.example.healthylifehub.data.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Smart Suggestion model
  * AI-generated suggestions for reminder optimization
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SmartSuggestion {

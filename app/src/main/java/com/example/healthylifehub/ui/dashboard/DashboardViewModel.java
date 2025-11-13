@@ -1,6 +1,8 @@
 package com.example.healthylifehub.ui.dashboard;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -19,20 +21,43 @@ public class DashboardViewModel extends BaseViewModel {
     private final MutableLiveData<String> greeting = new MutableLiveData<>();
     private final MediatorLiveData<List<Reminder>> reminders = new MediatorLiveData<>();
     private final MediatorLiveData<Integer> notificationCount = new MediatorLiveData<>();
+    private final MediatorLiveData<java.util.Map<String, String>> latestMetrics = new MediatorLiveData<>();
     
     private final RemindersRepository remindersRepository;
     private final NotificationsRepository notificationsRepository;
+    private final com.example.healthylifehub.data.repository.MetricsRepository metricsRepository;
 
     public DashboardViewModel(@NonNull Application application) {
         super(application);
         
         remindersRepository = new RemindersRepository();
         notificationsRepository = new NotificationsRepository();
+        metricsRepository = new com.example.healthylifehub.data.repository.MetricsRepository(application.getApplicationContext());
         
-        loadUserName();
+        // Set default values to prevent UI crashes
+        userName.setValue("User");
         updateGreeting();
-        loadReminders();
-        loadNotificationCount();
+        reminders.setValue(new java.util.ArrayList<>());
+        notificationCount.setValue(0);
+        latestMetrics.setValue(new java.util.HashMap<>());
+        
+        // Defer Firebase calls to avoid timeout on startup without internet
+        loadDataAsync();
+    }
+    
+    private void loadDataAsync() {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        new Thread(() -> {
+            try {
+                Thread.sleep(500); // Wait for UI to render
+                mainHandler.post(this::loadUserName);
+                mainHandler.post(this::loadReminders);
+                mainHandler.post(this::loadNotificationCount);
+                mainHandler.post(this::loadLatestMetrics);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
     }
     
     private void loadUserName() {
@@ -83,6 +108,11 @@ public class DashboardViewModel extends BaseViewModel {
         LiveData<Integer> source = notificationsRepository.getUnreadCount();
         notificationCount.addSource(source, notificationCount::setValue);
     }
+    
+    private void loadLatestMetrics() {
+        LiveData<java.util.Map<String, String>> source = metricsRepository.loadLatestMetrics();
+        latestMetrics.addSource(source, latestMetrics::setValue);
+    }
 
     public void snoozeReminder(Reminder reminder) {
     }
@@ -109,5 +139,9 @@ public class DashboardViewModel extends BaseViewModel {
 
     public LiveData<Integer> getNotificationCount() {
         return notificationCount;
+    }
+    
+    public LiveData<java.util.Map<String, String>> getLatestMetrics() {
+        return latestMetrics;
     }
 }

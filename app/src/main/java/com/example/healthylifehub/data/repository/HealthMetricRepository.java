@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import com.example.healthylifehub.data.local.AppDatabase;
 import com.example.healthylifehub.data.local.dao.HealthMetricDao;
+import com.example.healthylifehub.data.cache.CacheManager;
 // No need for Entity anymore - using Model directly
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,8 +46,10 @@ public class HealthMetricRepository {
     private final FirebaseAuth auth;
     private final HealthMetricDao dao;
     private final ExecutorService executorService;
+    private final Context context;
     
     public HealthMetricRepository(Context context) {
+        this.context = context;
         this.db = FirebaseFirestore.getInstance();
         this.auth = FirebaseAuth.getInstance();
         this.dao = AppDatabase.getInstance(context).healthMetricDao();

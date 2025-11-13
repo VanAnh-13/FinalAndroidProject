@@ -153,6 +153,9 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
                         String displayName = refreshedUser.getDisplayName();
                         if (displayName != null && !displayName.isEmpty()) {
                             getBinding().tvProfileName.setText(displayName);
+                        } else {
+                            // If displayName is empty, load from Firestore
+                            loadDisplayNameFromFirestore(refreshedUser.getUid());
                         }
 
                         // Load user email
@@ -172,6 +175,40 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
                 }
             });
         }
+    }
+    
+    /**
+     * Load display name from Firestore if not available in Firebase Auth
+     */
+    private void loadDisplayNameFromFirestore(String userId) {
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists() && getBinding() != null) {
+                    // Try to get displayName from root level
+                    String displayName = documentSnapshot.getString("displayName");
+                    
+                    // If not found, try to get from profile.fullName
+                    if (displayName == null || displayName.isEmpty()) {
+                        Object profileObj = documentSnapshot.get("profile");
+                        if (profileObj instanceof java.util.Map) {
+                            @SuppressWarnings("unchecked")
+                            java.util.Map<String, Object> profile = (java.util.Map<String, Object>) profileObj;
+                            displayName = (String) profile.get("fullName");
+                        }
+                    }
+                    
+                    if (displayName != null && !displayName.isEmpty()) {
+                        getBinding().tvProfileName.setText(displayName);
+                        android.util.Log.d("ProfileFragment", "Loaded displayName from Firestore: " + displayName);
+                    }
+                }
+            })
+            .addOnFailureListener(e -> {
+                android.util.Log.e("ProfileFragment", "Error loading displayName from Firestore", e);
+            });
     }
 
     @Override
@@ -266,12 +303,14 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
 
         // Privacy & security action
         getBinding().actionPrivacy.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Privacy & Security coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), com.example.healthylifehub.ui.profile.privacy.PrivacySecurityActivity.class);
+            startActivity(intent);
         });
 
         // Help action
         getBinding().actionHelp.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Help coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), com.example.healthylifehub.ui.profile.help.HelpSupportActivity.class);
+            startActivity(intent);
         });
 
         // Logout action

@@ -1,4 +1,4 @@
-Starting a Gradle Daemon, 1 incompatible and 3 stopped Daemons could not be reused, use --status for details
+Starting a Gradle Daemon, 1 incompatible Daemon could not be reused, use --status for details
 > Task :app:clean
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
@@ -30,19 +30,19 @@ Starting a Gradle Daemon, 1 incompatible and 3 stopped Daemons could not be reus
 > Task :app:mergeDebugJniLibFolders
 > Task :app:mergeDebugNativeLibs NO-SOURCE
 > Task :app:stripDebugDebugSymbols NO-SOURCE
-> Task :app:checkDebugDuplicateClasses
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
-> Task :app:mergeLibDexDebug
+> Task :app:checkDebugDuplicateClasses
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeLibDexDebug
 > Task :app:mergeReleaseNativeLibs NO-SOURCE
 > Task :app:stripReleaseDebugSymbols NO-SOURCE
 > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:checkReleaseDuplicateClasses
 > Task :app:dataBindingMergeDependencyArtifactsRelease
+> Task :app:checkReleaseDuplicateClasses
 > Task :app:generateReleaseResValues
 > Task :app:generateReleaseResources
 > Task :app:processReleaseGoogleServices
@@ -65,8 +65,8 @@ Starting a Gradle Daemon, 1 incompatible and 3 stopped Daemons could not be reus
 > Task :app:mergeReleaseShaders
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
-> Task :app:mergeReleaseArtProfile
 > Task :app:mergeReleaseAssets
+> Task :app:mergeReleaseArtProfile
 > Task :app:compressReleaseAssets
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:extractProguardFiles
@@ -78,46 +78,46 @@ Starting a Gradle Daemon, 1 incompatible and 3 stopped Daemons could not be reus
 > Task :app:generateDebugAndroidTestResValues
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebugUnitTest
+> Task :app:processDebugManifestForPackage
 > Task :app:processDebugUnitTestJavaRes NO-SOURCE
 > Task :app:preReleaseUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileReleaseUnitTest
 > Task :app:processReleaseUnitTestJavaRes NO-SOURCE
-> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileReleaseUnitTest
 > Task :app:processReleaseManifestForPackage
 > Task :app:processDebugResources
 > Task :app:processReleaseResources
-> Task :app:mergeExtDexDebug
 > Task :app:mergeExtDexRelease
+> Task :app:mergeExtDexDebug
 
 > Task :app:compileDebugJavaWithJavac
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\User.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class User {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:31: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class HealthMetric {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:21: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class Reminder {
        ^
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\SyncStatus.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class SyncStatus {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:12: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:17: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class MedicalRecord {
        ^
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\User.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class User {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:31: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class HealthMetric {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:21: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class Reminder {
        ^
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\SyncStatus.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class SyncStatus {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:12: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:17: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class MedicalRecord {
        ^
 Note: Some input files use or override a deprecated API.
@@ -127,39 +127,39 @@ Note: Recompile with -Xlint:unchecked for details.
 10 warnings
 
 > Task :app:processDebugJavaRes
-> Task :app:dexBuilderDebug
 > Task :app:mergeDebugJavaResource
+> Task :app:dexBuilderDebug
 > Task :app:mergeProjectDexDebug
 
 > Task :app:compileReleaseJavaWithJavac
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\User.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class User {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:31: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class HealthMetric {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:21: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class Reminder {
        ^
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\SyncStatus.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class SyncStatus {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:12: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:17: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class MedicalRecord {
        ^
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\User.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class User {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:29: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\HealthMetric.java:31: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class HealthMetric {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\Reminder.java:21: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class Reminder {
        ^
 F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\SyncStatus.java:19: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class SyncStatus {
        ^
-F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:12: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
+F:\Document\Android\FinalAndroidProject\app\src\main\java\com\example\healthylifehub\data\model\MedicalRecord.java:17: warning: There are multiple good constructors and Room will pick the no-arg constructor. You can use the @Ignore annotation to eliminate unwanted constructors.
 public class MedicalRecord {
        ^
 Note: Some input files use or override a deprecated API.
@@ -169,24 +169,24 @@ Note: Recompile with -Xlint:unchecked for details.
 10 warnings
 
 > Task :app:dexBuilderRelease
-> Task :app:mergeReleaseGlobalSynthetics
-> Task :app:generateReleaseLintVitalReportModel
-> Task :app:processReleaseJavaRes
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:processReleaseJavaRes
 > Task :app:generateDebugLintReportModel
 > Task :app:bundleDebugClassesToCompileJar
-> Task :app:generateDebugAndroidTestLintModel
-> Task :app:optimizeReleaseResources
-> Task :app:generateDebugUnitTestLintModel
 > Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:mergeReleaseJavaResource
+> Task :app:bundleReleaseClassesToRuntimeJar
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:bundleReleaseClassesToCompileJar
+> Task :app:generateDebugUnitTestLintModel
 > Task :app:compileDebugUnitTestJavaWithJavac
+> Task :app:mergeReleaseJavaResource
 > Task :app:mergeDexRelease
 > Task :app:testDebugUnitTest
-> Task :app:bundleReleaseClassesToCompileJar
-> Task :app:bundleReleaseClassesToRuntimeJar
+> Task :app:optimizeReleaseResources
 > Task :app:compileReleaseArtProfile
 > Task :app:compileReleaseUnitTestJavaWithJavac
 > Task :app:testReleaseUnitTest
@@ -204,71 +204,13 @@ Note: Recompile with -Xlint:unchecked for details.
 
 > Task :app:lintReportDebug
 Wrote HTML report to file:///F:/Document/Android/FinalAndroidProject/app/build/reports/lint-results-debug.html
-Lint found 1 error and 362 warnings. First failure:
-F:\Document\Android\FinalAndroidProject\app\src\main\res\layout\fragment_records.xml:68: Error: Must use app:tint instead of android:tint [UseAppTint from androidx.appcompat]
-            android:tint="@color/text_secondary"
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-> Task :app:lintDebug FAILED
-Lint found 1 error, 362 warnings. First failure:
-
-F:\Document\Android\FinalAndroidProject\app\src\main\res\layout\fragment_records.xml:68: Error: Must use app:tint instead of android:tint [UseAppTint from androidx.appcompat]
-            android:tint="@color/text_secondary"
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   Explanation for issues of type "UseAppTint":
-   ImageView or ImageButton uses android:tint instead of app:tint
-
-   Vendor: Android Open Source Project
-   Identifier: androidx.appcompat
-   Feedback: https://issuetracker.google.com/issues/new?component=460343
-
-
-The full lint text report is located at:
-  F:\Document\Android\FinalAndroidProject\app\build\intermediates\lint_intermediate_text_report\debug\lintReportDebug\lint-results-debug.txt
+> Task :app:lintDebug
+> Task :app:lint
+> Task :app:check
+> Task :app:build
 
 [Incubating] Problems report is available at: file:///F:/Document/Android/FinalAndroidProject/build/reports/problems/problems-report.html
 
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:lintDebug'.
-> Lint found errors in the project; aborting build.
-  
-  Fix the issues identified by lint, or create a baseline to see only new errors.
-  To create a baseline, run `gradlew updateLintBaseline` after adding the following to the module's build.gradle file:
-  ```
-  android {
-      lint {
-          baseline = file("lint-baseline.xml")
-      }
-  }
-  ```
-  For more details, see https://developer.android.com/studio/write/lint#snapshot
-  
-  Lint found 1 error, 362 warnings. First failure:
-  
-  F:\Document\Android\FinalAndroidProject\app\src\main\res\layout\fragment_records.xml:68: Error: Must use app:tint instead of android:tint [UseAppTint from androidx.appcompat]
-              android:tint="@color/text_secondary"
-              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
-     Explanation for issues of type "UseAppTint":
-     ImageView or ImageButton uses android:tint instead of app:tint
-  
-     Vendor: Android Open Source Project
-     Identifier: androidx.appcompat
-     Feedback: https://issuetracker.google.com/issues/new?component=460343
-  
-  
-  The full lint text report is located at:
-    F:\Document\Android\FinalAndroidProject\app\build\intermediates\lint_intermediate_text_report\debug\lintReportDebug\lint-results-debug.txt
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 1m 33s
+BUILD SUCCESSFUL in 1m 24s
 105 actionable tasks: 104 executed, 1 up-to-date

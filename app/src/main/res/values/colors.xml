@@ -34,12 +34,19 @@
 
     <!-- Success Color -->
     <color name="success_green">#4CAF50</color>
+    <color name="success">#4CAF50</color>
 
     <!-- Container Colors -->
     <color name="primary_container">#fde8e8</color>
+    <color name="card_border">#E0E0E0</color>
 
     <!-- Warning Color -->
     <color name="warning_orange">#FF9800</color>
+    <color name="warning">#FF9800</color>
+    <color name="warning_light">#FFF3E0</color>
+    
+    <!-- Accent Color -->
+    <color name="accent">#2196F3</color>
 
     <!-- Settings Colors -->
     <color name="surface_variant">#E0E0E0</color>

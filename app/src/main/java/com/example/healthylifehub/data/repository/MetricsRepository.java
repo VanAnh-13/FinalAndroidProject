@@ -1,15 +1,20 @@
 package com.example.healthylifehub.data.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.healthylifehub.data.model.MetricHistory;
 import com.example.healthylifehub.data.model.MetricItem;
+import com.example.healthylifehub.data.cache.CacheManager;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -21,8 +26,14 @@ import java.util.Map;
  */
 public class MetricsRepository extends FirebaseRepository {
     
+    private static final String TAG = "MetricsRepository";
     private static final String COLLECTION_HEALTH_METRICS = "healthMetrics";
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM, HH:mm", Locale.getDefault());
+    private final android.content.Context context;
+    
+    public MetricsRepository(android.content.Context context) {
+        this.context = context;
+    }
     
     /**
      * Load all metrics for current user
@@ -110,10 +121,12 @@ public class MetricsRepository extends FirebaseRepository {
                             Object valueObj = doc.get("value");
                             
                             if (valueObj != null && measuredAt != null) {
-                                String displayValue = formatMetricValue(metricType, valueObj, unit);
+                                // Extract only the numeric value (without unit)
+                                String numericValue = extractNumericValue(metricType, valueObj);
                                 String displayTime = formatHistoryTime(measuredAt.toDate());
                                 
-                                history.add(new MetricHistory(displayValue, displayTime, unit));
+                                // Store numeric value + unit separately for calculations
+                                history.add(new MetricHistory(numericValue, displayTime, unit));
                             }
                         } catch (Exception e) {
                             // Skip invalid records
@@ -206,11 +219,192 @@ public class MetricsRepository extends FirebaseRepository {
     }
     
     /**
+     * Extract numeric value only (without unit) based on metric type
+     * - blood_pressure: {systolic, diastolic} → "systolic/diastolic"
+     * - other types: number → "number"
+     * Handles both Number and String formats (in case value stored as string with unit)
+     */
+    private String extractNumericValue(String type, Object valueObj) {
+        try {
+            switch (type) {
+                case "blood_pressure":
+                    if (valueObj instanceof Map) {
+                        Map<String, Object> valueMap = (Map<String, Object>) valueObj;
+                        Object systolic = valueMap.get("systolic");
+                        Object diastolic = valueMap.get("diastolic");
+                        if (systolic != null && diastolic != null) {
+                            return systolic + "/" + diastolic;
+                        }
+                    } else if (valueObj instanceof String) {
+                        // Handle string format like "120/80" or "120/80 mmHg"
+                        String strValue = (String) valueObj;
+                        return extractNumericFromString(strValue);
+                    }
+                    break;
+                    
+                case "heart_rate":
+                case "blood_sugar":
+                case "weight":
+                    if (valueObj instanceof Number) {
+                        return String.valueOf(((Number) valueObj).intValue());
+                    } else if (valueObj instanceof String) {
+                        // Handle string format like "90 bpm" or "90"
+                        String strValue = (String) valueObj;
+                        return extractNumericFromString(strValue);
+                    }
+                    break;
+                    
+                case "temperature":
+                    if (valueObj instanceof Map) {
+                        Map<String, Object> valueMap = (Map<String, Object>) valueObj;
+                        Object celsius = valueMap.get("celsius");
+                        if (celsius != null) {
+                            return String.valueOf(celsius);
+                        }
+                    } else if (valueObj instanceof Number) {
+                        return String.valueOf(((Number) valueObj).doubleValue());
+                    } else if (valueObj instanceof String) {
+                        String strValue = (String) valueObj;
+                        return extractNumericFromString(strValue);
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error extracting numeric value", e);
+        }
+        return "0";
+    }
+    
+    /**
+     * Extract numeric part from string (removes unit)
+     * Examples: "90 bpm" → "90", "120/80 mmHg" → "120/80", "37.5°C" → "37.5"
+     */
+    private String extractNumericFromString(String str) {
+        if (str == null || str.isEmpty()) {
+            return "0";
+        }
+        
+        // Remove leading/trailing spaces
+        str = str.trim();
+        
+        // Find where the unit starts (first non-digit, non-dot, non-slash character)
+        StringBuilder numeric = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            // Keep digits, dots, slashes, and spaces (for "120 / 80" format)
+            if (Character.isDigit(c) || c == '.' || c == '/') {
+                numeric.append(c);
+            } else if (Character.isWhitespace(c)) {
+                // Stop at first space (unit follows)
+                break;
+            } else {
+                // Stop at first non-numeric character
+                break;
+            }
+        }
+        
+        String result = numeric.toString().trim();
+        return result.isEmpty() ? "0" : result;
+    }
+    
+    /**
      * Format history time from Date
      */
     private String formatHistoryTime(Date date) {
         SimpleDateFormat historyFormat = new SimpleDateFormat("dd MMM, HH:mm", Locale.getDefault());
         return historyFormat.format(date);
+    }
+    
+    /**
+     * Invalidate analytics cache when new metric is added/updated
+     * This triggers AnalyticsRepository to recalculate statistics
+     */
+    public void invalidateAnalyticsCache() {
+        // Cache invalidation handled by CacheManager
+        // Analytics will be recalculated on next fetch
+        Log.d(TAG, "✅ Analytics cache will be recalculated on next fetch");
+    }
+    
+    /**
+     * Load latest metrics for all types (for dashboard display)
+     * @return LiveData Map of metric type to formatted value
+     */
+    public LiveData<Map<String, String>> loadLatestMetrics() {
+        MutableLiveData<Map<String, String>> metricsLiveData = new MutableLiveData<>();
+        
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            metricsLiveData.setValue(new HashMap<>());
+            return metricsLiveData;
+        }
+        
+        // Keep track of what metric types we've already processed
+        Map<String, Boolean> processedTypes = new HashMap<>();
+        Map<String, String> latestMetrics = new HashMap<>();
+        
+        // Define all metric types we want to get
+        String[] metricTypes = {"blood_pressure", "blood_sugar", "heart_rate", "weight"};
+        
+        for (String metricType : metricTypes) {
+            processedTypes.put(metricType, false);
+            
+            db.collection("users")
+                .document(userId)
+                .collection(COLLECTION_HEALTH_METRICS)
+                .whereEqualTo("type", metricType)
+                .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(1)  // Only need most recent
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
+                        String type = doc.getString("type");
+                        String unit = doc.getString("unit");
+                        Object valueObj = doc.get("value");
+                        
+                        if (type != null && valueObj != null) {
+                            String formattedValue = formatMetricValue(type, valueObj, unit);
+                            latestMetrics.put(type, formattedValue);
+                            Log.d(TAG, "Latest " + type + ": " + formattedValue);
+                        }
+                    }
+                    
+                    // Mark this metric type as processed
+                    processedTypes.put(metricType, true);
+                    
+                    // Check if all metrics are processed
+                    boolean allProcessed = true;
+                    for (Boolean processed : processedTypes.values()) {
+                        if (!processed) {
+                            allProcessed = false;
+                            break;
+                        }
+                    }
+                    
+                    if (allProcessed) {
+                        metricsLiveData.setValue(latestMetrics);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Mark as processed even on failure
+                    processedTypes.put(metricType, true);
+                    
+                    // Check if all metrics are processed
+                    boolean allProcessed = true;
+                    for (Boolean processed : processedTypes.values()) {
+                        if (!processed) {
+                            allProcessed = false;
+                            break;
+                        }
+                    }
+                    
+                    if (allProcessed) {
+                        metricsLiveData.setValue(latestMetrics);
+                    }
+                });
+        }
+        
+        return metricsLiveData;
     }
 }
 

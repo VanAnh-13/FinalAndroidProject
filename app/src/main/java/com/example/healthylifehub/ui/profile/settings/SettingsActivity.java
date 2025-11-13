@@ -1,11 +1,13 @@
 package com.example.healthylifehub.ui.profile.settings;
 
+import android.content.Intent;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseActivity;
 import com.example.healthylifehub.databinding.ActivitySettingsBinding;
+import com.example.healthylifehub.ui.settings.NotificationSettingsActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class SettingsActivity extends BaseActivity<ActivitySettingsBinding> {
@@ -43,8 +45,8 @@ public class SettingsActivity extends BaseActivity<ActivitySettingsBinding> {
 
         // Notifications
         getBinding().notificationsItem.setOnClickListener(v -> {
-            // TODO: Navigate to Notifications settings
-            showToast(getString(R.string.notifications));
+            Intent intent = new Intent(this, NotificationSettingsActivity.class);
+            startActivity(intent);
         });
 
         // Data Sync

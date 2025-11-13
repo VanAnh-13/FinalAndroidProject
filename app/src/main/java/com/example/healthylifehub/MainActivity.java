@@ -18,6 +18,7 @@ import com.example.healthylifehub.ui.profile.fragment.ProfileFragment;
 import com.example.healthylifehub.ui.records.fragment.RecordsFragment;
 import com.example.healthylifehub.ui.reminders.fragment.RemindersFragment;
 import com.example.healthylifehub.utils.navigation.FragmentSwitcher;
+import com.example.healthylifehub.utils.PermissionManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -49,7 +50,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
         initializeFragments();
         addFragmentsToContainer();
         setupNavigator();
-        setupNavigationDrawer();
+        // Defer setupNavigationDrawer to setOnClick() to avoid Firebase timeout on startup
     }
 
     private void initializeFragments() {
@@ -145,6 +146,99 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
     public void setOnClick() {
         setupBottomNavigation();
         setupDrawerNavigation();
+        setupNavigationDrawer();
+        
+        // Request notification permission for Android 13+
+        requestNotificationPermissionIfNeeded();
+    }
+    
+    /**
+     * Request POST_NOTIFICATIONS permission for Android 13+
+     */
+    private void requestNotificationPermissionIfNeeded() {
+        if (!PermissionManager.isNotificationPermissionGranted(this)) {
+            // Check if should show rationale
+            if (PermissionManager.shouldShowNotificationPermissionRationale(this)) {
+                showNotificationPermissionRationale();
+            } else {
+                // Request permission directly
+                PermissionManager.requestNotificationPermission(this);
+            }
+        }
+    }
+    
+    /**
+     * Show rationale dialog for notification permission
+     */
+    private void showNotificationPermissionRationale() {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Cho phép thông báo")
+            .setMessage("HealthyLife Hub cần quyền thông báo để:\n\n" +
+                       "• Nhắc nhở uống thuốc đúng giờ\n" +
+                       "• Cảnh báo chỉ số sức khỏe bất thường\n" +
+                       "• Gửi gợi ý cải thiện sức khỏe\n\n" +
+                       "Bạn có thể tắt từng loại thông báo trong Cài đặt.")
+            .setPositiveButton("Cho phép", (dialog, which) -> {
+                PermissionManager.requestNotificationPermission(this);
+                dialog.dismiss();
+            })
+            .setNegativeButton("Không", (dialog, which) -> {
+                dialog.dismiss();
+                // Show info that some features won't work
+                android.widget.Toast.makeText(this, 
+                    "⚠️ Một số tính năng nhắc nhở sẽ không hoạt động", 
+                    android.widget.Toast.LENGTH_LONG).show();
+            })
+            .setCancelable(false)
+            .show();
+    }
+    
+    /**
+     * Handle permission request results
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        
+        PermissionManager.handlePermissionResult(requestCode, permissions, grantResults, 
+            new PermissionManager.PermissionCallback() {
+                @Override
+                public void onPermissionGranted() {
+                    android.widget.Toast.makeText(MainActivity.this, 
+                        "✅ Đã bật thông báo thành công!", 
+                        android.widget.Toast.LENGTH_SHORT).show();
+                }
+                
+                @Override
+                public void onPermissionDenied() {
+                    // Show settings guidance
+                    showPermissionDeniedGuidance();
+                }
+            });
+    }
+    
+    /**
+     * Show guidance when permission is denied
+     */
+    private void showPermissionDeniedGuidance() {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Thông báo bị tắt")
+            .setMessage("Để bật lại thông báo, vui lòng:\n\n" +
+                       "1. Mở Cài đặt điện thoại\n" +
+                       "2. Tìm 'HealthyLife Hub'\n" +
+                       "3. Chọn 'Quyền' hoặc 'Permissions'\n" +
+                       "4. Bật 'Thông báo' hoặc 'Notifications'")
+            .setPositiveButton("Đã hiểu", (dialog, which) -> dialog.dismiss())
+            .setNeutralButton("Mở Cài đặt", (dialog, which) -> {
+                // Open app settings
+                android.content.Intent intent = new android.content.Intent(
+                    android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                android.net.Uri uri = android.net.Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+                dialog.dismiss();
+            })
+            .show();
     }
 
     private void setupBottomNavigation() {
