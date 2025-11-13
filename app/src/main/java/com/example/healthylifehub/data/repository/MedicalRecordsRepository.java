@@ -274,17 +274,22 @@ public class MedicalRecordsRepository extends FirebaseRepository {
             .addOnSuccessListener(querySnapshot -> {
                 List<MedicalRecord> records = new ArrayList<>();
                 querySnapshot.getDocuments().forEach(doc -> {
-                    MedicalRecord record = doc.toObject(MedicalRecord.class);
-                    if (record != null) {
-                        record.setId(doc.getId());
-                        records.add(record);
+                    try {
+                        MedicalRecord record = doc.toObject(MedicalRecord.class);
+                        if (record != null) {
+                            record.setId(doc.getId());
+                            records.add(record);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "❌ Failed to parse medical record: " + doc.getId(), e);
+                        // Skip invalid records instead of crashing
                     }
                 });
                 
-                // Save all to Room
+                // Save all to Room (upsert to handle duplicates)
                 executorService.execute(() -> {
                     try {
-                        dao.insertAll(records);
+                        dao.upsertAll(records);
                         Log.d(TAG, "✅ Synced " + records.size() + " medical records from Firestore");
                         future.complete(true);
                     } catch (Exception e) {

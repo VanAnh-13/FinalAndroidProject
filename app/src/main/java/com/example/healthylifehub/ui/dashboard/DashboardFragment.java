@@ -1,6 +1,7 @@
 package com.example.healthylifehub.ui.dashboard;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
@@ -52,6 +53,10 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
         getBinding().ivAnalysisIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_analytics);
         getBinding().ivReminderIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_reminder);
         getBinding().ivReportsIcon.setImageResource(com.example.healthylifehub.R.drawable.ic_report);
+        
+        // Log metric types to verify they're correct
+        Log.d("DashboardFragment", "Metric types: Heart Rate=" + MetricDetailActivity.METRIC_HEART_RATE + 
+                ", Weight=" + MetricDetailActivity.METRIC_BMI);
     }
 
     @Override
@@ -71,6 +76,31 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
         viewModel.getNotificationCount().observe(getViewLifecycleOwner(), count -> {
             if (count != null && count > 0) {
                 getBinding().tvNotificationBadge.setText(String.valueOf(count));
+            }
+        });
+        
+        // Observe latest metrics for dashboard display
+        viewModel.getLatestMetrics().observe(getViewLifecycleOwner(), metrics -> {
+            if (metrics != null) {
+                // Update blood pressure
+                if (metrics.containsKey("blood_pressure")) {
+                    getBinding().tvBloodPressureValue.setText(metrics.get("blood_pressure"));
+                }
+                
+                // Update blood sugar
+                if (metrics.containsKey("blood_sugar")) {
+                    getBinding().tvBloodSugarValue.setText(metrics.get("blood_sugar"));
+                }
+                
+                // Update heart rate
+                if (metrics.containsKey("heart_rate")) {
+                    getBinding().tvHeartRateValue.setText(metrics.get("heart_rate"));
+                }
+                
+                // Update weight (BMI)
+                if (metrics.containsKey("weight")) {
+                    getBinding().tvBmiValue.setText(metrics.get("weight"));
+                }
             }
         });
     }

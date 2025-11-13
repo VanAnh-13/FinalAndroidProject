@@ -3,11 +3,16 @@ package com.example.healthylifehub.data.model;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import lombok.Data;
+import androidx.room.Ignore;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(tableName = "medical_records")
 public class MedicalRecord {
     
@@ -26,6 +31,10 @@ public class MedicalRecord {
     private String description;
     private String attachment;
     private RecordType type;
+    @Ignore
+    private Long createdAt;
+    @Ignore
+    private Long updatedAt;
 
     public MedicalRecord(String date, String title, String hospital, String doctor, String diagnosis, String description, String attachment, RecordType type) {
         this.date = date;

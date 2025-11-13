@@ -3,6 +3,8 @@ package com.example.healthylifehub.ui.metrics.detail.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,13 +17,23 @@ public class MetricHistoryAdapter extends RecyclerView.Adapter<MetricHistoryAdap
 
     private List<MetricHistory> historyList = new ArrayList<>();
     private OnHistoryClickListener listener;
+    private OnHistoryActionListener actionListener;
 
     public interface OnHistoryClickListener {
         void onHistoryClick(MetricHistory history);
     }
 
+    public interface OnHistoryActionListener {
+        void onViewDetail(MetricHistory history);
+        void onDelete(MetricHistory history);
+    }
+
     public MetricHistoryAdapter(OnHistoryClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setActionListener(OnHistoryActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     @NonNull
@@ -51,11 +63,13 @@ public class MetricHistoryAdapter extends RecyclerView.Adapter<MetricHistoryAdap
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvHistoryValue;
         private TextView tvHistoryDate;
+        private ImageView ivMore;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvHistoryValue = itemView.findViewById(R.id.tv_history_value);
             tvHistoryDate = itemView.findViewById(R.id.tv_history_date);
+            ivMore = itemView.findViewById(R.id.iv_more);
 
             itemView.findViewById(R.id.history_item_container).setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -63,11 +77,42 @@ public class MetricHistoryAdapter extends RecyclerView.Adapter<MetricHistoryAdap
                     listener.onHistoryClick(historyList.get(position));
                 }
             });
+
+            // Menu button
+            ivMore.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    showPopupMenu(v, historyList.get(position));
+                }
+            });
         }
 
         public void bind(MetricHistory history) {
-            tvHistoryValue.setText(history.getDisplayValue());
+            // Display value only (unit is shown in metric label)
+            tvHistoryValue.setText(history.getValue());
             tvHistoryDate.setText(history.getDate());
+        }
+
+        private void showPopupMenu(View view, MetricHistory history) {
+            PopupMenu popup = new PopupMenu(view.getContext(), view);
+            popup.getMenuInflater().inflate(R.menu.menu_history_item, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.action_view_detail) {
+                    if (actionListener != null) {
+                        actionListener.onViewDetail(history);
+                    }
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    if (actionListener != null) {
+                        actionListener.onDelete(history);
+                    }
+                    return true;
+                }
+                return false;
+            });
+
+            popup.show();
         }
     }
 }

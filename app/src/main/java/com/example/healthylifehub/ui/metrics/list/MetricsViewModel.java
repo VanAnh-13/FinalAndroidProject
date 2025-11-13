@@ -16,7 +16,7 @@ public class MetricsViewModel extends BaseViewModel {
 
     public MetricsViewModel(@NonNull Application application) {
         super(application);
-        metricsRepository = new MetricsRepository();
+        metricsRepository = new MetricsRepository(application);
         loadMetrics();
     }
     

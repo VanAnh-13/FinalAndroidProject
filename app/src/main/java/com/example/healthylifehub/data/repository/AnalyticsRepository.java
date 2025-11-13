@@ -152,9 +152,14 @@ public class AnalyticsRepository extends FirebaseRepository {
                 .addOnSuccessListener(querySnapshot -> {
                     List<HealthMetric> metrics = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : querySnapshot) {
-                        HealthMetric metric = doc.toObject(HealthMetric.class);
-                        if (metric != null) {
-                            metrics.add(metric);
+                        try {
+                            HealthMetric metric = doc.toObject(HealthMetric.class);
+                            if (metric != null) {
+                                metrics.add(metric);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "❌ Failed to parse metric: " + doc.getId(), e);
+                            // Skip invalid records
                         }
                     }
                     

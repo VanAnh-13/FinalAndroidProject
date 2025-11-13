@@ -11,14 +11,16 @@ import com.example.healthylifehub.data.local.converter.DateConverter;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * HealthMetric - Vừa là Model vừa là Room Entity
  * Dùng chung cho cả UI và Database để đơn giản
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(

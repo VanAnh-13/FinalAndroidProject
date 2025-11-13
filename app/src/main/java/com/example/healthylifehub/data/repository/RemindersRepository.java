@@ -103,7 +103,10 @@ public class RemindersRepository extends FirebaseRepository {
                         .document(reminderId)
                         .get();
                 
-                while (!task.isComplete()) {
+                // Add 5 second timeout to prevent blocking
+                long startTime = System.currentTimeMillis();
+                long timeout = 5000; // 5 seconds
+                while (!task.isComplete() && System.currentTimeMillis() - startTime < timeout) {
                     Thread.sleep(50);
                 }
                 
@@ -117,7 +120,7 @@ public class RemindersRepository extends FirebaseRepository {
                 }
                 return null;
             } catch (Exception e) {
-                Log.e(TAG, "Error fetching reminder", e);
+                Log.e(TAG, "Error fetching reminder (offline mode)", e);
                 return null;
             }
         }, executorService);

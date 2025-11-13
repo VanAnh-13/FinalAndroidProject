@@ -1,5 +1,6 @@
 package com.example.healthylifehub.data.repository;
 
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class SuggestionsRepository extends FirebaseRepository {
     
+    private static final String TAG = "SuggestionsRepository";
     private static final String COLLECTION_SUGGESTIONS = "suggestions";
     
     public LiveData<List<SmartSuggestion>> loadPendingSuggestions() {
@@ -37,9 +39,14 @@ public class SuggestionsRepository extends FirebaseRepository {
                 if (value != null) {
                     List<SmartSuggestion> suggestions = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : value) {
-                        SmartSuggestion suggestion = doc.toObject(SmartSuggestion.class);
-                        if (suggestion != null) {
-                            suggestions.add(suggestion);
+                        try {
+                            SmartSuggestion suggestion = doc.toObject(SmartSuggestion.class);
+                            if (suggestion != null) {
+                                suggestions.add(suggestion);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "❌ Failed to parse suggestion: " + doc.getId(), e);
+                            // Skip invalid records
                         }
                     }
                     suggestionsLiveData.setValue(suggestions);
