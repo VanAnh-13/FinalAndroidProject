@@ -97,4 +97,11 @@
     <dimen name="settings_icon_size">24dp</dimen>
     <dimen name="settings_item_min_height">56dp</dimen>
     <dimen name="settings_section_margin_top">24dp</dimen>
+    
+    <!-- Icon with margin -->
+    <dimen name="icon_size_medium_with_margin">64dp</dimen>
+    
+    <!-- Additional standardized dimensions -->
+    <dimen name="elevation_card_large">8dp</dimen>
+    <dimen name="corner_radius_medium">16dp</dimen>
 </resources>

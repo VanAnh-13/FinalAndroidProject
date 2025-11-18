@@ -294,6 +294,13 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
             Intent intent = new Intent(getContext(), ExportReportsActivity.class);
             startActivity(intent);
         });
+        
+        // Enhanced Analytics (Test)
+        getBinding().actionPrivacy.setOnLongClickListener(v -> {
+            Intent intent = new Intent(getContext(), com.example.healthylifehub.ui.analytics.enhanced.EnhancedAnalyticsActivity.class);
+            startActivity(intent);
+            return true;
+        });
 
         // Manage notifications action
         getBinding().actionManageNotifications.setOnClickListener(v -> {

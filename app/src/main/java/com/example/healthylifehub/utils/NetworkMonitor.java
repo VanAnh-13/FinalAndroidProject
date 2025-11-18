@@ -164,7 +164,7 @@ public class NetworkMonitor {
      * Check if on metered connection (cellular)
      */
     public boolean isMeteredConnection() {
-        return !connectivityManager.isActiveNetworkMetered();
+        return connectivityManager.isActiveNetworkMetered();
     }
     
     /**

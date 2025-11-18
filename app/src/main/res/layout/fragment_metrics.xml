@@ -104,34 +104,22 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_sort"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/StandardButton.Secondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/button_height_medium"
                     android:text="@string/newest"
-                    android:textColor="@color/text_primary"
-                    android:textSize="@dimen/text_size_normal"
-                    android:textAllCaps="false"
                     app:icon="@drawable/ic_sort"
                     app:iconTint="@color/text_secondary"
                     app:iconGravity="start"
-                    app:cornerRadius="@dimen/corner_radius_small"
-                    android:backgroundTint="@color/white"
                     android:layout_marginEnd="@dimen/spacing_medium"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_filter"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/StandardButton.Secondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/button_height_medium"
                     android:text="@string/filter"
-                    android:textColor="@color/text_primary"
-                    android:textSize="@dimen/text_size_normal"
-                    android:textAllCaps="false"
                     app:icon="@drawable/ic_filter"
                     app:iconTint="@color/text_secondary"
-                    app:iconGravity="start"
-                    app:cornerRadius="@dimen/corner_radius_small"
-                    android:backgroundTint="@color/white"/>
+                    app:iconGravity="start"/>
 
             </LinearLayout>
 
@@ -154,14 +142,11 @@
     <!-- FAB -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_add_metric"
+        style="@style/StandardFAB.Extended"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/spacing_large"
         android:text="@string/add_new_metric"
-        android:textColor="@color/white"
-        app:icon="@drawable/ic_add"
-        app:iconTint="@color/white"
-        app:backgroundTint="@color/primary_blue"/>
+        app:icon="@drawable/ic_add"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

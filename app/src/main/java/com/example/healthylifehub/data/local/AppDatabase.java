@@ -8,12 +8,15 @@ import com.example.healthylifehub.data.local.dao.HealthMetricDao;
 import com.example.healthylifehub.data.local.dao.MedicalRecordDao;
 import com.example.healthylifehub.data.local.dao.NotificationSettingsDao;
 import com.example.healthylifehub.data.local.dao.ReminderDao;
+import com.example.healthylifehub.data.local.dao.ReminderHistoryDao;
 import com.example.healthylifehub.data.local.dao.SyncStatusDao;
 import com.example.healthylifehub.data.local.dao.UserDao;
+import com.example.healthylifehub.data.local.migrations.DatabaseMigrations;
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.example.healthylifehub.data.model.MedicalRecord;
 import com.example.healthylifehub.data.model.NotificationSettings;
 import com.example.healthylifehub.data.model.Reminder;
+import com.example.healthylifehub.data.model.ReminderHistory;
 import com.example.healthylifehub.data.model.SyncStatus;
 import com.example.healthylifehub.data.model.User;
 
@@ -33,11 +36,12 @@ import com.example.healthylifehub.data.model.User;
         User.class,
         HealthMetric.class,
         Reminder.class,
+        ReminderHistory.class,
         SyncStatus.class,
         MedicalRecord.class,
         NotificationSettings.class
     },
-    version = 8,  // Incremented for NotificationSettings table
+    version = 10,  // Incremented for notification settings enhancements
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -49,6 +53,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract HealthMetricDao healthMetricDao();
     public abstract ReminderDao reminderDao();
+    public abstract ReminderHistoryDao reminderHistoryDao();
     public abstract SyncStatusDao syncStatusDao();
     public abstract MedicalRecordDao medicalRecordDao();
     public abstract NotificationSettingsDao notificationSettingsDao();
@@ -67,7 +72,8 @@ public abstract class AppDatabase extends RoomDatabase {
                     )
                     // Allow queries on main thread for testing (remove in production)
                     // .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration() // For development only
+                    .addMigrations(DatabaseMigrations.getAllMigrations())
+                    .fallbackToDestructiveMigration() // For development only - remove in production
                     .build();
                 }
             }
@@ -99,6 +105,8 @@ public abstract class AppDatabase extends RoomDatabase {
         new Thread(() -> {
             try {
                 healthMetricDao().deleteAllMetricsForUser(userId);
+                // Clear reminder history first (due to foreign key constraints)
+                reminderHistoryDao().deleteAll();
                 reminderDao().deleteByUserId(userId);
                 syncStatusDao().deleteByUserId(userId);
                 medicalRecordDao().deleteByUserId(userId);

@@ -59,7 +59,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_notifications_active"
-                        android:tint="@color/success" />
+                        app:tint="@color/success" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -215,7 +215,8 @@
                         android:id="@+id/layoutVolumeLevel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginBottom="12dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -231,6 +232,59 @@
                             android:layout_height="wrap_content"
                             android:max="100"
                             android:progress="80" />
+
+                    </LinearLayout>
+
+                    <!-- Sound Selection -->
+                    <LinearLayout
+                        android:id="@+id/layoutSoundSelection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Âm thanh thông báo"
+                            android:textSize="16sp"
+                            android:textColor="@color/text_primary" />
+
+                        <Button
+                            android:id="@+id/btnSelectSound"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="Chọn âm thanh"
+                            android:textSize="12sp"
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                    </LinearLayout>
+
+                    <!-- Vibration Pattern Selection -->
+                    <LinearLayout
+                        android:id="@+id/layoutVibrationPattern"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Kiểu rung"
+                            android:textSize="16sp"
+                            android:textColor="@color/text_primary" />
+
+                        <Button
+                            android:id="@+id/btnSelectVibration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="Chọn kiểu rung"
+                            android:textSize="12sp"
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
 
                     </LinearLayout>
 
@@ -626,7 +680,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
 
                         <TextView
                             android:layout_width="0dp"
@@ -642,6 +697,17 @@
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
+
+                    <!-- Notification Preview -->
+                    <Button
+                        android:id="@+id/btnPreviewNotification"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="🔔 Xem thử thông báo"
+                        android:textSize="16sp"
+                        android:drawableStart="@drawable/ic_notifications_active"
+                        android:drawablePadding="8dp"
+                        style="@style/Widget.Material3.Button.OutlinedButton" />
 
                 </LinearLayout>
 

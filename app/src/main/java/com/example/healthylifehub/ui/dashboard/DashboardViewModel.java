@@ -11,6 +11,7 @@ import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.base.BaseViewModel;
 import com.example.healthylifehub.data.repository.NotificationsRepository;
 import com.example.healthylifehub.data.repository.RemindersRepository;
+import com.example.healthylifehub.data.model.MetricHistory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import java.util.List;
@@ -22,6 +23,7 @@ public class DashboardViewModel extends BaseViewModel {
     private final MediatorLiveData<List<Reminder>> reminders = new MediatorLiveData<>();
     private final MediatorLiveData<Integer> notificationCount = new MediatorLiveData<>();
     private final MediatorLiveData<java.util.Map<String, String>> latestMetrics = new MediatorLiveData<>();
+    private final MediatorLiveData<List<MetricHistory>> bloodPressureHistory = new MediatorLiveData<>();
     
     private final RemindersRepository remindersRepository;
     private final NotificationsRepository notificationsRepository;
@@ -54,6 +56,7 @@ public class DashboardViewModel extends BaseViewModel {
                 mainHandler.post(this::loadReminders);
                 mainHandler.post(this::loadNotificationCount);
                 mainHandler.post(this::loadLatestMetrics);
+                mainHandler.post(this::loadBloodPressureHistory);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -113,6 +116,11 @@ public class DashboardViewModel extends BaseViewModel {
         LiveData<java.util.Map<String, String>> source = metricsRepository.loadLatestMetrics();
         latestMetrics.addSource(source, latestMetrics::setValue);
     }
+    
+    private void loadBloodPressureHistory() {
+        LiveData<List<MetricHistory>> source = metricsRepository.loadMetricHistory("blood_pressure");
+        bloodPressureHistory.addSource(source, bloodPressureHistory::setValue);
+    }
 
     public void snoozeReminder(Reminder reminder) {
     }
@@ -143,5 +151,31 @@ public class DashboardViewModel extends BaseViewModel {
     
     public LiveData<java.util.Map<String, String>> getLatestMetrics() {
         return latestMetrics;
+    }
+    
+    public LiveData<List<MetricHistory>> getBloodPressureHistory() {
+        return bloodPressureHistory;
+    }
+    
+    /**
+     * Refresh blood pressure data - call this when new data is added
+     */
+    public void refreshBloodPressureData() {
+        loadBloodPressureHistory();
+    }
+    
+    /**
+     * Refresh user data - call this when returning from profile edit
+     */
+    public void refreshUserData() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Force reload from Firebase Auth
+            user.reload().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    loadUserName();
+                }
+            });
+        }
     }
 }

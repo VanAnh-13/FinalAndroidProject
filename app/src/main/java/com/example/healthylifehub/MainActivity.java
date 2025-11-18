@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -50,7 +51,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
         initializeFragments();
         addFragmentsToContainer();
         setupNavigator();
-        // Defer setupNavigationDrawer to setOnClick() to avoid Firebase timeout on startup
     }
 
     private void initializeFragments() {
@@ -119,7 +119,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
                             nameTextView.setText(DEFAULT_USER_NAME);
                         }
                     })
-                    .addOnFailureListener(e -> nameTextView.setText(DEFAULT_USER_NAME));
+                    .addOnFailureListener(e -> {
+                        nameTextView.setText(DEFAULT_USER_NAME);
+                    });
         }
     }
 
@@ -134,7 +136,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
                 .load(user.getPhotoUrl())
                 .circleCrop()
                 .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
                 .into(avatarImageView);
+        } else {
+            avatarImageView.setImageResource(R.drawable.ic_profile);
         }
     }
 
@@ -172,21 +177,17 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
      */
     private void showNotificationPermissionRationale() {
         new android.app.AlertDialog.Builder(this)
-            .setTitle("Cho phép thông báo")
-            .setMessage("HealthyLife Hub cần quyền thông báo để:\n\n" +
-                       "• Nhắc nhở uống thuốc đúng giờ\n" +
-                       "• Cảnh báo chỉ số sức khỏe bất thường\n" +
-                       "• Gửi gợi ý cải thiện sức khỏe\n\n" +
-                       "Bạn có thể tắt từng loại thông báo trong Cài đặt.")
-            .setPositiveButton("Cho phép", (dialog, which) -> {
+            .setTitle(getString(R.string.notification_permission_title))
+            .setMessage(getString(R.string.notification_permission_message))
+            .setPositiveButton(getString(R.string.allow), (dialog, which) -> {
                 PermissionManager.requestNotificationPermission(this);
                 dialog.dismiss();
             })
-            .setNegativeButton("Không", (dialog, which) -> {
+            .setNegativeButton(getString(R.string.no), (dialog, which) -> {
                 dialog.dismiss();
                 // Show info that some features won't work
                 android.widget.Toast.makeText(this, 
-                    "⚠️ Một số tính năng nhắc nhở sẽ không hoạt động", 
+                    getString(R.string.some_features_disabled), 
                     android.widget.Toast.LENGTH_LONG).show();
             })
             .setCancelable(false)
@@ -205,7 +206,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
                 @Override
                 public void onPermissionGranted() {
                     android.widget.Toast.makeText(MainActivity.this, 
-                        "✅ Đã bật thông báo thành công!", 
+                        getString(R.string.notification_enabled_success), 
                         android.widget.Toast.LENGTH_SHORT).show();
                 }
                 
@@ -222,14 +223,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
      */
     private void showPermissionDeniedGuidance() {
         new android.app.AlertDialog.Builder(this)
-            .setTitle("Thông báo bị tắt")
-            .setMessage("Để bật lại thông báo, vui lòng:\n\n" +
-                       "1. Mở Cài đặt điện thoại\n" +
-                       "2. Tìm 'HealthyLife Hub'\n" +
-                       "3. Chọn 'Quyền' hoặc 'Permissions'\n" +
-                       "4. Bật 'Thông báo' hoặc 'Notifications'")
-            .setPositiveButton("Đã hiểu", (dialog, which) -> dialog.dismiss())
-            .setNeutralButton("Mở Cài đặt", (dialog, which) -> {
+            .setTitle(getString(R.string.notification_disabled_title))
+            .setMessage(getString(R.string.notification_disabled_message))
+            .setPositiveButton(getString(R.string.understood), (dialog, which) -> dialog.dismiss())
+            .setNeutralButton(getString(R.string.open_settings), (dialog, which) -> {
                 // Open app settings
                 android.content.Intent intent = new android.content.Intent(
                     android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -270,14 +267,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
         if (outcome.newCurrentFragment != null) {
             currentFragment = outcome.newCurrentFragment;
         }
-        if (outcome.bottomNavItemId != null) {
+        if (outcome.bottomNavItemId != 0) {
             getBinding().bottomNavigation.setSelectedItemId(outcome.bottomNavItemId);
         }
     }
 
     private void switchFragment(Fragment from, Fragment to) {
-        getSupportFragmentManager()
-            .beginTransaction()
+        getSupportFragmentManager().beginTransaction()
             .hide(from)
             .show(to)
             .commit();
@@ -295,4 +291,5 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
             super.onBackPressed();
         }
     }
+
 }

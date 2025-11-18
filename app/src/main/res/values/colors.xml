@@ -24,6 +24,9 @@
     
     <!-- Border Colors -->
     <color name="border_color">#E0E0E0</color>
+    
+    <!-- Button Colors -->
+    <color name="button_unselected">#F5F5F5</color>
     <color name="border_focused">#1976D2</color>
     <color name="divider">#E0E0E0</color>
     
@@ -44,6 +47,7 @@
     <color name="warning_orange">#FF9800</color>
     <color name="warning">#FF9800</color>
     <color name="warning_light">#FFF3E0</color>
+    <color name="warning_dark">#E65100</color>
     
     <!-- Accent Color -->
     <color name="accent">#2196F3</color>
@@ -53,4 +57,13 @@
     <color name="on_surface_variant">#616161</color>
     <color name="delete_background">#FFEBEE</color>
     <color name="delete_color">#D32F2F</color>
+    
+    <!-- Additional Text Colors -->
+    <color name="text_tertiary">#BDBDBD</color>
+    
+    <!-- Surface Colors -->
+    <color name="surface">#FFFFFF</color>
+    
+    <!-- Loading Overlay -->
+    <color name="loading_overlay">#80000000</color>
 </resources>

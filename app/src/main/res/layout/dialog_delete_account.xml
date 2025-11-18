@@ -20,7 +20,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_warning"
-            android:tint="@color/warning" />
+            app:tint="@color/warning" />
 
         <TextView
             android:layout_width="0dp"

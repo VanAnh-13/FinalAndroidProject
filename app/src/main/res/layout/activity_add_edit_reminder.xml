@@ -25,12 +25,14 @@
 
                 <ImageView
                     android:id="@+id/iv_close"
-                    android:layout_width="@dimen/icon_size_medium"
-                    android:layout_height="@dimen/icon_size_medium"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_close"
                     android:padding="@dimen/padding_medium"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/close"
+                    android:contentDescription="@string/accessibility_close_button"
+                    android:focusable="true"
+                    android:clickable="true"
                     app:tint="@color/text_primary"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -52,13 +54,17 @@
                 <TextView
                     android:id="@+id/btn_save"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:text="@string/save"
                     android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
                     android:textColor="@color/primary"
                     android:padding="@dimen/padding_medium"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/accessibility_save_button"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:gravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -87,6 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_large"
+                    android:contentDescription="@string/reminder_type"
                     app:singleSelection="true"
                     app:selectionRequired="true">
 
@@ -96,28 +103,32 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/medication"
-                        android:checked="true"/>
+                        android:checked="true"
+                        android:minHeight="48dp"/>
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_measurement"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/measurement"/>
+                        android:text="@string/measurement"
+                        android:minHeight="48dp"/>
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_appointment"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/appointment"/>
+                        android:text="@string/appointment"
+                        android:minHeight="48dp"/>
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_other"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/other"/>
+                        android:text="@string/other"
+                        android:minHeight="48dp"/>
 
                 </com.google.android.material.chip.ChipGroup>
 
@@ -128,6 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_large"
                     android:hint="@string/title"
+                    android:contentDescription="@string/accessibility_required_field"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusTopStart="@dimen/corner_radius"
                     app:boxCornerRadiusTopEnd="@dimen/corner_radius"
@@ -142,7 +154,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:textSize="@dimen/text_size_medium"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="@color/text_primary"
+                        android:minHeight="48dp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -153,6 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_large"
                     android:hint="@string/note_optional"
+                    android:contentDescription="@string/accessibility_optional_field"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusTopStart="@dimen/corner_radius"
                     app:boxCornerRadiusTopEnd="@dimen/corner_radius"
@@ -181,6 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_large"
                     android:hint="@string/link_medicine_optional"
+                    android:contentDescription="@string/accessibility_dropdown"
                     app:boxCornerRadiusTopStart="@dimen/corner_radius"
                     app:boxCornerRadiusTopEnd="@dimen/corner_radius"
                     app:boxCornerRadiusBottomStart="@dimen/corner_radius"
@@ -194,7 +209,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         android:textSize="@dimen/text_size_medium"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="@color/text_primary"
+                        android:minHeight="48dp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -213,6 +229,7 @@
                         android:layout_weight="1"
                         android:layout_marginEnd="@dimen/spacing_small"
                         android:hint="@string/time"
+                        android:contentDescription="@string/accessibility_time_picker"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusTopStart="@dimen/corner_radius"
                         app:boxCornerRadiusTopEnd="@dimen/corner_radius"
@@ -230,7 +247,8 @@
                             android:focusable="false"
                             android:clickable="true"
                             android:textSize="@dimen/text_size_medium"
-                            android:textColor="@color/text_primary"/>
+                            android:textColor="@color/text_primary"
+                            android:minHeight="48dp"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -243,6 +261,7 @@
                         android:layout_weight="1"
                         android:layout_marginStart="@dimen/spacing_small"
                         android:hint="@string/repeat"
+                        android:contentDescription="@string/accessibility_dropdown"
                         app:boxCornerRadiusTopStart="@dimen/corner_radius"
                         app:boxCornerRadiusTopEnd="@dimen/corner_radius"
                         app:boxCornerRadiusBottomStart="@dimen/corner_radius"
@@ -256,11 +275,83 @@
                             android:layout_height="wrap_content"
                             android:inputType="none"
                             android:textSize="@dimen/text_size_medium"
-                            android:textColor="@color/text_primary"/>
+                            android:textColor="@color/text_primary"
+                            android:minHeight="48dp"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+
+                <!-- Deadline Section -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_deadline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:hint="@string/deadline_optional"
+                    android:contentDescription="@string/accessibility_date_picker"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/primary"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_calendar"
+                    app:helperText="@string/deadline_helper_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_deadline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textColor="@color/text_primary"
+                        android:minHeight="48dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Deadline Warning Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_deadline_warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/warning_light"
+                    app:cardCornerRadius="@dimen/corner_radius"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/warning_orange"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_medium"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/icon_size_small"
+                            android:layout_height="@dimen/icon_size_small"
+                            android:src="@drawable/ic_warning"
+                            android:layout_marginEnd="@dimen/spacing_small"
+                            app:tint="@color/warning_orange"/>
+
+                        <TextView
+                            android:id="@+id/tv_deadline_warning"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/text_size_small"
+                            android:textColor="@color/warning_dark"
+                            android:text="@string/deadline_warning_text"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
@@ -275,6 +366,8 @@
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold"
                 android:textAllCaps="false"
+                android:contentDescription="@string/accessibility_button_primary"
+                android:minHeight="48dp"
                 app:cornerRadius="@dimen/corner_radius_large"
                 app:backgroundTint="@color/primary"/>
 

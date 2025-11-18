@@ -30,6 +30,8 @@ public class NotificationSettings {
     private boolean reminderSound;
     private boolean reminderVibration;
     private int reminderVolumeLevel; // 0-100
+    private String reminderSoundUri; // Custom sound URI
+    private String reminderVibrationPattern; // "default", "gentle", "strong", "custom"
     
     // Health Alert Settings
     private boolean healthAlertsEnabled;
@@ -73,6 +75,8 @@ public class NotificationSettings {
         settings.setReminderSound(true);
         settings.setReminderVibration(true);
         settings.setReminderVolumeLevel(80);
+        settings.setReminderSoundUri("default"); // Use system default sound
+        settings.setReminderVibrationPattern("default"); // Use default vibration pattern
         
         // Health Alerts: Enabled for critical only
         settings.setHealthAlertsEnabled(true);

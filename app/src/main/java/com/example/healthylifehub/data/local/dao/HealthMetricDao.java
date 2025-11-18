@@ -162,4 +162,10 @@ public interface HealthMetricDao {
      */
     @Query("DELETE FROM health_metrics")
     void deleteAll();
+    
+    /**
+     * Get all metrics (for reports)
+     */
+    @Query("SELECT * FROM health_metrics ORDER BY measuredAt DESC")
+    List<HealthMetric> getAllMetrics();
 }

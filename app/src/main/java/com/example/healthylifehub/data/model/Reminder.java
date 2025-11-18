@@ -32,6 +32,11 @@ public class Reminder {
 	private long createdAt;             // Creation timestamp
 	private long updatedAt;             // Last update timestamp
 	
+	// New fields for smart reminder system
+	private Long deadline;              // Deadline timestamp (nullable for unlimited reminders)
+	private int totalExpected;          // Total expected reminder count based on frequency and deadline
+	private int completedCount;         // Number of completed reminders
+	
 	// For backward compatibility
 	@Ignore
 	public Reminder(String title, String time) {
@@ -39,5 +44,37 @@ public class Reminder {
 		this.reminderTime = System.currentTimeMillis();
 		this.frequency = "once";
 		this.isActive = true;
+		this.totalExpected = 0;
+		this.completedCount = 0;
+	}
+	
+	/**
+	 * Calculate progress percentage for this reminder
+	 * @return Progress percentage (0-100), or 0 if no deadline set
+	 */
+	public float getProgressPercentage() {
+		if (totalExpected == 0) return 0f;
+		return Math.min(100f, (completedCount * 100f) / totalExpected);
+	}
+	
+	/**
+	 * Check if reminder has a deadline
+	 */
+	public boolean hasDeadline() {
+		return deadline != null;
+	}
+	
+	/**
+	 * Check if reminder is expired (past deadline)
+	 */
+	public boolean isExpired() {
+		return deadline != null && System.currentTimeMillis() > deadline;
+	}
+	
+	/**
+	 * Check if reminder is completed (100% progress)
+	 */
+	public boolean isCompleted() {
+		return totalExpected > 0 && completedCount >= totalExpected;
 	}
 }

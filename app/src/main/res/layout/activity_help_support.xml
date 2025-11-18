@@ -55,7 +55,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tìm hiểu nhanh"
+                        android:text="@string/quick_learn"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
@@ -77,14 +77,14 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_help"
-                            android:tint="@color/primary" />
+                            app:tint="@color/primary" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Câu hỏi thường gặp"
+                            android:text="@string/frequently_asked_questions"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -92,7 +92,7 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_arrow_forward"
-                            android:tint="@color/text_secondary" />
+                            app:tint="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -118,14 +118,14 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_star"
-                            android:tint="@color/primary" />
+                            app:tint="@color/primary" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Hướng dẫn bắt đầu"
+                            android:text="@string/getting_started_guide"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -133,7 +133,7 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_arrow_forward"
-                            android:tint="@color/text_secondary" />
+                            app:tint="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -159,14 +159,14 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_lightbulb"
-                            android:tint="@color/primary" />
+                            app:tint="@color/primary" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Hướng dẫn tính năng"
+                            android:text="@string/feature_guide"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -174,7 +174,7 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_arrow_forward"
-                            android:tint="@color/text_secondary" />
+                            app:tint="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -200,14 +200,14 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_build"
-                            android:tint="@color/primary" />
+                            app:tint="@color/primary" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Khắc phục sự cố"
+                            android:text="@string/troubleshooting"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -215,7 +215,7 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_arrow_forward"
-                            android:tint="@color/text_secondary" />
+                            app:tint="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -242,7 +242,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Liên hệ hỗ trợ"
+                        android:text="@string/contact_support"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
@@ -264,14 +264,14 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_support_agent"
-                            android:tint="@color/primary" />
+                            app:tint="@color/primary" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Liên hệ đội hỗ trợ"
+                            android:text="@string/contact_support_team"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -279,7 +279,7 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_arrow_forward"
-                            android:tint="@color/text_secondary" />
+                            app:tint="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -312,7 +312,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Gửi góp ý"
+                            android:text="@string/send_feedback"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -353,7 +353,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Báo lỗi"
+                            android:text="@string/report_bug"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -388,7 +388,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cộng đồng &amp; Đánh giá"
+                        android:text="@string/community_reviews"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
@@ -417,7 +417,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:text="Đánh giá ứng dụng"
+                            android:text="@string/rate_app"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 

@@ -153,8 +153,12 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
     }
 
     private void setupChart() {
-        // Chart will be updated after loading history data
-        // See loadHistoryData()
+        // Thiết lập biểu đồ trống ban đầu
+        getBinding().lineChart.setNoDataText("Không có dữ liệu");
+        getBinding().lineChart.setNoDataTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+        getBinding().lineChart.invalidate();
+        // Biểu đồ sẽ được cập nhật sau khi tải dữ liệu lịch sử
+        // Xem loadHistoryData()
     }
 
     private void loadHistoryData() {
@@ -191,67 +195,123 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
     }
     
     private void updateChartWithData(List<MetricHistory> historyList, String period) {
+        // Kiểm tra dữ liệu trước khi cập nhật biểu đồ
+        if (historyList == null || historyList.isEmpty()) {
+            Log.d(TAG, "❗ Không có dữ liệu để hiển thị trên biểu đồ");
+            getBinding().lineChart.clear();
+            getBinding().lineChart.setNoDataText("Không có dữ liệu cho " + period);
+            getBinding().lineChart.invalidate();
+            return;
+        }
+
+        // Sắp xếp dữ liệu từ mới đến cũ trước khi xử lý
+        List<MetricHistory> sortedHistory = new ArrayList<>(historyList);
+        
         if (METRIC_BLOOD_PRESSURE.equals(metricType)) {
-            updateBloodPressureChart(historyList, period);
+            updateBloodPressureChart(sortedHistory, period);
         } else {
-            updateSingleLineChart(historyList, period);
+            updateSingleLineChart(sortedHistory, period);
         }
     }
     
     private void updateSingleLineChart(List<MetricHistory> historyList, String period) {
-        // Use the ChartDataProcessor to get processed data based on the period
-        com.example.healthylifehub.data.cache.ChartDataCacheManager.ChartDataCache chartData = 
-                com.example.healthylifehub.utils.chart.ChartDataProcessor.processMetricData(
-                        metricType, historyList, period);
-        
-        List<Entry> entries = chartData.getEntries();
-        List<String> labels = chartData.getLabels();
-        
-        // Get chart configuration
-        int colorRes = getChartColorForMetricType();
-        String yAxisUnit = getYAxisUnit();
-        float[] yAxisRange = getYAxisRange();
-        
-        // Configure chart with real data and units
-        ChartConfigurator.configureLineChart(
-            getBinding().lineChart,
-            this,
-            entries,
-            labels,
-            colorRes,
-            R.color.border_color,
-            yAxisUnit,
-            yAxisRange[0],
-            yAxisRange[1]
-        );
-        
-        Log.d(TAG, "Updated single line chart with " + entries.size() + " entries for period: " + period);
+        try {
+            // Sử dụng ChartDataProcessor để lấy dữ liệu đã xử lý dựa trên kỳ
+            com.example.healthylifehub.data.cache.ChartDataCacheManager.ChartDataCache chartData = 
+                    com.example.healthylifehub.utils.chart.ChartDataProcessor.processMetricData(
+                            metricType, historyList, period);
+            
+            List<Entry> entries = chartData.getEntries();
+            List<String> labels = chartData.getLabels();
+            
+            // Kiểm tra lại dữ liệu sau khi xử lý
+            if (entries.isEmpty()) {
+                Log.d(TAG, "❗ Không có dữ liệu sau khi xử lý");
+                getBinding().lineChart.clear();
+                getBinding().lineChart.setNoDataText("Không có dữ liệu cho " + period);
+                getBinding().lineChart.invalidate();
+                return;
+            }
+            
+            // Lấy cấu hình biểu đồ
+            int colorRes = getChartColorForMetricType();
+            String yAxisUnit = getYAxisUnit();
+            float[] yAxisRange = getYAxisRange();
+            
+            // Cấu hình biểu đồ với dữ liệu thực và đơn vị
+            ChartConfigurator.configureLineChart(
+                getBinding().lineChart,
+                this,
+                entries,
+                labels,
+                colorRes,
+                R.color.border_color,
+                yAxisUnit,
+                yAxisRange[0],
+                yAxisRange[1]
+            );
+            
+            // Hoạt động làm mới biểu đồ
+            getBinding().lineChart.animateX(500);
+            
+            Log.d(TAG, "✅ Đã cập nhật biểu đồ đơn với " + entries.size() + " mục cho kỳ: " + period);
+        } catch (Exception e) {
+            Log.e(TAG, "Lỗi khi cập nhật biểu đồ đơn: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Hiển thị thông báo lỗi trên biểu đồ
+            getBinding().lineChart.clear();
+            getBinding().lineChart.setNoDataText("Lỗi khi tải dữ liệu");
+            getBinding().lineChart.invalidate();
+        }
     }
     
     private void updateBloodPressureChart(List<MetricHistory> historyList, String period) {
-        // Process systolic data with ChartDataProcessor
-        com.example.healthylifehub.data.cache.ChartDataCacheManager.ChartDataCache chartData = 
-                com.example.healthylifehub.utils.chart.ChartDataProcessor.processMetricData(
-                        metricType, historyList, period);
-        
-        // Process diastolic data separately
-        List<Entry> diastolicEntries = com.example.healthylifehub.utils.chart.ChartDataProcessor
-                .processDiastolicValues(historyList, period);
-        
-        // Configure dual-line chart (red for systolic, blue for diastolic)
-        ChartConfigurator.configureDualLineChart(
-            getBinding().lineChart,
-            this,
-            chartData.getEntries(),  // Systolic entries
-            diastolicEntries,        // Diastolic entries
-            chartData.getLabels(),   // X-axis labels
-            R.color.error_red,       // Systolic - Red
-            R.color.primary_blue,    // Diastolic - Blue
-            R.color.border_color
-        );
-        
-        Log.d(TAG, "Updated blood pressure chart with " + chartData.getEntries().size() + 
-                " entries for period: " + period);
+        try {
+            // Xử lý dữ liệu tâm thu với ChartDataProcessor
+            com.example.healthylifehub.data.cache.ChartDataCacheManager.ChartDataCache chartData = 
+                    com.example.healthylifehub.utils.chart.ChartDataProcessor.processMetricData(
+                            metricType, historyList, period);
+            
+            // Xử lý dữ liệu tâm trương riêng biệt
+            List<Entry> diastolicEntries = com.example.healthylifehub.utils.chart.ChartDataProcessor
+                    .processDiastolicValues(historyList, period);
+            
+            // Kiểm tra dữ liệu sau khi xử lý
+            if (chartData.getEntries().isEmpty() && diastolicEntries.isEmpty()) {
+                Log.d(TAG, "❗ Không có dữ liệu huyết áp sau khi xử lý");
+                getBinding().lineChart.clear();
+                getBinding().lineChart.setNoDataText("Không có dữ liệu huyết áp cho " + period);
+                getBinding().lineChart.invalidate();
+                return;
+            }
+            
+            // Cấu hình biểu đồ hai đường (đỏ cho tâm thu, xanh cho tâm trương)
+            ChartConfigurator.configureDualLineChart(
+                getBinding().lineChart,
+                this,
+                chartData.getEntries(),  // Systolic entries
+                diastolicEntries,        // Diastolic entries
+                chartData.getLabels(),   // X-axis labels
+                R.color.error_red,       // Systolic - Red
+                R.color.primary_blue,    // Diastolic - Blue
+                R.color.border_color
+            );
+            
+            // Hoạt động làm mới biểu đồ
+            getBinding().lineChart.animateX(500);
+            
+            Log.d(TAG, "✅ Đã cập nhật biểu đồ huyết áp với " + chartData.getEntries().size() + 
+                    " mục cho kỳ: " + period);
+        } catch (Exception e) {
+            Log.e(TAG, "Lỗi khi cập nhật biểu đồ huyết áp: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Hiển thị thông báo lỗi trên biểu đồ
+            getBinding().lineChart.clear();
+            getBinding().lineChart.setNoDataText("Lỗi khi tải dữ liệu huyết áp");
+            getBinding().lineChart.invalidate();
+        }
     }
     
     private String getYAxisUnit() {
@@ -300,39 +360,62 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
     }
 
     private void calculateAndDisplayStatistics(List<MetricHistory> historyList) {
-        
-        
-        // Get most recent value
-        MetricHistory latest = historyList.get(0);
-        getBinding().tvCurrentValue.setText(latest.getValue());
-        
-        // STATISTICS CALCULATION LOCATION:
-        // Calculate statistics from history list
-        // - Sum: Total of all values
-        // - Highest: Maximum value in period
-        // - Lowest: Minimum value in period
-        // - Average: Sum / Count
-        double sum = 0;
-        double highest = Double.MIN_VALUE;
-        double lowest = Double.MAX_VALUE;
-        
-        for (MetricHistory history : historyList) {
-            double value = history.getValueAsDouble();
-            sum += value;
-            highest = Math.max(highest, value);
-            lowest = Math.min(lowest, value);
+        // Kiểm tra dữ liệu trước khi tính toán
+        if (historyList == null || historyList.isEmpty()) {
+            // Đặt giá trị mặc định nếu không có dữ liệu
+            getBinding().tvCurrentValue.setText("--");
+            getBinding().tvCurrentStat.setText("--");
+            getBinding().tvAverageValue.setText("--");
+            getBinding().tvHighestValue.setText("--");
+            getBinding().tvLowestValue.setText("--");
+            getBinding().tvChangePercentage.setText("0%");
+            return;
         }
         
-        double average = sum / historyList.size();
-        
-        // Display calculated statistics (formatted to 1 decimal place)
-        getBinding().tvCurrentStat.setText(String.format("%.1f", latest.getValueAsDouble()));
-        getBinding().tvAverageValue.setText(String.format("%.1f", average));
-        getBinding().tvHighestValue.setText(String.format("%.1f", highest));
-        getBinding().tvLowestValue.setText(String.format("%.1f", lowest));
-        
-        // Calculate and display percentage change
-        calculateAndDisplayPercentageChange(historyList);
+        try {
+            // Lấy giá trị gần đây nhất
+            MetricHistory latest = historyList.get(0);
+            getBinding().tvCurrentValue.setText(latest.getValue());
+            
+            // TÍNH TOÁN THỐNG KÊ:
+            // - Sum: Tổng các giá trị
+            // - Highest: Giá trị cao nhất trong kỳ
+            // - Lowest: Giá trị thấp nhất trong kỳ
+            // - Average: Sum / Count
+            double sum = 0;
+            double highest = Double.MIN_VALUE;
+            double lowest = Double.MAX_VALUE;
+            
+            for (MetricHistory history : historyList) {
+                double value = history.getValueAsDouble();
+                sum += value;
+                highest = Math.max(highest, value);
+                lowest = Math.min(lowest, value);
+            }
+            
+            double average = sum / historyList.size();
+            
+            // Hiển thị thống kê đã tính toán (định dạng với 1 chữ số thập phân)
+            getBinding().tvCurrentStat.setText(String.format("%.1f", latest.getValueAsDouble()));
+            getBinding().tvAverageValue.setText(String.format("%.1f", average));
+            getBinding().tvHighestValue.setText(String.format("%.1f", highest));
+            getBinding().tvLowestValue.setText(String.format("%.1f", lowest));
+            
+            // Tính toán và hiển thị phần trăm thay đổi
+            calculateAndDisplayPercentageChange(historyList);
+            
+            Log.d(TAG, "✅ Đã tính toán thống kê: avg=" + average + ", min=" + lowest + ", max=" + highest);
+        } catch (Exception e) {
+            Log.e(TAG, "Lỗi khi tính toán thống kê: " + e.getMessage());
+            
+            // Xử lý lỗi an toàn
+            getBinding().tvCurrentValue.setText("--");
+            getBinding().tvCurrentStat.setText("--");
+            getBinding().tvAverageValue.setText("--");
+            getBinding().tvHighestValue.setText("--");
+            getBinding().tvLowestValue.setText("--");
+            getBinding().tvChangePercentage.setText("0%");
+        }
     }
     
     private void calculateAndDisplayPercentageChange(List<MetricHistory> historyList) {
@@ -401,16 +484,22 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
     }
 
     private void updatePeriodSelection(String period) {
+        // Hiển thị giao diện đang tải
+        getBinding().lineChart.clear();
+        getBinding().lineChart.setNoDataText("Đang tải dữ liệu cho " + period + "...");
+        getBinding().lineChart.invalidate();
+        
+        // Cập nhật kỳ hiện tại
         currentPeriod = period;
         
-        // Clear cache for this metric to force reload
+        // Xóa cache cho metric này để buộc tải lại
         com.example.healthylifehub.data.cache.ChartDataCacheManager.getInstance()
             .clearChartData(metricType + "_" + period);
         
-        // Reload data for new period
+        // Tải lại dữ liệu cho kỳ mới
         loadHistoryDataForPeriod(period);
         
-        Log.d(TAG, "Period changed to: " + period);
+        Log.d(TAG, "Đã chuyển kỳ sang: " + period);
     }
 
     private void resetButtonStyle(com.google.android.material.button.MaterialButton button) {

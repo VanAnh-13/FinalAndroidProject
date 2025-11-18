@@ -38,6 +38,15 @@ public final class ChartConfigurator {
 			String yAxisUnit,
 			float yAxisMin,
 			float yAxisMax) {
+		
+		// ✅ FIX: Check if data is empty
+		if (entries == null || entries.isEmpty()) {
+			chart.clear();
+			chart.setNoDataText("Không có dữ liệu để hiển thị");
+			chart.invalidate();
+			return;
+		}
+		
 		LineDataSet dataSet = new LineDataSet(entries, "");
 		dataSet.setColor(ContextCompat.getColor(context, lineColorRes));
 		dataSet.setLineWidth(3f);
@@ -65,8 +74,32 @@ public final class ChartConfigurator {
 		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 		xAxis.setDrawGridLines(false);
 		xAxis.setGranularity(1f);
+		xAxis.setGranularityEnabled(true);
+		xAxis.setAvoidFirstLastClipping(true); // Tránh cắt nhãn đầu và cuối
+		
+		// ✅ FIX: Set proper X-axis range and label count
+		xAxis.setAxisMinimum(-0.5f); // Mở rộng phần trái để tránh cắt điểm đầu
+		xAxis.setAxisMaximum(Math.max(0, entries.size() - 0.5f)); // Mở rộng phần phải
+		xAxis.setLabelCount(Math.min(entries.size(), 10), false);
+		
+		// ✅ FIX: Rotate labels if too many to avoid overlap
+		if (entries.size() > 5) {
+			xAxis.setLabelRotationAngle(-45f);
+		}
+		
+		// ✅ FIX: Đảm bảo hiển thị đúng số lượng nhãn cần thiết
+		if (entries.size() <= 10) {
+			xAxis.setLabelCount(entries.size(), false);
+		} else {
+			// Đối với dữ liệu nhiều, giới hạn số lượng nhãn
+			int step = Math.max(1, entries.size() / 10);
+			xAxis.setLabelCount(entries.size() / step, false);
+		}
+		
 		if (xAxisLabels != null && !xAxisLabels.isEmpty()) {
 			xAxis.setValueFormatter(new IndexAxisValueFormatter(xAxisLabels));
+			// ✅ FIX: Đảm bảo rằng chúng ta sẽ hiển thị đầy đủ nhãn theo thứ tự đúng
+			xAxis.setLabelCount(Math.min(xAxisLabels.size(), 10), false);
 		}
 
 		YAxis leftAxis = chart.getAxisLeft();
@@ -77,6 +110,19 @@ public final class ChartConfigurator {
 		if (yAxisMax > 0) {
 			leftAxis.setAxisMinimum(yAxisMin);
 			leftAxis.setAxisMaximum(yAxisMax);
+		} else {
+			// ✅ FIX: Auto-calculate Y-axis range with padding
+			float minValue = Float.MAX_VALUE;
+			float maxValue = Float.MIN_VALUE;
+			for (Entry entry : entries) {
+				if (entry.getY() < minValue) minValue = entry.getY();
+				if (entry.getY() > maxValue) maxValue = entry.getY();
+			}
+			
+			// Add 10% padding
+			float padding = (maxValue - minValue) * 0.1f;
+			leftAxis.setAxisMinimum(Math.max(0, minValue - padding));
+			leftAxis.setAxisMaximum(maxValue + padding);
 		}
 		
 		// Set Y-axis unit formatter if provided
@@ -100,6 +146,20 @@ public final class ChartConfigurator {
 			int systolicColorRes,
 			int diastolicColorRes,
 			int gridColorRes) {
+		
+		// Sắp xếp lại các Entry để đảm bảo chúng được sắp xếp theo chỉ số tăng dần
+		sortEntriesByXValue(systolicEntries);
+		sortEntriesByXValue(diastolicEntries);
+		
+		// ✅ FIX: Check if data is empty
+		if ((systolicEntries == null || systolicEntries.isEmpty()) && 
+			(diastolicEntries == null || diastolicEntries.isEmpty())) {
+			chart.clear();
+			chart.setNoDataText("Không có dữ liệu huyết áp để hiển thị");
+			chart.invalidate();
+			return;
+		}
+		
 		// Systolic line
 		LineDataSet systolicSet = new LineDataSet(systolicEntries, "Tâm thu");
 		systolicSet.setColor(ContextCompat.getColor(context, systolicColorRes));
@@ -147,8 +207,25 @@ public final class ChartConfigurator {
 		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 		xAxis.setDrawGridLines(false);
 		xAxis.setGranularity(1f);
+		xAxis.setGranularityEnabled(true);
+		xAxis.setAvoidFirstLastClipping(true); // Tránh cắt nhãn đầu và cuối
+		
+		// ✅ FIX: Set proper X-axis range for dual chart
+		int dataSize = Math.max(systolicEntries.size(), diastolicEntries.size());
+		xAxis.setAxisMinimum(-0.5f); // Mở rộng phần trái để tránh cắt điểm đầu
+		xAxis.setAxisMaximum(Math.max(0, dataSize - 0.5f)); // Mở rộng phần phải
+		xAxis.setLabelCount(Math.min(dataSize, 10), false);
+		xAxis.setAvoidFirstLastClipping(true); // Tránh cắt nhãn đầu và cuối
+		
+		// ✅ FIX: Rotate labels if too many
+		if (dataSize > 7) {
+			xAxis.setLabelRotationAngle(-45f);
+		}
+		
 		if (xAxisLabels != null && !xAxisLabels.isEmpty()) {
 			xAxis.setValueFormatter(new IndexAxisValueFormatter(xAxisLabels));
+			// ✅ FIX: Đảm bảo rằng chúng ta sẽ hiển thị đầy đủ nhãn theo thứ tự đúng
+			xAxis.setLabelCount(Math.min(xAxisLabels.size(), 10), false);
 		}
 
 		YAxis leftAxis = chart.getAxisLeft();
@@ -175,6 +252,16 @@ public final class ChartConfigurator {
 		@Override
 		public String getFormattedValue(float value) {
 			return String.format("%.0f %s", value, unit);
+		}
+	}
+	
+	/**
+	 * Sắp xếp danh sách Entry theo giá trị X tăng dần
+	 * Điều này quan trọng để đảm bảo rằng biểu đồ hiển thị chính xác
+	 */
+	private static void sortEntriesByXValue(List<Entry> entries) {
+		if (entries != null && !entries.isEmpty()) {
+			entries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
 		}
 	}
 }

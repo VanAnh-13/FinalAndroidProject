@@ -309,9 +309,11 @@ public class MetricsRepository extends FirebaseRepository {
     
     /**
      * Format history time from Date
+     * ✅ FIX: Use standard format matching ChartDataProcessor to avoid parse errors
      */
     private String formatHistoryTime(Date date) {
-        SimpleDateFormat historyFormat = new SimpleDateFormat("dd MMM, HH:mm", Locale.getDefault());
+        // Use format compatible with ChartDataProcessor.INPUT_DATE_FORMAT
+        SimpleDateFormat historyFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         return historyFormat.format(date);
     }
     

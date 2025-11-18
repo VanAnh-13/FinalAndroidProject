@@ -8,6 +8,13 @@ import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseActivity;
+import com.example.healthylifehub.utils.SimpleNetworkManager;
+import com.example.healthylifehub.utils.ErrorHandler;
+import com.example.healthylifehub.utils.CrashPreventionHandler;
+import com.example.healthylifehub.utils.InputValidationHandler;
+import com.example.healthylifehub.utils.NetworkErrorHandler;
+import com.example.healthylifehub.utils.ui.UserFeedbackManager;
+import com.example.healthylifehub.utils.ui.ErrorStateManager;
 import com.example.healthylifehub.databinding.ActivityAddEditMetricBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.SimpleDateFormat;
@@ -21,6 +28,7 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
     private AddEditMetricViewModel viewModel;
     private String editMetricId = null; // For edit mode
     private boolean isEditMode = false;
+    private SimpleNetworkManager networkManager;
 
     public AddEditMetricActivity() {
         super(ActivityAddEditMetricBinding::inflate);
@@ -28,22 +36,27 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
 
     @Override
     public void initData() {
-        Thread thread = new Thread();
-        thread.start();
-        calendar = Calendar.getInstance();
-        viewModel = new ViewModelProvider(this).get(AddEditMetricViewModel.class);
-        
-        // Check if edit mode
-        editMetricId = getIntent().getStringExtra("METRIC_ID");
-        isEditMode = editMetricId != null;
-        
-        setupMetricTypeDropdown();
-        observeViewModel();
-        
-        // Load metric data if edit mode
-        if (isEditMode) {
-            loadMetricForEdit(editMetricId);
-        }
+        CrashPreventionHandler.safeUIExecute(this, () -> {
+            calendar = Calendar.getInstance();
+            viewModel = new ViewModelProvider(this).get(AddEditMetricViewModel.class);
+            
+            // Initialize simple network manager with error handling
+            networkManager = new SimpleNetworkManager(this);
+            networkManager.startMonitoring(this);
+            
+            // Check if edit mode
+            editMetricId = getIntent().getStringExtra("METRIC_ID");
+            isEditMode = editMetricId != null;
+            
+            setupMetricTypeDropdown();
+            observeViewModel();
+            setupInputValidation();
+            
+            // Load metric data if edit mode
+            if (isEditMode) {
+                loadMetricForEdit(editMetricId);
+            }
+        }, "Không thể khởi tạo màn hình thêm chỉ số");
     }
 
     @Override
@@ -71,15 +84,7 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
     private void observeViewModel() {
         // Observe saving state
         viewModel.getIsSaving().observe(this, isSaving -> {
-            if (isSaving) {
-                getBinding().btnSave.setEnabled(false);
-                getBinding().btnSaveAnalyze.setEnabled(false);
-                getBinding().btnSave.setText("Đang lưu...");
-            } else {
-                getBinding().btnSave.setEnabled(true);
-                getBinding().btnSaveAnalyze.setEnabled(true);
-                getBinding().btnSave.setText(R.string.save);
-            }
+            updateSaveButtonState(isSaving);
         });
         
         // Observe save success
@@ -96,6 +101,49 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
                 showErrorDialog(error);
             }
         });
+        
+        // Observe network connectivity to enable/disable save functionality
+        viewModel.getNetworkConnectivity().observe(this, isConnected -> {
+            updateNetworkUI(isConnected);
+        });
+        
+        // Observe can save state
+        viewModel.getCanSave().observe(this, canSave -> {
+            // This will be handled by updateSaveButtonState
+        });
+    }
+    
+    /**
+     * Update save button state based on saving and network status
+     */
+    private void updateSaveButtonState(boolean isSaving) {
+        Boolean canSave = viewModel.getCanSave().getValue();
+        boolean networkAvailable = canSave != null ? canSave : true;
+        
+        if (isSaving) {
+            getBinding().btnSave.setEnabled(false);
+            getBinding().btnSaveAnalyze.setEnabled(false);
+            getBinding().btnSave.setText("Đang lưu...");
+        } else {
+            // Enable buttons based on network availability
+            getBinding().btnSave.setEnabled(networkAvailable);
+            getBinding().btnSaveAnalyze.setEnabled(networkAvailable);
+            
+            if (networkAvailable) {
+                getBinding().btnSave.setText(isEditMode ? "Cập nhật" : "Lưu");
+            } else {
+                getBinding().btnSave.setText("Lưu offline");
+            }
+        }
+    }
+    
+    /**
+     * Update UI based on network connectivity - Simplified
+     */
+    private void updateNetworkUI(boolean isConnected) {
+        // SimpleNetworkManager sẽ tự động hiển thị dialog
+        // Chỉ cần update button state
+        updateSaveButtonState(viewModel.getIsSaving().getValue());
     }
 
     @Override
@@ -297,39 +345,99 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
     }
 
     /**
-     * Basic validation for empty fields
+     * Setup real-time input validation
+     */
+    private void setupInputValidation() {
+        CrashPreventionHandler.safeUIExecute(this, () -> {
+            // Setup real-time validation for blood pressure fields
+            InputValidationHandler.setupRealTimeValidation(getBinding().tilSystolic, 
+                () -> validateBloodPressureField(getBinding().tilSystolic, "Huyết áp tâm thu", 70, 250));
+            
+            InputValidationHandler.setupRealTimeValidation(getBinding().tilDiastolic, 
+                () -> validateBloodPressureField(getBinding().tilDiastolic, "Huyết áp tâm trương", 40, 150));
+            
+            // Setup validation for single value field
+            InputValidationHandler.setupRealTimeValidation(getBinding().tilSingleValue, 
+                () -> validateSingleValueField());
+            
+            // Setup validation for notes field
+            InputValidationHandler.setupRealTimeValidation(getBinding().tilNotes, 
+                () -> InputValidationHandler.validateReminderDescription(this, getBinding().tilNotes));
+        }, null);
+    }
+    
+    /**
+     * Validate blood pressure field with range checking
+     */
+    private void validateBloodPressureField(com.google.android.material.textfield.TextInputLayout layout, 
+                                          String fieldName, double min, double max) {
+        InputValidationHandler.validateNumericRange(this, layout, min, max, fieldName);
+    }
+    
+    /**
+     * Validate single value field based on metric type
+     */
+    private void validateSingleValueField() {
+        switch (selectedMetricType) {
+            case "blood_sugar":
+                InputValidationHandler.validateBloodSugar(this, getBinding().tilSingleValue);
+                break;
+            case "weight":
+                InputValidationHandler.validateWeight(this, getBinding().tilSingleValue);
+                break;
+            case "heart_rate":
+                InputValidationHandler.validateHeartRate(this, getBinding().tilSingleValue);
+                break;
+        }
+    }
+
+    /**
+     * Comprehensive validation for all inputs
      */
     private boolean validateBasicInputs() {
-        boolean isValid = true;
-
-        if (selectedMetricType.equals("blood_pressure")) {
-            String systolic = getBinding().etSystolic.getText().toString().trim();
-            String diastolic = getBinding().etDiastolic.getText().toString().trim();
-
-            if (systolic.isEmpty()) {
-                getBinding().tilSystolic.setError("Vui lòng nhập giá trị");
-                isValid = false;
+        CrashPreventionHandler.safeExecute(this, () -> {
+            InputValidationHandler.ValidationResult result = new InputValidationHandler.ValidationResult();
+            
+            if (selectedMetricType.equals("blood_pressure")) {
+                // Validate blood pressure with comprehensive checking
+                InputValidationHandler.ValidationResult bpResult = 
+                    InputValidationHandler.validateBloodPressure(this, 
+                        getBinding().tilSystolic, getBinding().tilDiastolic);
+                
+                if (!bpResult.isValid()) {
+                    InputValidationHandler.showValidationSummary(this, bpResult);
+                    return false;
+                }
             } else {
-                getBinding().tilSystolic.setError(null);
+                // Validate single value field
+                boolean isValidSingle = false;
+                switch (selectedMetricType) {
+                    case "blood_sugar":
+                        isValidSingle = InputValidationHandler.validateBloodSugar(this, getBinding().tilSingleValue);
+                        break;
+                    case "weight":
+                        isValidSingle = InputValidationHandler.validateWeight(this, getBinding().tilSingleValue);
+                        break;
+                    case "heart_rate":
+                        isValidSingle = InputValidationHandler.validateHeartRate(this, getBinding().tilSingleValue);
+                        break;
+                }
+                
+                if (!isValidSingle) {
+                    UserFeedbackManager.showError(this, "Vui lòng nhập giá trị hợp lệ");
+                    return false;
+                }
             }
-
-            if (diastolic.isEmpty()) {
-                getBinding().tilDiastolic.setError("Vui lòng nhập giá trị");
-                isValid = false;
-            } else {
-                getBinding().tilDiastolic.setError(null);
+            
+            // Validate notes field
+            if (!InputValidationHandler.validateReminderDescription(this, getBinding().tilNotes)) {
+                return false;
             }
-        } else {
-            String value = getBinding().etSingleValue.getText().toString().trim();
-            if (value.isEmpty()) {
-                getBinding().tilSingleValue.setError("Vui lòng nhập giá trị");
-                isValid = false;
-            } else {
-                getBinding().tilSingleValue.setError(null);
-            }
-        }
-
-        return isValid;
+            
+            return true;
+        }, false);
+        
+        return false; // Default return for safety
     }
     
     /**
@@ -394,5 +502,13 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
                 }
             }
         });
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (networkManager != null) {
+            networkManager.destroy();
+        }
     }
 }

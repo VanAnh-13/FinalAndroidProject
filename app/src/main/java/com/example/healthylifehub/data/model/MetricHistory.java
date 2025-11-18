@@ -29,32 +29,18 @@ public class MetricHistory {
 	/**
 	 * Get systolic value (for blood pressure)
 	 * Blood pressure format: "systolic/diastolic" e.g. "120/80"
+	 * Uses improved parsing to handle edge cases
 	 */
 	public double getSystolic() {
-		try {
-			if (value.contains("/")) {
-				String[] parts = value.split("/");
-				return Double.parseDouble(parts[0].trim());
-			}
-			return getValueAsDouble();
-		} catch (Exception e) {
-			return 0.0;
-		}
+		return com.example.healthylifehub.utils.chart.ChartDataProcessor.parseSystolic(value);
 	}
 	
 	/**
 	 * Get diastolic value (for blood pressure)
 	 * Blood pressure format: "systolic/diastolic" e.g. "120/80"
+	 * Uses improved parsing to handle edge cases
 	 */
 	public double getDiastolic() {
-		try {
-			if (value.contains("/")) {
-				String[] parts = value.split("/");
-				return Double.parseDouble(parts[1].trim());
-			}
-			return 0.0;
-		} catch (Exception e) {
-			return 0.0;
-		}
+		return com.example.healthylifehub.utils.chart.ChartDataProcessor.parseDiastolic(value);
 	}
 }

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.healthylifehub.utils.ApplicationContextProvider;
 import com.example.healthylifehub.utils.NotificationHelper;
+import com.example.healthylifehub.utils.WorkManagerInitializer;
 
 /**
  * Application class for HealthyLife Hub
@@ -17,6 +18,9 @@ public class HealthyLifeHubApplication extends Application {
         
         // Initialize application context provider for repositories
         ApplicationContextProvider.init(this);
+        
+        // Initialize WorkManager for background processing
+        WorkManagerInitializer.initialize(this);
         
         // Create notification channel for reminders
         NotificationHelper.createNotificationChannel(this);

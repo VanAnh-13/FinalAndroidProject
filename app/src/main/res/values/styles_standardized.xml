@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Standardized Button Styles -->
+    <style name="StandardButton.Primary" parent="Widget.Material3.Button">
+        <item name="android:layout_height">@dimen/button_height_medium</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="android:paddingHorizontal">@dimen/padding_large</item>
+    </style>
+    
+    <style name="StandardButton.Secondary" parent="Widget.Material3.Button.TextButton">
+        <item name="android:layout_height">@dimen/button_height_medium</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/primary_blue</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="android:paddingHorizontal">@dimen/padding_large</item>
+        <item name="strokeColor">@color/primary_blue</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    
+    <style name="StandardButton.Tonal" parent="Widget.Material3.Button.TonalButton">
+        <item name="android:layout_height">@dimen/button_height_medium</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/primary_blue</item>
+        <item name="backgroundTint">@color/primary_container</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="android:paddingHorizontal">@dimen/padding_large</item>
+    </style>
+    
+    <!-- Standardized Card Styles -->
+    <style name="StandardCard" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">@dimen/corner_radius</item>
+        <item name="cardElevation">@dimen/elevation_card</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="android:layout_margin">@dimen/spacing_small</item>
+    </style>
+    
+    <style name="StandardCard.Large">
+        <item name="cardCornerRadius">@dimen/corner_radius_large</item>
+        <item name="cardElevation">@dimen/elevation_card_large</item>
+        <item name="android:layout_margin">@dimen/spacing_normal</item>
+    </style>
+    
+    <!-- Standardized Text Styles -->
+    <style name="StandardText.Title" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textSize">@dimen/text_size_xl</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+    
+    <style name="StandardText.Subtitle" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+    
+    <style name="StandardText.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+    
+    <style name="StandardText.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+    
+    <!-- Standardized Toolbar Styles -->
+    <style name="StandardToolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@color/background_white</item>
+        <item name="android:elevation">0dp</item>
+        <item name="titleTextAppearance">@style/StandardText.Title</item>
+        <item name="android:paddingHorizontal">@dimen/padding_normal</item>
+    </style>
+    
+    <!-- Standardized Icon Button Styles -->
+    <style name="StandardIconButton" parent="Widget.Material3.Button.IconButton">
+        <item name="android:layout_width">@dimen/button_height_small</item>
+        <item name="android:layout_height">@dimen/button_height_small</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="iconTint">@color/text_primary</item>
+    </style>
+    
+    <!-- Standardized FAB Styles -->
+    <style name="StandardFAB" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="android:layout_margin">@dimen/spacing_large</item>
+        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="tint">@color/white</item>
+    </style>
+    
+    <style name="StandardFAB.Extended" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
+        <item name="android:layout_margin">@dimen/spacing_large</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="iconTint">@color/white</item>
+    </style>
+    
+    <!-- Standardized Empty State Styles -->
+    <style name="StandardEmptyState">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_large</item>
+    </style>
+    
+    <style name="StandardEmptyState.Icon">
+        <item name="android:layout_width">@dimen/icon_size_large</item>
+        <item name="android:layout_height">@dimen/icon_size_large</item>
+        <item name="android:layout_marginBottom">@dimen/spacing_normal</item>
+        <item name="tint">@color/text_secondary</item>
+    </style>
+    
+    <style name="StandardEmptyState.Title" parent="StandardText.Subtitle">
+        <item name="android:layout_marginBottom">@dimen/spacing_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <style name="StandardEmptyState.Description" parent="StandardText.Body">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
+</resources>

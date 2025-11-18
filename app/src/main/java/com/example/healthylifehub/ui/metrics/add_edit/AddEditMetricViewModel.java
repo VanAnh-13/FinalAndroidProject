@@ -2,28 +2,45 @@ package com.example.healthylifehub.ui.metrics.add_edit;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.example.healthylifehub.base.BaseViewModel;
+import com.example.healthylifehub.base.DataState;
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.example.healthylifehub.data.repository.HealthMetricRepository;
+import com.example.healthylifehub.utils.ExceptionHandler;
 
 import java.util.Date;
 
 /**
  * ViewModel for Add/Edit Health Metric screen
- * Handles validation and saving logic
+ * Handles validation and saving logic with network awareness
  */
-public class AddEditMetricViewModel extends AndroidViewModel {
+public class AddEditMetricViewModel extends BaseViewModel {
     
     private final HealthMetricRepository repository;
     private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> saveSuccess = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> canSave = new MutableLiveData<>(true);
     
     public AddEditMetricViewModel(@NonNull Application application) {
         super(application);
         repository = new HealthMetricRepository(application.getApplicationContext());
+        
+        // Observe network connectivity to enable/disable save functionality
+        getNetworkConnectivity().observeForever(isConnected -> {
+            canSave.postValue(isConnected);
+            if (!isConnected) {
+                errorMessage.postValue("Không có kết nối mạng. Dữ liệu sẽ được lưu cục bộ và đồng bộ khi có mạng.");
+            } else {
+                // Clear network error when connection is restored
+                if (errorMessage.getValue() != null && 
+                    errorMessage.getValue().contains("Không có kết nối mạng")) {
+                    errorMessage.postValue(null);
+                }
+            }
+        });
     }
     
     public LiveData<Boolean> getIsSaving() {
@@ -36,6 +53,10 @@ public class AddEditMetricViewModel extends AndroidViewModel {
     
     public LiveData<String> getErrorMessage() {
         return errorMessage;
+    }
+    
+    public LiveData<Boolean> getCanSave() {
+        return canSave;
     }
     
     /**
@@ -158,26 +179,64 @@ public class AddEditMetricViewModel extends AndroidViewModel {
     }
     
     /**
-     * Save metric to repository
+     * Save metric to repository with network awareness
      */
     private void saveMetric(HealthMetric metric) {
         isSaving.setValue(true);
         
-        repository.saveHealthMetric(metric)
-            .thenAccept(success -> {
+        // Use network-aware task execution
+        executeNetworkTask(
+            () -> {
+                // This will be executed on background thread
+                try {
+                    boolean success = repository.saveHealthMetric(metric).get();
+                    return DataState.success(success);
+                } catch (Exception e) {
+                    return DataState.error(e.getMessage());
+                }
+            },
+            success -> {
+                // On success
                 isSaving.postValue(false);
                 saveSuccess.postValue(success);
                 
                 if (!success) {
                     errorMessage.postValue("Lỗi khi lưu chỉ số. Vui lòng thử lại.");
+                } else {
+                    // Clear any previous error messages on successful save
+                    errorMessage.postValue(null);
                 }
-            })
-            .exceptionally(throwable -> {
+            },
+            error -> {
+                // On error - use ExceptionHandler for better error handling
                 isSaving.postValue(false);
                 saveSuccess.postValue(false);
-                errorMessage.postValue("Lỗi: " + throwable.getMessage());
-                return null;
-            });
+                
+                // Use ExceptionHandler to get user-friendly error message
+                ExceptionHandler.ExceptionResult result = ExceptionHandler.handleException(error);
+                
+                // Set appropriate error message based on exception category
+                switch (result.getCategory()) {
+                    case NETWORK_ERROR:
+                        errorMessage.postValue("Lỗi kết nối mạng. Dữ liệu đã được lưu cục bộ và sẽ đồng bộ khi có mạng.");
+                        break;
+                    case FIREBASE_FIRESTORE_ERROR:
+                        errorMessage.postValue("Lỗi cơ sở dữ liệu: " + result.getUserMessage());
+                        break;
+                    case VALIDATION_ERROR:
+                        errorMessage.postValue("Dữ liệu không hợp lệ: " + result.getUserMessage());
+                        break;
+                    default:
+                        errorMessage.postValue(result.getUserMessage());
+                        break;
+                }
+                
+                // Log the technical details for debugging
+                ExceptionHandler.logException("AddEditMetricViewModel", "Error saving metric", error);
+            },
+            "Không có kết nối mạng. Dữ liệu sẽ được lưu cục bộ và đồng bộ khi có mạng.",
+            false // Don't show loading here since we have our own isSaving state
+        );
     }
     
     // ==================== VALIDATION METHODS ====================

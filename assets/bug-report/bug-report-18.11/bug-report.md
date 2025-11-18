@@ -40,6 +40,94 @@ Nav tab không đồng bộ với sidebar, không cập nhật trạng thái act
 
 ---
 
+### Bug #02: Chỉ số huyết áp bị lỗi
+
+**Trạng thái:** 🔴 Chưa khắc phục
+
+**Mô tả:**
+Cái chỉ số về huyết áp bị lỗi không tính toán được các chỉ số hiện tại, trung bình, cao nhất, thấp nhất, đang mặc định là 0. Chắc vì nó có 2 loại chỉ số là tâm thu và tâm trương nên nó không convert được ra số hay j đó.
+
+**Môi trường:**
+- Platform: Mobile App (Android)
+- Version: [Chưa cập nhật]
+- Device: [Chưa cập nhật]
+
+**Hình ảnh minh chứng:**
+
+![Bug huyết áp - Screenshot 1](./Screenshot%202025-11-18%20235535.png)
+
+**Kết quả mong đợi:**
+Hiển thị đúng các chỉ số: hiện tại, trung bình, cao nhất, thấp nhất dựa trên dữ liệu tâm thu/tâm trương.
+
+**Kết quả thực tế:**
+Tất cả các chỉ số đều hiển thị là 0.
+
+**Độ ưu tiên:** High
+
+**Ngày phát hiện:** 18/11/2025
+
+---
+
+### Bug #03: Xuất file báo cáo bị lỗi
+
+**Trạng thái:** 🔴 Chưa khắc phục
+
+**Mô tả:**
+Chức năng xuất file báo cáo (PDF/Excel) gặp lỗi, không thể tạo hoặc lưu file báo cáo.
+
+**Môi trường:**
+- Platform: Mobile App (Android)
+- Version: [Chưa cập nhật]
+- Device: [Chưa cập nhật]
+
+**Hình ảnh minh chứng:**
+
+![Bug xuất báo cáo - Screenshot 2](./Screenshot%202025-11-18%20235653.png)
+
+**Kết quả mong đợi:**
+File báo cáo được tạo và lưu thành công vào thiết bị.
+
+**Kết quả thực tế:**
+Lỗi khi xuất file, không thể hoàn thành.
+
+**Độ ưu tiên:** Medium
+
+**Ngày phát hiện:** 18/11/2025
+
+---
+
+### Bug #04: Lỗi layout nhắc nhở 
+
+**Trạng thái:** 🔴 Chưa khắc phục
+
+**Mô tả:**
+Layout của màn hình nhắc nhở bị lỗi hiển thị, các thành phần UI không được sắp xếp đúng vị trí hoặc bị chồng lên nhau.
+
+**Môi trường:**
+- Platform: Mobile App (Android)
+- Version: [Chưa cập nhật]
+- Device: [Chưa cập nhật]
+
+**Hình ảnh minh chứng:**
+
+![Bug layout nhắc nhở - Screenshot 3](./Screenshot%202025-11-19%20001338.png)
+
+**Kết quả mong đợi:**
+Layout hiển thị đúng, các thành phần UI được sắp xếp hợp lý.
+
+**Kết quả thực tế:**
+Layout bị lỗi, UI không hiển thị đúng.
+
+**Độ ưu tiên:** Medium
+
+**Ngày phát hiện:** 19/11/2025
+
+
+
+---
+
+
+
 ## Template cho Bug mới
 
 ### Bug #[Số thứ tự]: [Tiêu đề ngắn gọn]
@@ -83,7 +171,21 @@ Nav tab không đồng bộ với sidebar, không cập nhật trạng thái act
 
 ## Thống kê
 
-- 🔴 Chưa khắc phục: 1
+- 🔴 Chưa khắc phục: 4
 - 🟡 Đang xử lý: 0
 - 🟢 Đã khắc phục: 0
-- **Tổng số bug:** 1
+- **Tổng số bug:** 4
+
+---
+
+## Ghi chú về Images
+
+Các file ảnh minh chứng được lưu trong cùng thư mục với file bug-report.md:
+- `Screenshot 2025-11-18 235535.png` - Bug #02: Chỉ số huyết áp
+- `Screenshot 2025-11-18 235653.png` - Bug #03: Xuất báo cáo
+- `Screenshot 2025-11-19 001338.png` - Bug #04: Layout nhắc nhở
+
+**Lưu ý khi push lên GitHub:**
+- Đảm bảo push cả thư mục `assets/bug-report/bug-report-18.11/` với tất cả files
+- Images sẽ hiển thị tự động trên GitHub khi dùng relative path
+- Format: `![Alt text](./filename.png)` hoặc `![Alt text](filename.png)`

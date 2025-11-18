@@ -118,7 +118,7 @@ public class NotificationHelper {
     }
     
     /**
-     * Show reminder notification with enhanced features
+     * Show reminder notification with enhanced features and custom settings
      * @param context Application context
      * @param reminderId Reminder ID
      * @param title Notification title
@@ -131,6 +131,26 @@ public class NotificationHelper {
             String title,
             String description,
             int notificationId
+    ) {
+        showReminderNotificationWithSettings(context, reminderId, title, description, notificationId, null);
+    }
+    
+    /**
+     * Show reminder notification with custom settings
+     * @param context Application context
+     * @param reminderId Reminder ID
+     * @param title Notification title
+     * @param description Notification description
+     * @param notificationId Unique notification ID
+     * @param settings Custom notification settings (null for default)
+     */
+    public static void showReminderNotificationWithSettings(
+            Context context,
+            String reminderId,
+            String title,
+            String description,
+            int notificationId,
+            com.example.healthylifehub.data.model.NotificationSettings settings
     ) {
         // Check permission first
         if (!PermissionManager.isNotificationPermissionGranted(context)) {
@@ -193,6 +213,30 @@ public class NotificationHelper {
             .addAction(R.drawable.ic_check, "Hoàn thành", completePendingIntent)
             .addAction(R.drawable.ic_time, "Báo lại (10p)", snoozePendingIntent);
         
+        // Apply custom settings if provided
+        if (settings != null) {
+            // Apply sound settings
+            if (!settings.isReminderSound()) {
+                builder.setSound(null);
+            }
+            
+            // Apply vibration settings
+            if (!settings.isReminderVibration()) {
+                builder.setVibrate(null);
+            } else {
+                // Apply custom vibration pattern
+                long[] vibrationPattern = getVibrationPattern(settings.getReminderVibrationPattern());
+                if (vibrationPattern != null) {
+                    builder.setVibrate(vibrationPattern);
+                }
+            }
+            
+            // Apply lock screen visibility
+            if (!settings.isShowOnLockScreen()) {
+                builder.setVisibility(NotificationCompat.VISIBILITY_SECRET);
+            }
+        }
+        
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         try {
             notificationManager.notify(notificationId, builder.build());
@@ -235,8 +279,13 @@ public class NotificationHelper {
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         
-        NotificationManagerCompat.from(context).notify(notificationId, builder.build());
-        Log.d(TAG, "✅ Showed health alert: " + title);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        try {
+            nm.notify(notificationId, builder.build());
+            Log.d(TAG, "✅ Showed health alert: " + title);
+        } catch (SecurityException e) {
+            Log.e(TAG, "❌ Failed to show health alert - permission denied", e);
+        }
     }
     
     /**
@@ -271,8 +320,13 @@ public class NotificationHelper {
             .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         
-        NotificationManagerCompat.from(context).notify(notificationId, builder.build());
-        Log.d(TAG, "✅ Showed suggestion: " + title);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        try {
+            nm.notify(notificationId, builder.build());
+            Log.d(TAG, "✅ Showed suggestion: " + title);
+        } catch (SecurityException e) {
+            Log.e(TAG, "❌ Failed to show suggestion - permission denied", e);
+        }
     }
     
     /**
@@ -306,14 +360,23 @@ public class NotificationHelper {
             .setContentIntent(pendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         
-        NotificationManagerCompat.from(context).notify(notificationId, builder.build());
-        Log.d(TAG, "✅ Showed general notification: " + title);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        try {
+            nm.notify(notificationId, builder.build());
+            Log.d(TAG, "✅ Showed general notification: " + title);
+        } catch (SecurityException e) {
+            Log.e(TAG, "❌ Failed to show general notification - permission denied", e);
+        }
     }
     
     public static void cancelNotification(Context context, int notificationId) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(notificationId);
-        Log.d(TAG, "✅ Cancelled notification: " + notificationId);
+        try {
+            notificationManager.cancel(notificationId);
+            Log.d(TAG, "✅ Cancelled notification: " + notificationId);
+        } catch (SecurityException e) {
+            Log.e(TAG, "❌ Failed to cancel notification - permission denied", e);
+        }
     }
     
     /**
@@ -322,8 +385,36 @@ public class NotificationHelper {
      */
     public static void cancelAllNotifications(Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancelAll();
-        Log.d(TAG, "✅ Cancelled all notifications");
+        try {
+            notificationManager.cancelAll();
+            Log.d(TAG, "✅ Cancelled all notifications");
+        } catch (SecurityException e) {
+            Log.e(TAG, "❌ Failed to cancel all notifications - permission denied", e);
+        }
+    }
+    
+    /**
+     * Get vibration pattern based on setting
+     * @param pattern Pattern name
+     * @return Vibration pattern array
+     */
+    private static long[] getVibrationPattern(String pattern) {
+        if (pattern == null) {
+            pattern = "default";
+        }
+        
+        switch (pattern) {
+            case "gentle":
+                return new long[]{0, 200}; // Short single vibration
+            case "standard":
+                return new long[]{0, 300, 200, 300}; // Two vibrations
+            case "strong":
+                return new long[]{0, 500, 200, 500, 200, 500}; // Three vibrations
+            case "continuous":
+                return new long[]{0, 1000}; // Long continuous vibration
+            default: // "default"
+                return new long[]{0, 500, 200, 500}; // Default pattern
+        }
     }
     
     /**

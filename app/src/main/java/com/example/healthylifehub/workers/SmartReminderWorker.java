@@ -85,7 +85,8 @@ public class SmartReminderWorker extends Worker {
             // Task 4: Generate smart suggestions
             List<SmartSuggestion> suggestions = SmartReminderAI.generateSmartSuggestions(
                 activeReminders, 
-                behavior
+                behavior,
+                getApplicationContext()
             );
             
             Log.d(TAG, "Generated " + suggestions.size() + " suggestions");

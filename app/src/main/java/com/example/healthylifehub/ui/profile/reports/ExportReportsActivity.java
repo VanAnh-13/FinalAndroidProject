@@ -12,6 +12,15 @@ import com.example.healthylifehub.data.model.GeneratedReport;
 import com.example.healthylifehub.databinding.ActivityExportReportsBinding;
 import com.example.healthylifehub.ui.profile.reports.adapter.GeneratedReportsAdapter;
 import com.example.healthylifehub.utils.ReportGenerator;
+import com.example.healthylifehub.utils.report.ReportManager;
+import com.example.healthylifehub.utils.report.ReportDataFetcher;
+import com.example.healthylifehub.data.repository.HealthMetricRepository;
+import com.example.healthylifehub.data.repository.RemindersRepository;
+import com.example.healthylifehub.data.model.HealthMetric;
+import com.example.healthylifehub.data.model.Reminder;
+
+import java.io.File;
+import java.util.concurrent.CompletableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,6 +42,10 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
 
     private GeneratedReportsAdapter adapter;
     private ReportGenerator reportGenerator;
+    private ReportManager reportManager;
+    private ReportDataFetcher dataFetcher;
+    private HealthMetricRepository healthMetricRepository;
+    private RemindersRepository remindersRepository;
     private ProgressDialog progressDialog;
 
     public ExportReportsActivity() {
@@ -43,6 +56,10 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
     public void initData() {
         // Initialize report generator
         reportGenerator = new ReportGenerator(this);
+        reportManager = new ReportManager(this);
+        dataFetcher = new ReportDataFetcher(this);
+        healthMetricRepository = new HealthMetricRepository(this);
+        remindersRepository = new RemindersRepository();
         
         // Initialize adapter
         adapter = new GeneratedReportsAdapter(new GeneratedReportsAdapter.OnReportClickListener() {
@@ -92,9 +109,9 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         // Toolbar back button
         getBinding().toolbar.setNavigationOnClickListener(v -> finish());
 
-        // Create Report button - Main action with async pipeline
+        // Create Report button - Main action with new report system
         getBinding().btnCreateReport.setOnClickListener(v -> {
-            createReportWithPipeline();
+            createReportWithNewSystem();
         });
 
         // Time range radio buttons
@@ -244,12 +261,134 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                getBinding().cbAnalysis.isChecked();
     }
     
+    /**
+     * Create report with new system (using local database)
+     */
+    private void createReportWithNewSystem() {
+        // Validate user
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Get selected time range
+        Date endDate = new Date();
+        Date startDate = calculateStartDate();
+        
+        // Get selected file format
+        int selectedFormat = getBinding().rgFileFormat.getCheckedRadioButtonId();
+        boolean isPdf = selectedFormat == R.id.rbPdf;
+        
+        // Validate selected content
+        if (!validateSelectedContent()) {
+            Toast.makeText(this, "Vui lòng chọn ít nhất một nội dung báo cáo", 
+                Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Show progress
+        progressDialog.setMessage("Đang tải dữ liệu...");
+        progressDialog.show();
+        
+        // Fetch data and generate report
+        CompletableFuture<Void> reportFuture = dataFetcher.fetchHealthMetrics(currentUser.getUid(), startDate, endDate)
+            .thenAccept(metrics -> {
+                runOnUiThread(() -> {
+                    progressDialog.setMessage("Đang tạo báo cáo...");
+                });
+                
+                // Generate report based on format
+                if (isPdf) {
+                    reportManager.generateHealthMetricsPDF(metrics, startDate, endDate, new ReportManager.ReportCallback() {
+                        @Override
+                        public void onSuccess(File file) {
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(ExportReportsActivity.this, 
+                                    "Báo cáo đã được tạo thành công!", Toast.LENGTH_SHORT).show();
+                                
+                                // Ask user to open or share
+                                showReportOptions(file);
+                                
+                                // Refresh list
+                                loadGeneratedReports();
+                            });
+                        }
+                        
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(ExportReportsActivity.this, 
+                                    "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                        }
+                    });
+                } else {
+                    reportManager.generateHealthMetricsExcel(metrics, startDate, endDate, new ReportManager.ReportCallback() {
+                        @Override
+                        public void onSuccess(File file) {
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(ExportReportsActivity.this, 
+                                    "Báo cáo đã được tạo thành công!", Toast.LENGTH_SHORT).show();
+                                
+                                // Ask user to open or share
+                                showReportOptions(file);
+                                
+                                // Refresh list
+                                loadGeneratedReports();
+                            });
+                        }
+                        
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(ExportReportsActivity.this, 
+                                    "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                        }
+                    });
+                }
+            })
+            .exceptionally(throwable -> {
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(ExportReportsActivity.this, 
+                        "Lỗi khi tải dữ liệu: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                });
+                return null;
+            });
+    }
+    
+    /**
+     * Show options to open or share report
+     */
+    private void showReportOptions(File file) {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Báo cáo đã sẵn sàng")
+            .setMessage("Bạn muốn làm gì với báo cáo?")
+            .setPositiveButton("Mở", (dialog, which) -> {
+                reportManager.openReport(file);
+            })
+            .setNegativeButton("Chia sẻ", (dialog, which) -> {
+                reportManager.shareReport(file);
+            })
+            .setNeutralButton("Đóng", null)
+            .show();
+    }
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // Cleanup resources
         if (reportGenerator != null) {
             reportGenerator.shutdown();
+        }
+        if (reportManager != null) {
+            reportManager.shutdown();
         }
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();

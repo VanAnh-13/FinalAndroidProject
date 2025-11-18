@@ -1,5 +1,6 @@
 package com.example.healthylifehub.services;
 
+import com.example.healthylifehub.R;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.SmartSuggestion;
 import com.example.healthylifehub.data.model.UserBehavior;
@@ -118,9 +119,10 @@ public class SmartReminderAI {
      * Generate smart suggestions based on user behavior
      * @param reminders Current reminders
      * @param behavior Analyzed user behavior
+     * @param context Android context for string resources
      * @return List of smart suggestions
      */
-    public static List<SmartSuggestion> generateSmartSuggestions(List<Reminder> reminders, UserBehavior behavior) {
+    public static List<SmartSuggestion> generateSmartSuggestions(List<Reminder> reminders, UserBehavior behavior, android.content.Context context) {
         List<SmartSuggestion> suggestions = new ArrayList<>();
         
         if (behavior.getDataPoints() < MIN_DATA_POINTS) {
@@ -130,27 +132,27 @@ public class SmartReminderAI {
         
         // Suggestion 1: Optimize reminder times based on active hours
         if (behavior.getMostActiveHour() > 0) {
-            SmartSuggestion timeSuggestion = suggestOptimalTime(reminders, behavior);
+            SmartSuggestion timeSuggestion = suggestOptimalTime(reminders, behavior, context);
             if (timeSuggestion != null) {
                 suggestions.add(timeSuggestion);
             }
         }
         
         // Suggestion 2: Create water reminder if none exists
-        SmartSuggestion waterSuggestion = suggestWaterReminder(reminders);
+        SmartSuggestion waterSuggestion = suggestWaterReminder(reminders, context);
         if (waterSuggestion != null) {
             suggestions.add(waterSuggestion);
         }
         
         // Suggestion 3: Merge similar reminders
-        SmartSuggestion mergeSuggestion = suggestMergeReminders(reminders);
+        SmartSuggestion mergeSuggestion = suggestMergeReminders(reminders, context);
         if (mergeSuggestion != null) {
             suggestions.add(mergeSuggestion);
         }
         
         // Suggestion 4: Change frequency based on completion rate
         if (behavior.getCompletionRate() < 0.5) {
-            SmartSuggestion frequencySuggestion = suggestFrequencyChange(reminders, behavior);
+            SmartSuggestion frequencySuggestion = suggestFrequencyChange(reminders, behavior, context);
             if (frequencySuggestion != null) {
                 suggestions.add(frequencySuggestion);
             }
@@ -162,7 +164,7 @@ public class SmartReminderAI {
     /**
      * Suggest optimal time for reminders
      */
-    private static SmartSuggestion suggestOptimalTime(List<Reminder> reminders, UserBehavior behavior) {
+    private static SmartSuggestion suggestOptimalTime(List<Reminder> reminders, UserBehavior behavior, android.content.Context context) {
         int optimalHour = behavior.getMostActiveHour();
         
         // Find reminders scheduled outside optimal hours
@@ -178,9 +180,9 @@ public class SmartReminderAI {
                 SmartSuggestion suggestion = new SmartSuggestion();
                 suggestion.setSuggestionId("opt_time_" + reminder.getReminderId());
                 suggestion.setType("optimize_time");
-                suggestion.setTitle("Tối ưu thời gian nhắc nhở");
-                suggestion.setDescription("Chuyển \"" + reminder.getTitle() + "\" sang " + optimalHour + ":00");
-                suggestion.setReason("Bạn thường hoạt động nhiều nhất vào " + optimalHour + ":00");
+                suggestion.setTitle(context.getString(R.string.optimize_reminder_time));
+                suggestion.setDescription(context.getString(R.string.change_to_time, reminder.getTitle(), optimalHour));
+                suggestion.setReason(context.getString(R.string.optimal_time_reason, optimalHour));
                 suggestion.setReminderId(reminder.getReminderId());
                 
                 // Calculate suggested time
@@ -203,7 +205,7 @@ public class SmartReminderAI {
     /**
      * Suggest creating water reminder
      */
-    private static SmartSuggestion suggestWaterReminder(List<Reminder> reminders) {
+    private static SmartSuggestion suggestWaterReminder(List<Reminder> reminders, android.content.Context context) {
         // Check if water reminder already exists
         for (Reminder reminder : reminders) {
             if (reminder.getTitle() != null && 
@@ -215,9 +217,9 @@ public class SmartReminderAI {
         SmartSuggestion suggestion = new SmartSuggestion();
         suggestion.setSuggestionId("create_water_" + System.currentTimeMillis());
         suggestion.setType("create_reminder");
-        suggestion.setTitle("Tạo lời nhắc uống nước");
-        suggestion.setDescription("Uống đủ nước mỗi ngày giúp cải thiện sức khỏe");
-        suggestion.setReason("Bạn chưa có lời nhắc uống nước");
+        suggestion.setTitle(context.getString(R.string.create_water_reminder));
+        suggestion.setDescription(context.getString(R.string.water_reminder_description));
+        suggestion.setReason(context.getString(R.string.no_water_reminder_reason));
         suggestion.setSuggestedTitle("Uống nước");
         suggestion.setSuggestedFrequency("daily");
         suggestion.setConfidenceScore(MEDIUM_CONFIDENCE);
@@ -231,7 +233,7 @@ public class SmartReminderAI {
     /**
      * Suggest merging similar reminders
      */
-    private static SmartSuggestion suggestMergeReminders(List<Reminder> reminders) {
+    private static SmartSuggestion suggestMergeReminders(List<Reminder> reminders, android.content.Context context) {
         // Find reminders with similar times (within 30 minutes)
         for (int i = 0; i < reminders.size(); i++) {
             for (int j = i + 1; j < reminders.size(); j++) {
@@ -243,9 +245,9 @@ public class SmartReminderAI {
                     SmartSuggestion suggestion = new SmartSuggestion();
                     suggestion.setSuggestionId("merge_" + r1.getReminderId() + "_" + r2.getReminderId());
                     suggestion.setType("merge_reminders");
-                    suggestion.setTitle("Gộp lời nhắc");
-                    suggestion.setDescription("Gộp \"" + r1.getTitle() + "\" và \"" + r2.getTitle() + "\"");
-                    suggestion.setReason("Hai lời nhắc này gần nhau về thời gian");
+                    suggestion.setTitle(context.getString(R.string.merge_reminders_suggestion));
+                    suggestion.setDescription(context.getString(R.string.merge_two_reminders, r1.getTitle(), r2.getTitle()));
+                    suggestion.setReason(context.getString(R.string.merge_reason));
                     suggestion.setReminderIds(new String[]{r1.getReminderId(), r2.getReminderId()});
                     suggestion.setConfidenceScore(MEDIUM_CONFIDENCE);
                     suggestion.setPriority(3);
@@ -263,16 +265,16 @@ public class SmartReminderAI {
     /**
      * Suggest frequency change for low completion rate
      */
-    private static SmartSuggestion suggestFrequencyChange(List<Reminder> reminders, UserBehavior behavior) {
+    private static SmartSuggestion suggestFrequencyChange(List<Reminder> reminders, UserBehavior behavior, android.content.Context context) {
         // Find daily reminders with low completion
         for (Reminder reminder : reminders) {
             if ("daily".equals(reminder.getFrequency())) {
                 SmartSuggestion suggestion = new SmartSuggestion();
                 suggestion.setSuggestionId("freq_" + reminder.getReminderId());
                 suggestion.setType("change_frequency");
-                suggestion.setTitle("Thay đổi tần suất");
-                suggestion.setDescription("Chuyển \"" + reminder.getTitle() + "\" sang hàng tuần");
-                suggestion.setReason("Tỷ lệ hoàn thành thấp (" + (int)(behavior.getCompletionRate() * 100) + "%)");
+                suggestion.setTitle(context.getString(R.string.change_frequency_suggestion));
+                suggestion.setDescription(context.getString(R.string.change_to_weekly, reminder.getTitle()));
+                suggestion.setReason(context.getString(R.string.low_completion_reason, (int)(behavior.getCompletionRate() * 100)));
                 suggestion.setReminderId(reminder.getReminderId());
                 suggestion.setSuggestedFrequency("weekly");
                 suggestion.setConfidenceScore(MEDIUM_CONFIDENCE);

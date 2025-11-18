@@ -35,11 +35,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
  * Collection structure: users/{userId}
  * Matches the provided JSON structure with profile nested object
  * 
- * Architecture: Offline-First with Room + RxJava
+ * Architecture: Offline-First with Room + RxJava + Network Awareness
  * - All reads from Room (instant, works offline)
  * - All writes to Room first, then sync to Firestore
  * - Uses CacheManager for centralized cache logic
  * - Uses SyncManager for background sync
+ * - Network-aware operations with proper error handling
  */
 public class UserRepository extends FirebaseRepository {
     

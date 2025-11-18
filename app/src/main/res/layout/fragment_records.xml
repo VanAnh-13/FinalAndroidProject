@@ -54,55 +54,38 @@
     <!-- Empty State -->
     <LinearLayout
         android:id="@+id/empty_state"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
+        style="@style/StandardEmptyState"
         android:layout_marginTop="?attr/actionBarSize"
         android:visibility="gone">
 
         <ImageView
-            android:layout_width="@dimen/icon_size_large"
-            android:layout_height="@dimen/icon_size_large"
-            android:src="@drawable/ic_medication"
-            app:tint="@color/text_secondary"
-            android:layout_marginBottom="@dimen/padding_normal" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/StandardEmptyState.Icon"
+            android:src="@drawable/ic_medication" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chưa có hồ sơ bệnh án"
-            android:textSize="@dimen/text_size_medium"
-            android:textColor="@color/text_primary"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/spacing_tiny" />
+            style="@style/StandardEmptyState.Title"
+            android:text="@string/no_medical_records" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nhấn + để thêm hồ sơ bệnh án mới"
-            android:textSize="@dimen/text_size_normal"
-            android:textColor="@color/text_secondary" />
+            style="@style/StandardEmptyState.Description"
+            android:text="@string/add_medical_record_hint" />
 
     </LinearLayout>
 
     <!-- FAB for adding new record -->
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_add_record"
+        style="@style/StandardFAB.Extended"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/padding_large"
         android:text="@string/add_medical_record"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_normal"
-        android:textStyle="bold"
-        android:textAllCaps="false"
-        android:paddingHorizontal="@dimen/padding_large"
-        android:paddingVertical="@dimen/padding_medium"
-        app:icon="@drawable/ic_add"
-        app:iconGravity="textStart"
-        app:cornerRadius="@dimen/corner_radius"
-        app:backgroundTint="@color/primary_blue" />
+        app:icon="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
