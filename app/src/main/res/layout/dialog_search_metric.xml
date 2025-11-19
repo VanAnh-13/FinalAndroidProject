@@ -4,21 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="@dimen/padding_large">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tìm kiếm chỉ số"
-        android:textSize="20sp"
+        android:text="@string/search_metric_title"
+        android:textSize="@dimen/text_size_xl"
         android:textStyle="bold"
         android:textColor="@color/text_primary"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="@dimen/margin_normal"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập giá trị hoặc ghi chú"
+        android:hint="@string/search_metric_hint"
         app:startIconDrawable="@android:drawable/ic_menu_search"
         app:endIconMode="clear_text"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
@@ -37,22 +37,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="end"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="@dimen/margin_normal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hủy"
-            android:layout_marginEnd="8dp"/>
+            android:text="@string/cancel_button"
+            android:layout_marginEnd="@dimen/margin_small"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_search"
             style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tìm kiếm"/>
+            android:text="@string/search"/>
 
     </LinearLayout>
 

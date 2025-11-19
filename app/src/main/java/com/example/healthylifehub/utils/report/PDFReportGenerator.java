@@ -5,7 +5,10 @@ import android.os.Environment;
 
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.example.healthylifehub.data.model.Reminder;
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -15,8 +18,11 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -39,8 +45,13 @@ public class PDFReportGenerator {
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
         
+        // Load font
+        PdfFont font = getFont(context);
+        document.setFont(font);
+        
         // Title
         Paragraph title = new Paragraph("BÁO CÁO CHỈ SỐ SỨC KHỎE")
+                .setFont(font)
                 .setFontSize(18)
                 .setBold()
                 .setTextAlignment(TextAlignment.CENTER);
@@ -49,6 +60,7 @@ public class PDFReportGenerator {
         // Date range
         Paragraph dateRange = new Paragraph(String.format("Từ ngày: %s - Đến ngày: %s", 
                 DATE_FORMAT.format(startDate), DATE_FORMAT.format(endDate)))
+                .setFont(font)
                 .setFontSize(12)
                 .setTextAlignment(TextAlignment.CENTER);
         document.add(dateRange);
@@ -59,19 +71,20 @@ public class PDFReportGenerator {
         float[] columnWidths = {1, 3, 2, 2, 3, 4};
         Table table = new Table(UnitValue.createPercentArray(columnWidths));
         table.setWidth(UnitValue.createPercentValue(100));
+        table.setFont(font);
         
         // Add headers
-        addTableHeader(table, new String[]{"STT", "Loại chỉ số", "Giá trị", "Đơn vị", "Thời gian đo", "Ghi chú"});
+        addTableHeader(table, new String[]{"STT", "Loại chỉ số", "Giá trị", "Đơn vị", "Thời gian đo", "Ghi chú"}, font);
         
         // Add data
         int index = 1;
         for (HealthMetric metric : metrics) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(index++))));
-            table.addCell(new Cell().add(new Paragraph(getMetricTypeName(metric.getType()))));
-            table.addCell(new Cell().add(new Paragraph(getMetricValue(metric))));
-            table.addCell(new Cell().add(new Paragraph(getMetricUnit(metric.getType()))));
-            table.addCell(new Cell().add(new Paragraph(DATE_FORMAT.format(metric.getMeasuredAt()))));
-            table.addCell(new Cell().add(new Paragraph(metric.getNotes() != null ? metric.getNotes() : "")));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(index++)).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(getMetricTypeName(metric.getType())).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(getMetricValue(metric)).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(getMetricUnit(metric.getType())).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(DATE_FORMAT.format(metric.getMeasuredAt())).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(metric.getNotes() != null ? metric.getNotes() : "").setFont(font)));
         }
         
         document.add(table);
@@ -79,11 +92,13 @@ public class PDFReportGenerator {
         // Footer
         document.add(new Paragraph("\n"));
         Paragraph footer = new Paragraph(String.format("Tổng số: %d chỉ số", metrics.size()))
+                .setFont(font)
                 .setFontSize(10)
                 .setTextAlignment(TextAlignment.RIGHT);
         document.add(footer);
         
         Paragraph generated = new Paragraph(String.format("Được tạo lúc: %s", DATE_FORMAT.format(new Date())))
+                .setFont(font)
                 .setFontSize(8)
                 .setTextAlignment(TextAlignment.RIGHT);
         document.add(generated);
@@ -101,8 +116,13 @@ public class PDFReportGenerator {
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
         
+        // Load font
+        PdfFont font = getFont(context);
+        document.setFont(font);
+        
         // Title
         Paragraph title = new Paragraph("BÁO CÁO NHẮC NHỞ")
+                .setFont(font)
                 .setFontSize(18)
                 .setBold()
                 .setTextAlignment(TextAlignment.CENTER);
@@ -114,20 +134,21 @@ public class PDFReportGenerator {
         float[] columnWidths = {1, 3, 4, 2, 3, 2, 2};
         Table table = new Table(UnitValue.createPercentArray(columnWidths));
         table.setWidth(UnitValue.createPercentValue(100));
+        table.setFont(font);
         
         // Add headers
-        addTableHeader(table, new String[]{"STT", "Tiêu đề", "Mô tả", "Tần suất", "Thời gian", "Trạng thái", "Tiến độ"});
+        addTableHeader(table, new String[]{"STT", "Tiêu đề", "Mô tả", "Tần suất", "Thời gian", "Trạng thái", "Tiến độ"}, font);
         
         // Add data
         int index = 1;
         for (Reminder reminder : reminders) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(index++))));
-            table.addCell(new Cell().add(new Paragraph(reminder.getTitle())));
-            table.addCell(new Cell().add(new Paragraph(reminder.getDescription() != null ? reminder.getDescription() : "")));
-            table.addCell(new Cell().add(new Paragraph(getFrequencyName(reminder.getFrequency()))));
-            table.addCell(new Cell().add(new Paragraph(DATE_FORMAT.format(new Date(reminder.getReminderTime())))));
-            table.addCell(new Cell().add(new Paragraph(reminder.isActive() ? "Hoạt động" : "Tạm dừng")));
-            table.addCell(new Cell().add(new Paragraph(String.format("%d%%", reminder.getProgressPercentage()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(index++)).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(reminder.getTitle()).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(reminder.getDescription() != null ? reminder.getDescription() : "").setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(getFrequencyName(reminder.getFrequency())).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(DATE_FORMAT.format(new Date(reminder.getReminderTime()))).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(reminder.isActive() ? "Hoạt động" : "Tạm dừng").setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(String.format("%d%%", reminder.getProgressPercentage())).setFont(font)));
         }
         
         document.add(table);
@@ -143,11 +164,13 @@ public class PDFReportGenerator {
         
         Paragraph stats = new Paragraph(String.format("Tổng số: %d nhắc nhở | Đang hoạt động: %d | Hoàn thành: %d", 
                 reminders.size(), activeCount, completedCount))
+                .setFont(font)
                 .setFontSize(10)
                 .setTextAlignment(TextAlignment.RIGHT);
         document.add(stats);
         
         Paragraph generated = new Paragraph(String.format("Được tạo lúc: %s", DATE_FORMAT.format(new Date())))
+                .setFont(font)
                 .setFontSize(8)
                 .setTextAlignment(TextAlignment.RIGHT);
         document.add(generated);
@@ -156,9 +179,9 @@ public class PDFReportGenerator {
         return file;
     }
     
-    private static void addTableHeader(Table table, String[] headers) {
+    private static void addTableHeader(Table table, String[] headers, PdfFont font) {
         for (String header : headers) {
-            Cell cell = new Cell().add(new Paragraph(header).setBold());
+            Cell cell = new Cell().add(new Paragraph(header).setFont(font).setBold());
             cell.setBackgroundColor(ColorConstants.LIGHT_GRAY);
             cell.setTextAlignment(TextAlignment.CENTER);
             table.addHeaderCell(cell);
@@ -210,5 +233,28 @@ public class PDFReportGenerator {
             case "monthly": return "Hàng tháng";
             default: return frequency;
         }
+    }
+    
+    private static PdfFont getFont(Context context) throws IOException {
+        try {
+            // Try to load from assets
+            byte[] fontBytes = readAsset(context, "fonts/arial.ttf");
+            return PdfFontFactory.createFont(fontBytes, PdfEncodings.IDENTITY_H, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Fallback to default if failed (will not support Vietnamese)
+            return PdfFontFactory.createFont();
+        }
+    }
+    
+    private static byte[] readAsset(Context context, String fileName) throws IOException {
+        InputStream is = context.getAssets().open(fileName);
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[16384];
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        return buffer.toByteArray();
     }
 }

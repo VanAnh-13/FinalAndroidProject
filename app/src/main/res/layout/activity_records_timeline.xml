@@ -233,7 +233,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="report.pdf"
+                                    android:text="@string/sample_report_filename"
                                     android:textColor="@color/text_primary"
                                     android:textSize="@dimen/text_size_small"
                                     android:textStyle="bold"

@@ -40,6 +40,7 @@
         android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/surface"
         android:fitsSystemWindows="true"
         android:contentDescription="@string/accessibility_drawer_nav"
         app:headerLayout="@layout/nav_header_main"

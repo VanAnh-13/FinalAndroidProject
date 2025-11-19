@@ -40,8 +40,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Hôm nay"
-                    android:textSize="16sp"
+                    android:text="@string/today"
+                    android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
 
@@ -49,7 +49,7 @@
                     android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="14:30"
+                    android:text="@string/time_placeholder"
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary" />
 
@@ -66,7 +66,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Android"
+                    android:text="@string/os_android"
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary" />
 
@@ -74,8 +74,8 @@
                     android:id="@+id/tvLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="IP: 192.168.1.1"
-                    android:textSize="12sp"
+                    android:text="@string/ip_address_placeholder"
+                    android:textSize="@dimen/text_size_small"
                     android:textColor="@color/text_secondary"
                     android:alpha="0.8" />
 

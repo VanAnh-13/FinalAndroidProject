@@ -79,6 +79,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         });
         
         // Initialize progress dialog
+        // Requirements: 7.6 - Display ProgressBar with percentage and stage messages
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Đang tạo báo cáo");
         progressDialog.setMessage("Vui lòng đợi...");
@@ -190,6 +191,8 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         progressDialog.show();
         
         // Start async pipeline processing
+        // Requirements: 7.6 - Display ProgressBar with percentage and show stage messages
+        // (fetching, calculating, rendering, etc.)
         reportGenerator.generatePDFReport(
             currentUser.getUid(),
             startDate,
@@ -204,17 +207,21 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                             Toast.makeText(ExportReportsActivity.this, 
                                 message, Toast.LENGTH_LONG).show();
                         } else if (progress >= 100) {
-                            // Completed
+                            // Completed - Requirements: 7.6 - Enable share button when complete
                             progressDialog.dismiss();
                             Toast.makeText(ExportReportsActivity.this, 
                                 "Báo cáo đã được tạo thành công!", Toast.LENGTH_SHORT).show();
                             
                             // Refresh reports list
                             loadGeneratedReports();
+                            
+                            // Enable share functionality
+                            // TODO: Show share button or dialog
                         } else {
-                            // Update progress
+                            // Update progress with percentage and stage message
+                            // Requirements: 7.6 - Show stage messages (fetching, calculating, rendering, etc.)
                             progressDialog.setProgress(progress);
-                            progressDialog.setMessage(message);
+                            progressDialog.setMessage(message + " (" + progress + "%)");
                         }
                     });
                 }

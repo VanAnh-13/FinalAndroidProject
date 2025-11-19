@@ -23,7 +23,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -85,8 +87,7 @@ public class SmartReminderWorker extends Worker {
             // Task 4: Generate smart suggestions
             List<SmartSuggestion> suggestions = SmartReminderAI.generateSmartSuggestions(
                 activeReminders, 
-                behavior,
-                getApplicationContext()
+                behavior
             );
             
             Log.d(TAG, "Generated " + suggestions.size() + " suggestions");
@@ -234,74 +235,145 @@ public class SmartReminderWorker extends Worker {
         checkSettingsAndProcessSuggestions(userId, suggestions);
     }
     
+    /**
+     * Check notification settings and process suggestions (Requirement 5.5)
+     * Only sends notifications if settings allow
+     */
     private void checkSettingsAndProcessSuggestions(String userId, List<SmartSuggestion> suggestions) {
-        // Get notification settings synchronously (we're already in background thread)
         try {
-            // Note: In a real implementation, you might want to cache settings or use a different approach
-            // For now, we'll assume suggestions are allowed and just save them
+            // Save all suggestions to Firestore
             for (SmartSuggestion suggestion : suggestions) {
                 processSingleSuggestion(userId, suggestion);
             }
             
-            // Send notification about new suggestions if settings allow
-            sendSuggestionNotificationIfAllowed(suggestions.size());
+            // Check notification settings before sending notification (Requirement 5.5)
+            NotificationSettings settings = settingsRepository.loadNotificationSettings().getValue();
+            
+            // Send notification if settings allow (Requirement 5.5)
+            if (settings != null && settings.areSuggestionsAllowed()) {
+                sendSuggestionNotification(suggestions.size());
+                Log.d(TAG, "✅ Sent notification for " + suggestions.size() + " suggestions");
+            } else {
+                Log.d(TAG, "⚠️ Suggestions notifications disabled or quiet hours active");
+            }
             
             Log.d(TAG, "Processed " + suggestions.size() + " suggestions successfully");
             
         } catch (Exception e) {
-            Log.e(TAG, "Error processing suggestions", e);
+            Log.e(TAG, "❌ Error processing suggestions", e);
         }
     }
     
+    /**
+     * Process and save a single suggestion to Firestore (Requirement 5.4)
+     * Creates document in users/{userId}/suggestions collection with all required fields
+     */
     private void processSingleSuggestion(String userId, SmartSuggestion suggestion) {
         try {
             Log.d(TAG, "Processing suggestion: " + suggestion.getTitle());
             
-            String suggestionId = db.collection("users")
-                .document(userId)
-                .collection("suggestions")
-                .document()
-                .getId();
+            // Generate unique suggestion ID if not already set
+            String suggestionId = suggestion.getSuggestionId();
+            if (suggestionId == null || suggestionId.isEmpty()) {
+                suggestionId = db.collection("users")
+                    .document(userId)
+                    .collection("suggestions")
+                    .document()
+                    .getId();
+            }
             
+            // Set required fields (Requirement 5.4)
             suggestion.setSuggestionId(suggestionId);
             suggestion.setUserId(userId);
-            suggestion.setCreatedAt(System.currentTimeMillis());
             suggestion.setStatus("pending");
+            suggestion.setCreatedAt(System.currentTimeMillis());
             suggestion.setAppliedAt(0);
             suggestion.setDismissedAt(0);
             
+            // Create Firestore document with all fields
+            Map<String, Object> suggestionData = new HashMap<>();
+            suggestionData.put("suggestionId", suggestion.getSuggestionId());
+            suggestionData.put("userId", suggestion.getUserId());
+            suggestionData.put("type", suggestion.getType());
+            suggestionData.put("title", suggestion.getTitle());
+            suggestionData.put("description", suggestion.getDescription());
+            suggestionData.put("reason", suggestion.getReason());
+            suggestionData.put("status", suggestion.getStatus());
+            suggestionData.put("createdAt", com.google.firebase.Timestamp.now());
+            suggestionData.put("appliedAt", suggestion.getAppliedAt());
+            suggestionData.put("dismissedAt", suggestion.getDismissedAt());
+            suggestionData.put("confidenceScore", suggestion.getConfidenceScore());
+            suggestionData.put("priority", suggestion.getPriority());
+            
+            // Add optional fields if present
+            if (suggestion.getReminderId() != null) {
+                suggestionData.put("reminderId", suggestion.getReminderId());
+            }
+            if (suggestion.getReminderIds() != null) {
+                suggestionData.put("reminderIds", suggestion.getReminderIds());
+            }
+            if (suggestion.getSuggestedTime() != null) {
+                suggestionData.put("suggestedTime", suggestion.getSuggestedTime());
+            }
+            if (suggestion.getSuggestedFrequency() != null) {
+                suggestionData.put("suggestedFrequency", suggestion.getSuggestedFrequency());
+            }
+            if (suggestion.getSuggestedTitle() != null) {
+                suggestionData.put("suggestedTitle", suggestion.getSuggestedTitle());
+            }
+            if (suggestion.getCurrentValue() != null) {
+                suggestionData.put("currentValue", suggestion.getCurrentValue());
+            }
+            if (suggestion.getSuggestedValue() != null) {
+                suggestionData.put("suggestedValue", suggestion.getSuggestedValue());
+            }
+            
+            // Save to Firestore
             Tasks.await(
                 db.collection("users")
                     .document(userId)
                     .collection("suggestions")
                     .document(suggestionId)
-                    .set(suggestion)
+                    .set(suggestionData)
             );
             
-            Log.d(TAG, "Saved suggestion: " + suggestionId);
+            Log.d(TAG, "✅ Saved suggestion to Firestore: " + suggestionId + " (" + suggestion.getType() + ")");
             
         } catch (Exception e) {
-            Log.e(TAG, "Error saving suggestion: " + suggestion.getTitle(), e);
+            Log.e(TAG, "❌ Error saving suggestion: " + suggestion.getTitle(), e);
         }
     }
     
-    private void sendSuggestionNotificationIfAllowed(int count) {
-        // For now, we'll send a simple notification
-        // In a production app, you'd check the NotificationSettings here
-        if (count > 0) {
-            String title = "Gợi ý mới từ HealthyLife Hub";
-            String message = String.format("Bạn có %d gợi ý cải thiện sức khỏe mới", count);
-            int notificationId = (int) System.currentTimeMillis();
-            
-            NotificationHelper.showSuggestionNotification(
-                getApplicationContext(),
-                title,
-                message,
-                notificationId
-            );
-            
-            Log.d(TAG, "✅ Sent suggestion notification");
+    /**
+     * Send notification for new suggestions (Requirement 5.5)
+     * Includes suggestion count in notification message
+     */
+    private void sendSuggestionNotification(int count) {
+        if (count <= 0) {
+            return;
         }
+        
+        String title = "Gợi ý thông minh mới";
+        String message;
+        
+        // Format message based on count (Requirement 5.5)
+        if (count == 1) {
+            message = "Bạn có 1 gợi ý cải thiện sức khỏe mới";
+        } else {
+            message = String.format("Bạn có %d gợi ý cải thiện sức khỏe mới", count);
+        }
+        
+        int notificationId = (int) System.currentTimeMillis();
+        
+        // Use NotificationHelper.showSuggestionNotification() (Requirement 5.5)
+        NotificationHelper.showSuggestionNotification(
+            getApplicationContext(),
+            title,
+            message,
+            notificationId
+        );
+        
+        Log.d(TAG, "✅ Sent suggestion notification with count: " + count);
     }
     
     @Override

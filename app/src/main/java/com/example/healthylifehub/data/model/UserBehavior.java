@@ -3,6 +3,7 @@ package com.example.healthylifehub.data.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +27,10 @@ public class UserBehavior {
     private int mostActiveHour;                    // Peak activity hour
     private int leastActiveHour;                   // Lowest activity hour
     
+    // Enhanced time patterns (Requirement 5.3)
+    private Map<Integer, Double> hourlyCompletionRates;  // Hour -> completion rate (0.0-1.0)
+    private List<Integer> preferredHours;          // Top 3 hours with highest completion
+    
     // Response time patterns
     private long averageResponseTime;              // Average time to respond (ms)
     private long fastestResponseTime;              // Fastest response (ms)
@@ -41,5 +46,6 @@ public class UserBehavior {
     
     // Last analysis
     private long lastAnalyzedAt;                   // Timestamp of last analysis
+    private long analyzedAt;                       // Timestamp when analysis was performed
     private int dataPoints;                        // Number of data points analyzed
 }

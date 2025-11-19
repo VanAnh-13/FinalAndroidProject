@@ -8,6 +8,7 @@ import lombok.Setter;
 /**
  * Smart Suggestion model
  * AI-generated suggestions for reminder optimization
+ * Enhanced with currentValue and suggestedValue fields (Requirement 5.4)
  */
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import lombok.Setter;
 public class SmartSuggestion {
     private String suggestionId;
     private String userId;
-    private String type;                    // "optimize_time", "create_reminder", "merge_reminders", "change_frequency"
+    private String type;                    // "TIME_ADJUSTMENT", "FREQUENCY_CHANGE", "create_reminder", "merge_reminders"
     private String title;                   // Suggestion title
     private String description;             // Detailed explanation
     private String reason;                  // Why this suggestion is made
@@ -29,6 +30,10 @@ public class SmartSuggestion {
     private Long suggestedTime;             // New suggested time (timestamp)
     private String suggestedFrequency;      // New suggested frequency
     private String suggestedTitle;          // New suggested title
+    
+    // Enhanced fields (Requirement 5.4)
+    private String currentValue;            // Current value (e.g., "08:00" for time, "daily" for frequency)
+    private String suggestedValue;          // Suggested value (e.g., "14:00" for time, "weekly" for frequency)
     
     // Confidence & priority
     private double confidenceScore;         // 0.0 - 1.0 (AI confidence)

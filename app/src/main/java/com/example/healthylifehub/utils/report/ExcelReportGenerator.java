@@ -21,6 +21,12 @@ import java.util.Locale;
  */
 public class ExcelReportGenerator {
     
+    static {
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
+    }
+
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     private static final SimpleDateFormat FILE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
     
@@ -61,10 +67,13 @@ public class ExcelReportGenerator {
             row.createCell(5).setCellValue(metric.getNotes() != null ? metric.getNotes() : "");
         }
         
-        // Auto-size columns
-        for (int i = 0; i < headers.length; i++) {
-            sheet.autoSizeColumn(i);
-        }
+        // Set column widths
+        sheet.setColumnWidth(0, 2000);  // STT
+        sheet.setColumnWidth(1, 5000);  // Loại chỉ số
+        sheet.setColumnWidth(2, 4000);  // Giá trị
+        sheet.setColumnWidth(3, 3000);  // Đơn vị
+        sheet.setColumnWidth(4, 6000);  // Thời gian đo
+        sheet.setColumnWidth(5, 10000); // Ghi chú
         
         // Save file
         File file = createReportFile(context, "HealthMetrics");
@@ -117,10 +126,14 @@ public class ExcelReportGenerator {
                 reminder.getProgressPercentage()));
         }
         
-        // Auto-size columns
-        for (int i = 0; i < headers.length; i++) {
-            sheet.autoSizeColumn(i);
-        }
+        // Set column widths
+        sheet.setColumnWidth(0, 2000);  // STT
+        sheet.setColumnWidth(1, 6000);  // Tiêu đề
+        sheet.setColumnWidth(2, 10000); // Mô tả
+        sheet.setColumnWidth(3, 4000);  // Tần suất
+        sheet.setColumnWidth(4, 6000);  // Thời gian
+        sheet.setColumnWidth(5, 4000);  // Trạng thái
+        sheet.setColumnWidth(6, 4000);  // Tiến độ
         
         // Save file
         File file = createReportFile(context, "Reminders");

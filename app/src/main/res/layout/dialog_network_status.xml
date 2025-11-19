@@ -4,42 +4,42 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="8dp"
+    android:layout_margin="@dimen/margin_normal"
+    app:cardCornerRadius="@dimen/corner_radius_medium"
+    app:cardElevation="@dimen/elevation_normal"
     android:background="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="@dimen/padding_large">
 
         <!-- Header với close button -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/margin_normal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Trạng thái kết nối"
-                android:textSize="16sp"
+                android:text="@string/network_status_title"
+                android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
 
             <ImageView
                 android:id="@+id/iv_close"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_close"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="4dp"
-                android:contentDescription="Đóng" />
+                android:padding="@dimen/spacing_tiny"
+                android:contentDescription="@string/close" />
 
         </RelativeLayout>
 
@@ -53,11 +53,11 @@
             <!-- Icon -->
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
+                android:layout_width="@dimen/icon_size_medium"
+                android:layout_height="@dimen/icon_size_medium"
+                android:layout_marginEnd="@dimen/margin_normal"
                 android:src="@drawable/ic_wifi_off"
-                android:contentDescription="Network icon" />
+                android:contentDescription="@string/network_icon_desc" />
 
             <!-- Message -->
             <TextView
@@ -65,10 +65,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="⚠️ Không có kết nối mạng\nDữ liệu sẽ được lưu cục bộ"
-                android:textSize="14sp"
+                android:text="@string/network_error_message_local"
+                android:textSize="@dimen/text_size_normal"
                 android:textColor="@android:color/black"
-                android:lineSpacingExtra="4dp" />
+                android:lineSpacingExtra="@dimen/line_spacing_small" />
 
         </LinearLayout>
 
@@ -76,7 +76,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/margin_normal"
             android:orientation="horizontal"
             android:gravity="end"
             android:visibility="gone">
@@ -85,15 +85,15 @@
                 android:id="@+id/btn_retry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thử lại"
+                android:text="@string/retry"
                 style="@style/Widget.Material3.Button.TextButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Cài đặt"
+                android:layout_marginStart="@dimen/margin_small"
+                android:text="@string/settings"
                 style="@style/Widget.Material3.Button.TextButton" />
 
         </LinearLayout>

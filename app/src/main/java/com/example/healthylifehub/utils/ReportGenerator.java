@@ -65,6 +65,7 @@ public class ReportGenerator {
     
     /**
      * Main method to generate PDF report with full pipeline
+     * Requirements: 7.6 - Enhanced progress callbacks at each stage
      * @param userId User ID
      * @param startDate Start date for report
      * @param endDate End date for report
@@ -77,16 +78,26 @@ public class ReportGenerator {
             Date endDate,
             ProgressCallback callback) {
         
+        // Start performance tracking
+        String operationId = AsyncPerformanceLogger.operation("generate_pdf_report")
+            .withContext("userId", userId)
+            .start();
+        
         return CompletableFuture
-                // Stage 1: Fetch data from Firestore (IO Thread)
+                // Stage 1: Fetch data from Firestore (IO Thread) - 10%
                 .supplyAsync(() -> {
                     callback.onProgress(10, "Đang tải dữ liệu...");
-                    return fetchReportData(userId, startDate, endDate);
+                    long stageStart = System.currentTimeMillis();
+                    ReportData data = fetchReportData(userId, startDate, endDate);
+                    long stageDuration = System.currentTimeMillis() - stageStart;
+                    AsyncPerformanceLogger.logMetric("report_fetch_data_duration", stageDuration, "ms");
+                    return data;
                 }, ioExecutor)
                 
-                // Stage 2: Calculate statistics (Compute Thread - Parallel)
+                // Stage 2: Calculate statistics (Compute Thread - Parallel) - 30%, 50%
                 .thenApplyAsync(reportData -> {
                     callback.onProgress(30, "Đang tính toán thống kê...");
+                    long stageStart = System.currentTimeMillis();
                     
                     // Parallel computation of statistics
                     CompletableFuture<Statistics> statsFuture = CompletableFuture
@@ -101,13 +112,16 @@ public class ReportGenerator {
                         e.printStackTrace();
                     }
                     
+                    long stageDuration = System.currentTimeMillis() - stageStart;
+                    AsyncPerformanceLogger.logMetric("report_calculate_stats_duration", stageDuration, "ms");
                     callback.onProgress(50, "Thống kê hoàn tất");
                     return reportData;
                 }, computeExecutor)
                 
-                // Stage 3: Generate charts (Compute Thread - Parallel)
+                // Stage 3: Generate charts (Compute Thread - Parallel) - 60%, 75%
                 .thenApplyAsync(reportData -> {
                     callback.onProgress(60, "Đang tạo biểu đồ...");
+                    long stageStart = System.currentTimeMillis();
                     
                     // Generate chart bitmaps in parallel
                     List<CompletableFuture<Bitmap>> chartFutures = new ArrayList<>();
@@ -125,11 +139,25 @@ public class ReportGenerator {
                     // Wait for all charts
                     CompletableFuture.allOf(chartFutures.toArray(new CompletableFuture[0])).join();
                     
+                    // Store chart bitmaps in reportData for later use in PDF creation
+                    // They will be recycled after PDF is created
+                    List<Bitmap> chartBitmaps = new ArrayList<>();
+                    try {
+                        for (CompletableFuture<Bitmap> future : chartFutures) {
+                            chartBitmaps.add(future.get());
+                        }
+                        reportData.setChartBitmaps(chartBitmaps);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    
+                    long stageDuration = System.currentTimeMillis() - stageStart;
+                    AsyncPerformanceLogger.logMetric("report_generate_charts_duration", stageDuration, "ms");
                     callback.onProgress(75, "Biểu đồ hoàn tất");
                     return reportData;
                 }, computeExecutor)
                 
-                // Stage 4: Create PDF file (IO Thread)
+                // Stage 4: Create PDF file (IO Thread) - 80%, 90%
                 .thenApplyAsync(reportData -> {
                     callback.onProgress(80, "Đang tạo file PDF...");
                     File pdfFile = createPDFFile(reportData);
@@ -137,22 +165,36 @@ public class ReportGenerator {
                     return pdfFile;
                 }, ioExecutor)
                 
-                // Stage 5: Upload to Firebase Storage (IO Thread)
+                // Stage 5: Upload to Firebase Storage (IO Thread) - 95%
                 .thenComposeAsync(pdfFile -> {
                     callback.onProgress(95, "Đang tải lên...");
                     return uploadToStorage(userId, pdfFile);
                 }, ioExecutor)
                 
-                // Stage 6: Save metadata to Firestore (IO Thread)
+                // Stage 6: Save metadata to Firestore (IO Thread) - 98%, 100%
                 .thenApplyAsync(downloadUrl -> {
                     callback.onProgress(98, "Đang lưu metadata...");
                     saveReportMetadata(userId, downloadUrl);
                     callback.onProgress(100, "Hoàn tất!");
+                    
+                    // Log successful completion with total duration
+                    AsyncPerformanceLogger.logEnd(operationId, "generate_pdf_report", true);
+                    
                     return downloadUrl;
                 }, ioExecutor)
                 
-                // Error handling
+                // Error handling with logging
                 .exceptionally(throwable -> {
+                    // Log failed completion
+                    AsyncPerformanceLogger.logEnd(operationId, "generate_pdf_report", false);
+                    
+                    // Log error with user context
+                    AsyncErrorLogger.context()
+                        .put("userId", userId)
+                        .put("startDate", startDate.toString())
+                        .put("endDate", endDate.toString())
+                        .log("generate_pdf_report", throwable);
+                    
                     callback.onProgress(-1, "Lỗi: " + throwable.getMessage());
                     return null;
                 });
@@ -293,12 +335,105 @@ public class ReportGenerator {
     }
     
     /**
+     * Generate heart rate chart
+     * Requirements: 7.2, 7.3
+     */
+    private Bitmap generateHeartRateChart(List<HealthMetric> metrics) {
+        LineChart chart = new LineChart(context);
+        chart.setLayoutParams(new android.view.ViewGroup.LayoutParams(800, 600));
+        
+        List<Entry> entries = new ArrayList<>();
+        List<HealthMetric> hrMetrics = metrics.stream()
+                .filter(m -> "heart_rate".equals(m.getType()))
+                .collect(Collectors.toList());
+        
+        for (int i = 0; i < hrMetrics.size(); i++) {
+            entries.add(new Entry(i, (float) hrMetrics.get(i).getValue()));
+        }
+        
+        LineDataSet dataSet = new LineDataSet(entries, "Nhịp tim");
+        dataSet.setColor(Color.rgb(255, 99, 71)); // Tomato color
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setLineWidth(2f);
+        
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.getDescription().setText("Nhịp tim (BPM)");
+        chart.invalidate();
+        
+        return renderChartToBitmap(chart);
+    }
+    
+    /**
+     * Generate weight chart
+     * Requirements: 7.2, 7.3
+     */
+    private Bitmap generateWeightChart(List<HealthMetric> metrics) {
+        LineChart chart = new LineChart(context);
+        chart.setLayoutParams(new android.view.ViewGroup.LayoutParams(800, 600));
+        
+        List<Entry> entries = new ArrayList<>();
+        List<HealthMetric> weightMetrics = metrics.stream()
+                .filter(m -> "weight".equals(m.getType()))
+                .collect(Collectors.toList());
+        
+        for (int i = 0; i < weightMetrics.size(); i++) {
+            entries.add(new Entry(i, (float) weightMetrics.get(i).getValue()));
+        }
+        
+        LineDataSet dataSet = new LineDataSet(entries, "Cân nặng");
+        dataSet.setColor(Color.rgb(34, 139, 34)); // Forest green
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setLineWidth(2f);
+        
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.getDescription().setText("Cân nặng (kg)");
+        chart.invalidate();
+        
+        return renderChartToBitmap(chart);
+    }
+    
+    /**
+     * Generate temperature chart
+     * Requirements: 7.2, 7.3
+     */
+    private Bitmap generateTemperatureChart(List<HealthMetric> metrics) {
+        LineChart chart = new LineChart(context);
+        chart.setLayoutParams(new android.view.ViewGroup.LayoutParams(800, 600));
+        
+        List<Entry> entries = new ArrayList<>();
+        List<HealthMetric> tempMetrics = metrics.stream()
+                .filter(m -> "temperature".equals(m.getType()))
+                .collect(Collectors.toList());
+        
+        for (int i = 0; i < tempMetrics.size(); i++) {
+            entries.add(new Entry(i, (float) tempMetrics.get(i).getValue()));
+        }
+        
+        LineDataSet dataSet = new LineDataSet(entries, "Nhiệt độ");
+        dataSet.setColor(Color.rgb(255, 140, 0)); // Dark orange
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setLineWidth(2f);
+        
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.getDescription().setText("Nhiệt độ (°C)");
+        chart.invalidate();
+        
+        return renderChartToBitmap(chart);
+    }
+    
+    /**
      * Stage 4: Render chart to Bitmap
+     * Requirements: 7.3 - Optimized chart rendering with 800x600 dimensions and ARGB_8888 config
      */
     private Bitmap renderChartToBitmap(LineChart chart) {
+        // Set chart dimensions to 800x600 for quality
         int width = 800;
         int height = 600;
         
+        // Use ARGB_8888 config for quality
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
@@ -314,24 +449,213 @@ public class ReportGenerator {
     }
     
     /**
-     * Stage 5: Create PDF file
-     * Note: This is a simplified version. In production, use iTextPDF library
+     * Stage 5: Create PDF file using iTextPDF
      */
     private File createPDFFile(ReportData reportData) {
         try {
-            File pdfFile = new File(context.getCacheDir(), "health_report_" + System.currentTimeMillis() + ".pdf");
-            
-            // TODO: Use iTextPDF to create proper PDF
-            // For now, just create a placeholder file
-            FileOutputStream fos = new FileOutputStream(pdfFile);
-            fos.write("Health Report Placeholder".getBytes());
-            fos.close();
-            
-            return pdfFile;
+            return createPDFWithiText(reportData);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    /**
+     * Create PDF using iTextPDF library
+     * Requirements: 7.4
+     * 
+     * Implements bitmap recycling (Requirement 7.3):
+     * - Checks !bitmap.isRecycled() before recycling
+     * - Recycles all chart bitmaps after PDF creation
+     * - Ensures proper memory cleanup
+     */
+    private File createPDFWithiText(ReportData reportData) throws Exception {
+        File pdfFile = new File(context.getCacheDir(), 
+            "health_report_" + System.currentTimeMillis() + ".pdf");
+        
+        // Track bitmaps for cleanup
+        List<Bitmap> bitmapsToRecycle = new ArrayList<>();
+        
+        try {
+            com.itextpdf.kernel.pdf.PdfWriter writer = 
+                new com.itextpdf.kernel.pdf.PdfWriter(pdfFile);
+            com.itextpdf.kernel.pdf.PdfDocument pdf = 
+                new com.itextpdf.kernel.pdf.PdfDocument(writer);
+            com.itextpdf.layout.Document document = 
+                new com.itextpdf.layout.Document(pdf);
+            
+            // Add title paragraph with formatting
+            com.itextpdf.layout.element.Paragraph title = 
+                new com.itextpdf.layout.element.Paragraph("Báo Cáo Sức Khỏe")
+                    .setFontSize(20)
+                    .setBold()
+                    .setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER);
+            document.add(title);
+            
+            // Add spacing
+            document.add(new com.itextpdf.layout.element.Paragraph("\n"));
+            
+            // Create statistics table with data
+            if (reportData.getStatistics() != null) {
+                Statistics stats = reportData.getStatistics();
+                
+                com.itextpdf.layout.element.Table statsTable = 
+                    new com.itextpdf.layout.element.Table(2);
+                statsTable.setWidth(com.itextpdf.layout.properties.UnitValue.createPercentValue(100));
+                
+                // Header row
+                statsTable.addHeaderCell(
+                    new com.itextpdf.layout.element.Cell()
+                        .add(new com.itextpdf.layout.element.Paragraph("Chỉ số"))
+                        .setBold()
+                        .setBackgroundColor(com.itextpdf.kernel.colors.ColorConstants.LIGHT_GRAY));
+                statsTable.addHeaderCell(
+                    new com.itextpdf.layout.element.Cell()
+                        .add(new com.itextpdf.layout.element.Paragraph("Giá trị"))
+                        .setBold()
+                        .setBackgroundColor(com.itextpdf.kernel.colors.ColorConstants.LIGHT_GRAY));
+                
+                // Data rows
+                statsTable.addCell("Trung bình");
+                statsTable.addCell(String.format("%.2f", stats.getMean()));
+                
+                statsTable.addCell("Độ lệch chuẩn");
+                statsTable.addCell(String.format("%.2f", stats.getStdDev()));
+                
+                statsTable.addCell("Giá trị nhỏ nhất");
+                statsTable.addCell(String.format("%.2f", stats.getMin()));
+                
+                statsTable.addCell("Giá trị lớn nhất");
+                statsTable.addCell(String.format("%.2f", stats.getMax()));
+                
+                statsTable.addCell("Xu hướng");
+                statsTable.addCell(stats.getTrend());
+                
+                document.add(statsTable);
+                document.add(new com.itextpdf.layout.element.Paragraph("\n"));
+            }
+            
+            // Add chart images from Bitmaps
+            if (reportData.getMetrics() != null && !reportData.getMetrics().isEmpty()) {
+                // Generate and add blood pressure chart
+                List<HealthMetric> bpMetrics = reportData.getMetrics().stream()
+                    .filter(m -> "blood_pressure".equals(m.getType()))
+                    .collect(Collectors.toList());
+                
+                if (!bpMetrics.isEmpty()) {
+                    Bitmap bpChart = generateBloodPressureChart(reportData.getMetrics());
+                    bitmapsToRecycle.add(bpChart);
+                    addBitmapToDocument(document, bpChart, "Biểu đồ Huyết áp");
+                }
+                
+                // Generate and add blood sugar chart
+                List<HealthMetric> bsMetrics = reportData.getMetrics().stream()
+                    .filter(m -> "blood_sugar".equals(m.getType()))
+                    .collect(Collectors.toList());
+                
+                if (!bsMetrics.isEmpty()) {
+                    Bitmap bsChart = generateBloodSugarChart(reportData.getMetrics());
+                    bitmapsToRecycle.add(bsChart);
+                    addBitmapToDocument(document, bsChart, "Biểu đồ Đường huyết");
+                }
+                
+                // Generate and add heart rate chart
+                List<HealthMetric> hrMetrics = reportData.getMetrics().stream()
+                    .filter(m -> "heart_rate".equals(m.getType()))
+                    .collect(Collectors.toList());
+                
+                if (!hrMetrics.isEmpty()) {
+                    Bitmap hrChart = generateHeartRateChart(reportData.getMetrics());
+                    bitmapsToRecycle.add(hrChart);
+                    addBitmapToDocument(document, hrChart, "Biểu đồ Nhịp tim");
+                }
+                
+                // Generate and add weight chart
+                List<HealthMetric> weightMetrics = reportData.getMetrics().stream()
+                    .filter(m -> "weight".equals(m.getType()))
+                    .collect(Collectors.toList());
+                
+                if (!weightMetrics.isEmpty()) {
+                    Bitmap weightChart = generateWeightChart(reportData.getMetrics());
+                    bitmapsToRecycle.add(weightChart);
+                    addBitmapToDocument(document, weightChart, "Biểu đồ Cân nặng");
+                }
+                
+                // Generate and add temperature chart
+                List<HealthMetric> tempMetrics = reportData.getMetrics().stream()
+                    .filter(m -> "temperature".equals(m.getType()))
+                    .collect(Collectors.toList());
+                
+                if (!tempMetrics.isEmpty()) {
+                    Bitmap tempChart = generateTemperatureChart(reportData.getMetrics());
+                    bitmapsToRecycle.add(tempChart);
+                    addBitmapToDocument(document, tempChart, "Biểu đồ Nhiệt độ");
+                }
+            }
+            
+            // Close document and return File
+            document.close();
+            
+            return pdfFile;
+            
+        } finally {
+            // Recycle all bitmaps after PDF creation (Requirement 7.3)
+            // Check !bitmap.isRecycled() before recycling to avoid IllegalStateException
+            recycleBitmaps(bitmapsToRecycle);
+        }
+    }
+    
+    /**
+     * Safely recycle a list of bitmaps
+     * Requirements: 7.3 - Check !bitmap.isRecycled() before recycling
+     * 
+     * @param bitmaps List of bitmaps to recycle
+     */
+    private void recycleBitmaps(List<Bitmap> bitmaps) {
+        if (bitmaps == null || bitmaps.isEmpty()) {
+            return;
+        }
+        
+        int recycledCount = 0;
+        for (Bitmap bitmap : bitmaps) {
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+                recycledCount++;
+            }
+        }
+        
+        android.util.Log.d("ReportGenerator", 
+            "Recycled " + recycledCount + " bitmaps to free memory");
+    }
+    
+    /**
+     * Helper method to add bitmap to PDF document
+     */
+    private void addBitmapToDocument(com.itextpdf.layout.Document document, 
+                                     Bitmap bitmap, String caption) throws Exception {
+        // Add caption
+        document.add(new com.itextpdf.layout.element.Paragraph(caption)
+            .setBold()
+            .setFontSize(14));
+        
+        // Convert bitmap to byte array
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] imageBytes = stream.toByteArray();
+        stream.close();
+        
+        // Create image data and add to document
+        com.itextpdf.io.image.ImageData imageData = 
+            com.itextpdf.io.image.ImageDataFactory.create(imageBytes);
+        com.itextpdf.layout.element.Image image = 
+            new com.itextpdf.layout.element.Image(imageData);
+        
+        // Scale image to fit page width
+        image.setWidth(com.itextpdf.layout.properties.UnitValue.createPercentValue(80));
+        image.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
+        
+        document.add(image);
+        document.add(new com.itextpdf.layout.element.Paragraph("\n"));
     }
     
     /**

@@ -144,49 +144,36 @@
                     android:id="@+id/rgFileFormat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                    <com.google.android.material.card.MaterialCardView
+                    <RadioButton
+                        android:id="@+id/rbPdf"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_marginEnd="@dimen/margin_small"
-                        android:layout_weight="1"
-                        app:cardCornerRadius="@dimen/corner_radius_xl"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/primary"
-                        app:strokeWidth="@dimen/stroke_width">
+                        android:background="@drawable/bg_radio_card_selector"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:padding="@dimen/padding_normal"
+                        android:text="@string/pdf"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/text_size_normal" />
 
-                        <RadioButton
-                            android:id="@+id/rbPdf"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:gravity="center"
-                            android:padding="@dimen/padding_small"
-                            android:text="@string/pdf"
-                            android:textSize="@dimen/text_size_normal" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
+                    <RadioButton
+                        android:id="@+id/rbExcel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:cardCornerRadius="@dimen/corner_radius_xl"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/border_color"
-                        app:strokeWidth="@dimen/stroke_width">
-
-                        <RadioButton
-                            android:id="@+id/rbExcel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="@dimen/padding_small"
-                            android:text="@string/excel"
-                            android:textSize="@dimen/text_size_normal" />
-
-                    </com.google.android.material.card.MaterialCardView>
+                        android:background="@drawable/bg_radio_card_selector"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:padding="@dimen/padding_normal"
+                        android:text="@string/excel"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/text_size_normal" />
 
                 </RadioGroup>
 
@@ -290,11 +277,11 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="192dp"
+                    android:layout_height="@dimen/preview_card_height"
                     app:cardCornerRadius="@dimen/corner_radius"
                     app:cardElevation="0dp"
                     app:strokeColor="@color/border_color"
-                    app:strokeWidth="2dp">
+                    app:strokeWidth="@dimen/stroke_width_medium">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -303,8 +290,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="@dimen/icon_size_medium"
+                            android:layout_height="@dimen/icon_size_medium"
                             android:contentDescription="@string/preview"
                             android:src="@drawable/ic_visibility"
                             app:tint="@color/on_surface_variant" />
@@ -362,8 +349,8 @@
                     android:visibility="gone">
 
                     <ImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
+                        android:layout_width="@dimen/icon_size_medium_with_margin"
+                        android:layout_height="@dimen/icon_size_medium_with_margin"
                         android:contentDescription="@string/no_reports_created"
                         android:src="@drawable/ic_folder"
                         app:tint="@color/on_surface_variant" />

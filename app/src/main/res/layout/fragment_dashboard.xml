@@ -16,19 +16,17 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="2dp"
-            app:cardCornerRadius="0dp"
-            android:backgroundTint="@color/background_white">
+            app:cardElevation="2dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="@dimen/padding_small">
 
                 <ImageView
                     android:id="@+id/iv_menu"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
                     android:src="@drawable/ic_menu"
                     android:contentDescription="@string/app_name"
                     app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/app_name"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/text_size_large"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     app:layout_constraintStart_toStartOf="parent"
@@ -58,21 +56,21 @@
 
                     <ImageView
                         android:id="@+id/iv_notifications"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="@dimen/icon_size_small"
+                        android:layout_height="@dimen/icon_size_small"
                         android:src="@drawable/ic_notifications"
                         android:contentDescription="@string/app_name"/>
 
                     <TextView
                         android:id="@+id/tv_notification_badge"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
+                        android:layout_width="@dimen/spacing_normal"
+                        android:layout_height="@dimen/spacing_normal"
                         android:layout_gravity="top|end"
                         android:background="@drawable/bg_notification_badge"
                         android:gravity="center"
-                        android:text="3"
+                        android:text="@string/notification_badge_count"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
+                        android:textSize="@dimen/text_size_tiny"
                         android:textStyle="bold"/>
                 </FrameLayout>
 
@@ -83,16 +81,16 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/margin_normal"
             app:cardElevation="4dp"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="@dimen/corner_radius"
             android:backgroundTint="@color/primary_blue">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="@dimen/padding_xl_large">
 
                 <TextView
                     android:id="@+id/tv_greeting"
@@ -100,18 +98,18 @@
                     android:layout_height="wrap_content"
                     android:text="@string/good_morning"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/text_size_large"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tv_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nguyễn Văn A!"
+                    android:text="@string/default_user_name_placeholder"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/text_size_title"
                     android:textStyle="bold"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="@dimen/margin_tiny"/>
 
                 <TextView
                     android:id="@+id/tv_subtitle"
@@ -119,8 +117,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/welcome_subtitle"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp"/>
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_marginTop="@dimen/margin_small"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -129,8 +127,8 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
             android:columnCount="2"
             android:rowCount="2">
 
@@ -140,23 +138,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/margin_tiny"
                 app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                app:cardCornerRadius="@dimen/corner_radius">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="@dimen/padding_normal"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:id="@+id/iv_blood_pressure_icon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="@dimen/icon_container_size"
+                        android:layout_height="@dimen/icon_container_size"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/blood_pressure"/>
 
@@ -165,8 +163,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/blood_pressure"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:id="@+id/tv_blood_pressure_value"
@@ -174,17 +172,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/blood_pressure_value"
                         android:textColor="@color/text_primary"
-                        android:textSize="24sp"
+                        android:textSize="@dimen/text_size_title"
                         android:textStyle="bold"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/blood_pressure_unit"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="4dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_tiny"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -194,23 +192,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/margin_tiny"
                 app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                app:cardCornerRadius="@dimen/corner_radius">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="@dimen/padding_normal"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:id="@+id/iv_blood_sugar_icon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="@dimen/icon_container_size"
+                        android:layout_height="@dimen/icon_container_size"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/blood_sugar"/>
 
@@ -219,8 +217,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/blood_sugar"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:id="@+id/tv_blood_sugar_value"
@@ -228,17 +226,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/blood_sugar_value"
                         android:textColor="@color/text_primary"
-                        android:textSize="24sp"
+                        android:textSize="@dimen/text_size_title"
                         android:textStyle="bold"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/blood_sugar_unit"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="4dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_tiny"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -248,23 +246,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/margin_tiny"
                 app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                app:cardCornerRadius="@dimen/corner_radius">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="@dimen/padding_normal"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:id="@+id/iv_heart_rate_icon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="@dimen/icon_container_size"
+                        android:layout_height="@dimen/icon_container_size"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/heart_rate"/>
 
@@ -273,8 +271,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/heart_rate"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:id="@+id/tv_heart_rate_value"
@@ -282,17 +280,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/heart_rate_value"
                         android:textColor="@color/text_primary"
-                        android:textSize="24sp"
+                        android:textSize="@dimen/text_size_title"
                         android:textStyle="bold"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/heart_rate_unit"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="4dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_tiny"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -302,23 +300,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/margin_tiny"
                 app:cardElevation="2dp"
-                app:cardCornerRadius="12dp">
+                app:cardCornerRadius="@dimen/corner_radius">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="@dimen/padding_normal"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:id="@+id/iv_bmi_icon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="@dimen/icon_container_size"
+                        android:layout_height="@dimen/icon_container_size"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/bmi"/>
 
@@ -327,8 +325,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/bmi"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:id="@+id/tv_bmi_value"
@@ -336,17 +334,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/bmi_value"
                         android:textColor="@color/text_primary"
-                        android:textSize="24sp"
+                        android:textSize="@dimen/text_size_title"
                         android:textStyle="bold"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="@dimen/margin_small"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/bmi_unit"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="4dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_tiny"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -356,15 +354,15 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/margin_normal"
             app:cardElevation="2dp"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="@dimen/corner_radius">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/padding_normal">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -378,7 +376,7 @@
                         android:layout_weight="1"
                         android:text="@string/blood_pressure_trend"
                         android:textColor="@color/text_primary"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -387,16 +385,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/period_30_days"
                         android:textColor="@color/primary_blue"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_size_normal"
                         android:drawableEnd="@drawable/ic_arrow_back"
-                        android:drawablePadding="4dp"/>
+                        android:drawablePadding="@dimen/spacing_tiny"/>
                 </LinearLayout>
 
                 <View
                     android:id="@+id/chart_placeholder"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/chart_height"
+                    android:layout_marginTop="@dimen/margin_normal"
                     android:background="@color/background_light"/>
 
             </LinearLayout>
@@ -406,31 +404,31 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_normal"
             app:cardElevation="2dp"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="@dimen/corner_radius">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/padding_normal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/todays_reminders"
                     android:textColor="@color/text_primary"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_reminders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="@dimen/margin_medium"
                     tools:itemCount="2"
                     tools:listitem="@layout/item_reminder"/>
 
@@ -442,18 +440,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_normal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/quick_actions"
                 android:textColor="@color/text_primary"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="@dimen/margin_medium"/>
 
             <GridLayout
                 android:layout_width="match_parent"
@@ -469,22 +467,22 @@
                     android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="@dimen/padding_small">
 
                     <ImageView
                         android:id="@+id/iv_add_metric_icon"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="@dimen/icon_size_medium"
+                        android:layout_height="@dimen/icon_size_medium"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="12dp"/>
+                        android:padding="@dimen/padding_medium"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_metric"
                         android:textColor="@color/text_primary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"
                         android:gravity="center"/>
                 </LinearLayout>
 
@@ -496,22 +494,22 @@
                     android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="@dimen/padding_small">
 
                     <ImageView
                         android:id="@+id/iv_analysis_icon"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="@dimen/icon_size_medium"
+                        android:layout_height="@dimen/icon_size_medium"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="12dp"/>
+                        android:padding="@dimen/padding_medium"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/analysis"
                         android:textColor="@color/text_primary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"
                         android:gravity="center"/>
                 </LinearLayout>
 
@@ -523,22 +521,22 @@
                     android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="@dimen/padding_small">
 
                     <ImageView
                         android:id="@+id/iv_reminder_icon"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="@dimen/icon_size_medium"
+                        android:layout_height="@dimen/icon_size_medium"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="12dp"/>
+                        android:padding="@dimen/padding_medium"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reminder"
                         android:textColor="@color/text_primary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"
                         android:gravity="center"/>
                 </LinearLayout>
 
@@ -550,22 +548,22 @@
                     android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="@dimen/padding_small">
 
                     <ImageView
                         android:id="@+id/iv_reports_icon"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="@dimen/icon_size_medium"
+                        android:layout_height="@dimen/icon_size_medium"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="12dp"/>
+                        android:padding="@dimen/padding_medium"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reports"
                         android:textColor="@color/text_primary"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"
                         android:gravity="center"/>
                 </LinearLayout>
 

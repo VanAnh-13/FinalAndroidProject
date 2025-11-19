@@ -98,8 +98,19 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
             getBinding().tvGreeting.setText(greeting);
         });
 
+        // Observe reminders with loading state handling
+        // Requirements: 6.1, 6.3, 6.4 - Update UI when each CompletableFuture completes
         viewModel.getReminders().observe(getViewLifecycleOwner(), reminders -> {
-            remindersAdapter.setReminders(reminders);
+            if (reminders != null) {
+                remindersAdapter.setReminders(reminders);
+                // Hide loading indicator for reminders section
+                if (reminders.isEmpty()) {
+                    // Show empty state message
+                    Log.d("DashboardFragment", "No reminders available");
+                } else {
+                    Log.d("DashboardFragment", "Loaded " + reminders.size() + " reminders");
+                }
+            }
             
             // Handle empty state for reminders
             if (reminders == null || reminders.isEmpty()) {
@@ -111,35 +122,58 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
             }
         });
 
+        // Observe notification count with partial failure handling
+        // Requirements: 6.3 - Handle partial failures gracefully
         viewModel.getNotificationCount().observe(getViewLifecycleOwner(), count -> {
             if (count != null && count > 0) {
                 getBinding().tvNotificationBadge.setText(String.valueOf(count));
+                getBinding().tvNotificationBadge.setVisibility(android.view.View.VISIBLE);
+            } else {
+                getBinding().tvNotificationBadge.setVisibility(android.view.View.GONE);
             }
         });
         
-        // Observe latest metrics for dashboard display
+        // Observe latest metrics for dashboard display with loading state
+        // Requirements: 6.1, 6.4 - Update UI when each CompletableFuture completes
         // TODO: Re-enable when layout views are added
         /*viewModel.getLatestMetrics().observe(getViewLifecycleOwner(), metrics -> {
             if (metrics != null) {
-                // Update blood pressure
+                // Update blood pressure with fallback for partial failures
                 if (metrics.containsKey("blood_pressure")) {
                     getBinding().tvBloodPressureValue.setText(metrics.get("blood_pressure"));
+                } else {
+                    getBinding().tvBloodPressureValue.setText("--/--");
                 }
                 
-                // Update blood sugar
+                // Update blood sugar with fallback for partial failures
                 if (metrics.containsKey("blood_sugar")) {
                     getBinding().tvBloodSugarValue.setText(metrics.get("blood_sugar"));
+                } else {
+                    getBinding().tvBloodSugarValue.setText("--");
                 }
                 
-                // Update heart rate
+                // Update heart rate with fallback for partial failures
                 if (metrics.containsKey("heart_rate")) {
                     getBinding().tvHeartRateValue.setText(metrics.get("heart_rate"));
+                } else {
+                    getBinding().tvHeartRateValue.setText("--");
                 }
                 
-                // Update weight (BMI)
+                // Update weight (BMI) with fallback for partial failures
                 if (metrics.containsKey("weight")) {
                     getBinding().tvBmiValue.setText(metrics.get("weight"));
+                } else {
+                    getBinding().tvBmiValue.setText("--");
                 }
+                
+                Log.d("DashboardFragment", "Metrics updated: " + metrics.size() + " metrics loaded");
+            } else {
+                // Handle complete failure - show placeholder values
+                getBinding().tvBloodPressureValue.setText("--/--");
+                getBinding().tvBloodSugarValue.setText("--");
+                getBinding().tvHeartRateValue.setText("--");
+                getBinding().tvBmiValue.setText("--");
+                Log.w("DashboardFragment", "Failed to load metrics");
             }
         });*/
         

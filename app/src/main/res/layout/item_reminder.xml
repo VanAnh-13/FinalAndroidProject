@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="12dp">
+    android:layout_margin="@dimen/margin_small"
+    app:cardElevation="@dimen/card_elevation_small"
+    app:cardCornerRadius="@dimen/corner_radius">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/padding_medium">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,74 +21,73 @@
 
             <ImageView
                 android:id="@+id/iv_reminder_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
                 android:src="@drawable/ic_reminder"
-                android:padding="8dp"
-                android:background="@drawable/bg_button_primary"/>
+                android:layout_marginEnd="@dimen/margin_small"
+                android:contentDescription="@null"/>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_reminder_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Uống thuốc huyết áp"
+                    android:text="@string/sample_title"
                     android:textColor="@color/text_primary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_normal"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tv_reminder_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Description"
+                    android:text="@string/sample_description"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:layout_marginTop="2dp"
+                    android:textSize="@dimen/text_size_small"
+                    android:layout_marginTop="@dimen/margin_micro"
                     android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/tv_reminder_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="08:00 AM"
+                    android:text="@string/sample_time"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp"/>
+                    android:textSize="@dimen/text_size_small"
+                    android:layout_marginTop="@dimen/margin_tiny"/>
 
                 <TextView
                     android:id="@+id/tv_reminder_frequency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Daily"
+                    android:text="@string/sample_frequency"
                     android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:layout_marginTop="2dp"/>
+                    android:textSize="@dimen/text_size_tiny"
+                    android:layout_marginTop="@dimen/margin_micro"/>
 
                 <TextView
                     android:id="@+id/tv_deadline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Deadline"
+                    android:text="@string/sample_deadline"
                     android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:layout_marginTop="2dp"
+                    android:textSize="@dimen/text_size_tiny"
+                    android:layout_marginTop="@dimen/margin_micro"
                     android:visibility="gone"/>
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/iv_status_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
                 android:src="@drawable/ic_check_circle"
                 android:visibility="gone"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="@dimen/margin_small"/>
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_reminder"
@@ -101,14 +100,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_small"
             android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/progress_bar"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="@dimen/indicator_height"
                 android:max="100"
                 android:progress="0"/>
 
@@ -116,28 +115,28 @@
                 android:id="@+id/tv_progress_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0%"
-                android:textSize="11sp"
+                android:text="@string/sample_progress"
+                android:textSize="@dimen/text_size_tiny"
                 android:textColor="@color/text_secondary"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="@dimen/margin_tiny"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_small"
             android:gravity="end">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_skip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Skip"
-                android:textSize="12sp"
+                android:text="@string/action_skip"
+                android:textSize="@dimen/text_size_small"
                 style="@style/Widget.Material3.Button.TextButton"
-                app:cornerRadius="8dp"
-                android:layout_marginEnd="4dp"
+                app:cornerRadius="@dimen/corner_radius_small"
+                android:layout_marginEnd="@dimen/margin_tiny"
                 android:visibility="gone"/>
 
             <com.google.android.material.button.MaterialButton
@@ -145,10 +144,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/snooze"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_small"
                 style="@style/Widget.Material3.Button.TextButton"
-                app:cornerRadius="8dp"
-                android:layout_marginEnd="4dp"
+                app:cornerRadius="@dimen/corner_radius_small"
+                android:layout_marginEnd="@dimen/margin_tiny"
                 android:visibility="gone"/>
 
             <com.google.android.material.button.MaterialButton
@@ -156,9 +155,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/done"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_small"
                 style="@style/Widget.Material3.Button"
-                app:cornerRadius="8dp"
+                app:cornerRadius="@dimen/corner_radius_small"
                 android:visibility="gone"/>
         </LinearLayout>
 

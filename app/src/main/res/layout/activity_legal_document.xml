@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
-            app:title="Tài liệu pháp lý"
+            app:title="@string/legal_document_title"
             app:titleTextColor="@android:color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
 
@@ -34,11 +34,11 @@
             android:id="@+id/tvContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textSize="14sp"
+            android:padding="@dimen/padding_normal"
+            android:textSize="@dimen/text_size_normal"
             android:textColor="@color/text_primary"
-            android:lineSpacingExtra="4dp"
-            android:text="Đang tải nội dung..." />
+            android:lineSpacingExtra="@dimen/line_spacing_small"
+            android:text="@string/loading_content" />
 
     </androidx.core.widget.NestedScrollView>
 

@@ -1,5 +1,6 @@
 package com.example.healthylifehub.data.model;
 
+import android.graphics.Bitmap;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ public class ReportData {
     private List<MedicalRecord> medicalRecords;
     private List<Medicine> medicines;
     private UserProfile userProfile;
+    private List<Bitmap> chartBitmaps;
 
     public ReportData(List<HealthMetric> metrics, Statistics statistics) {
         this.metrics = metrics;

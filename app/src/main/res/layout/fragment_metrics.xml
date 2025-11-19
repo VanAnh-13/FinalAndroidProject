@@ -10,7 +10,7 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/surface"
         app:elevation="0dp">
 
         <!-- Top Bar -->
@@ -71,7 +71,7 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/surface"
                 app:tabMode="scrollable"
                 app:tabIndicatorColor="@color/primary_blue"
                 app:tabIndicatorHeight="@dimen/spacing_tiny"

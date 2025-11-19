@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="@dimen/margin_normal">
         
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="📊 Health Analytics"
-            android:textSize="24sp"
+            android:text="@string/health_analytics_title"
+            android:textSize="@dimen/text_size_title"
             android:textStyle="bold"
             android:textColor="@android:color/black" />
         
@@ -27,9 +27,9 @@
             android:id="@+id/btn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔄 Refresh"
+            android:text="@string/refresh"
             style="@style/Widget.Material3.Button.TextButton"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_small" />
     </LinearLayout>
 
     <!-- Cache Info -->
@@ -37,11 +37,11 @@
         android:id="@+id/tv_cache_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="📦 Cached (5s old)"
-        android:textSize="12sp"
+        android:text="@string/cached_info"
+        android:textSize="@dimen/text_size_small"
         android:textColor="@android:color/darker_gray"
         android:visibility="gone"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="@dimen/margin_small" />
 
     <!-- Time Range Buttons -->
     <LinearLayout
@@ -49,14 +49,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="@dimen/margin_normal">
         
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_7_days"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="7 Days"
+            android:text="@string/days_7"
             style="@style/Widget.Material3.Button.OutlinedButton" />
         
         <com.google.android.material.button.MaterialButton
@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="30 Days"
+            android:text="@string/days_30"
             style="@style/Widget.Material3.Button.OutlinedButton" />
         
         <com.google.android.material.button.MaterialButton
@@ -72,7 +72,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="90 Days"
+            android:text="@string/days_90"
             style="@style/Widget.Material3.Button.OutlinedButton" />
     </LinearLayout>
 
@@ -101,30 +101,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_background"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp">
+                android:padding="@dimen/padding_medium"
+                android:layout_marginBottom="@dimen/margin_medium">
                 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🩸 Blood Pressure (mmHg)"
-                    android:textSize="16sp"
+                    android:text="@string/blood_pressure_chart_title"
+                    android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="@dimen/margin_small" />
                 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_blood_pressure"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp" />
+                    android:layout_height="@dimen/chart_height_large" />
                 
                 <TextView
                     android:id="@+id/tv_blood_pressure_stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Avg: 120/80 | Min: 110 | Max: 140 | Trend: ➡️ +2.0"
-                    android:textSize="12sp"
+                    android:text="@string/blood_pressure_stats_placeholder"
+                    android:textSize="@dimen/text_size_small"
                     android:textColor="@android:color/darker_gray"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="@dimen/margin_small" />
             </LinearLayout>
 
             <!-- Blood Sugar Chart -->
@@ -133,30 +133,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_background"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp">
+                android:padding="@dimen/padding_medium"
+                android:layout_marginBottom="@dimen/margin_medium">
                 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🍬 Blood Sugar (mg/dL)"
-                    android:textSize="16sp"
+                    android:text="@string/blood_sugar_chart_title"
+                    android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="@dimen/margin_small" />
                 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_blood_sugar"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp" />
+                    android:layout_height="@dimen/chart_height_large" />
                 
                 <TextView
                     android:id="@+id/tv_blood_sugar_stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Avg: 100.0 | Min: 80.0 | Max: 140.0 | Trend: 📉 -5.0 mg/dL"
-                    android:textSize="12sp"
+                    android:text="@string/blood_sugar_stats_placeholder"
+                    android:textSize="@dimen/text_size_small"
                     android:textColor="@android:color/darker_gray"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="@dimen/margin_small" />
             </LinearLayout>
 
             <!-- Weight Chart -->
@@ -165,30 +165,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_background"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp">
+                android:padding="@dimen/padding_medium"
+                android:layout_marginBottom="@dimen/margin_medium">
                 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="⚖️ Weight (kg)"
-                    android:textSize="16sp"
+                    android:text="@string/weight_chart_title"
+                    android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="@dimen/margin_small" />
                 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_weight"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp" />
+                    android:layout_height="@dimen/chart_height_large" />
                 
                 <TextView
                     android:id="@+id/tv_weight_stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Avg: 70.0 | Min: 68.5 | Max: 72.0 | Trend: 📈 +0.5 kg"
-                    android:textSize="12sp"
+                    android:text="@string/weight_stats_placeholder"
+                    android:textSize="@dimen/text_size_small"
                     android:textColor="@android:color/darker_gray"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="@dimen/margin_small" />
             </LinearLayout>
 
             <!-- Heart Rate Chart -->
@@ -197,30 +197,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_background"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp">
+                android:padding="@dimen/padding_medium"
+                android:layout_marginBottom="@dimen/margin_medium">
                 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="❤️ Heart Rate (bpm)"
-                    android:textSize="16sp"
+                    android:text="@string/heart_rate_chart_title"
+                    android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="@dimen/margin_small" />
                 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_heart_rate"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp" />
+                    android:layout_height="@dimen/chart_height_large" />
                 
                 <TextView
                     android:id="@+id/tv_heart_rate_stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Avg: 72.0 | Min: 60.0 | Max: 90.0 | Trend: ➡️ +1.0 bpm"
-                    android:textSize="12sp"
+                    android:text="@string/heart_rate_stats_placeholder"
+                    android:textSize="@dimen/text_size_small"
                     android:textColor="@android:color/darker_gray"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="@dimen/margin_small" />
             </LinearLayout>
 
         </LinearLayout>

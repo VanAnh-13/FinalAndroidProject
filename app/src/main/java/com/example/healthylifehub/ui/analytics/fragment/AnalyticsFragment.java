@@ -84,6 +84,31 @@ public class AnalyticsFragment extends BaseFragment<FragmentAnalyticsBinding> {
                 Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show();
             }
         });
+        
+        // Observe analysis results (Requirements: 4.5)
+        // Display Statistics in cards (mean, stdDev, trend)
+        // Display anomalies list with severity indicators
+        // Show recommendations with priority badges
+        viewModel.getAnalysisResult().observe(getViewLifecycleOwner(), analysisResult -> {
+            if (analysisResult != null) {
+                displayAnalysisResults(analysisResult);
+            }
+        });
+        
+        // Observe analysis loading state (Requirements: 4.5)
+        viewModel.getAnalysisLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            // Show/hide analysis loading indicator
+            if (isLoading) {
+                Toast.makeText(requireContext(), "Đang phân tích dữ liệu...", Toast.LENGTH_SHORT).show();
+            }
+        });
+        
+        // Observe anomaly notifications (Requirements: 4.4)
+        viewModel.getAnomalyNotificationTrigger().observe(getViewLifecycleOwner(), result -> {
+            if (result != null && result.hasAnomalies()) {
+                displayAnomalyAlert(result);
+            }
+        });
     }
     
     @Override
@@ -256,5 +281,134 @@ public class AnalyticsFragment extends BaseFragment<FragmentAnalyticsBinding> {
             stats.average, stats.minimum, stats.maximum, trendIcon, stats.trend, stats.unit
         );
         textView.setText(statsText);
+    }
+    
+    /**
+     * Display analysis results from HealthMetricsAnalyzer
+     * 
+     * Shows:
+     * - Statistics in cards (mean, stdDev, trend)
+     * - Anomalies list with severity indicators
+     * - Recommendations with priority badges
+     * 
+     * Requirements: 4.5
+     */
+    private void displayAnalysisResults(com.example.healthylifehub.data.model.AnalysisResult analysisResult) {
+        if (analysisResult == null) {
+            return;
+        }
+        
+        // Display Statistics
+        if (analysisResult.getStatistics() != null) {
+            com.example.healthylifehub.data.model.Statistics stats = analysisResult.getStatistics();
+            String statsText = String.format(
+                "📊 Statistics:\n" +
+                "Mean: %.2f | StdDev: %.2f\n" +
+                "Min: %.2f | Max: %.2f | Median: %.2f\n" +
+                "Trend: %s",
+                stats.getMean(), stats.getStdDev(),
+                stats.getMin(), stats.getMax(), stats.getMedian(),
+                stats.getTrend()
+            );
+            
+            // Display in a toast or update a TextView if available
+            Toast.makeText(requireContext(), statsText, Toast.LENGTH_LONG).show();
+        }
+        
+        // Display Anomalies
+        if (analysisResult.hasAnomalies()) {
+            StringBuilder anomaliesText = new StringBuilder("🚨 Anomalies Detected:\n");
+            for (com.example.healthylifehub.data.model.Anomaly anomaly : analysisResult.getAnomalies()) {
+                String severityIcon = getSeverityIcon(anomaly.getSeverity());
+                anomaliesText.append(String.format(
+                    "%s %s (Value: %.2f, Deviation: %.2f)\n",
+                    severityIcon, anomaly.getMessage(), anomaly.getValue(), anomaly.getDeviation()
+                ));
+            }
+            Toast.makeText(requireContext(), anomaliesText.toString(), Toast.LENGTH_LONG).show();
+        }
+        
+        // Display Recommendations
+        if (analysisResult.hasRecommendations()) {
+            StringBuilder recommendationsText = new StringBuilder("💡 Recommendations:\n");
+            for (com.example.healthylifehub.data.model.Recommendation recommendation : analysisResult.getRecommendations()) {
+                String priorityBadge = getPriorityBadge(recommendation.getPriority());
+                recommendationsText.append(String.format(
+                    "%s [%s] %s: %s\n",
+                    priorityBadge, recommendation.getType(), 
+                    recommendation.getTitle(), recommendation.getDescription()
+                ));
+            }
+            Toast.makeText(requireContext(), recommendationsText.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+    
+    /**
+     * Display anomaly alert dialog
+     * 
+     * Requirements: 4.4
+     */
+    private void displayAnomalyAlert(com.example.healthylifehub.data.model.AnalysisResult result) {
+        if (result == null || !result.hasAnomalies()) {
+            return;
+        }
+        
+        // Build alert message
+        StringBuilder message = new StringBuilder();
+        message.append("Phát hiện ").append(result.getAnomalyCount()).append(" bất thường trong dữ liệu sức khỏe của bạn:\n\n");
+        
+        for (com.example.healthylifehub.data.model.Anomaly anomaly : result.getAnomalies()) {
+            String severityIcon = getSeverityIcon(anomaly.getSeverity());
+            message.append(severityIcon).append(" ").append(anomaly.getMessage()).append("\n");
+        }
+        
+        // Show alert dialog
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("⚠️ Cảnh báo sức khỏe")
+            .setMessage(message.toString())
+            .setPositiveButton("Xem chi tiết", (dialog, which) -> {
+                // Show detailed analysis results
+                displayAnalysisResults(result);
+            })
+            .setNegativeButton("Đóng", null)
+            .show();
+    }
+    
+    /**
+     * Get severity icon based on severity level
+     */
+    private String getSeverityIcon(String severity) {
+        if (severity == null) return "ℹ️";
+        
+        switch (severity.toUpperCase()) {
+            case "CRITICAL":
+                return "🔴";
+            case "HIGH":
+                return "🟠";
+            case "MEDIUM":
+                return "🟡";
+            case "LOW":
+                return "🟢";
+            default:
+                return "ℹ️";
+        }
+    }
+    
+    /**
+     * Get priority badge based on priority level
+     */
+    private String getPriorityBadge(String priority) {
+        if (priority == null) return "📌";
+        
+        switch (priority.toUpperCase()) {
+            case "HIGH":
+                return "🔥";
+            case "MEDIUM":
+                return "⚡";
+            case "LOW":
+                return "📌";
+            default:
+                return "📌";
+        }
     }
 }

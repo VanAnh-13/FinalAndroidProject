@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(tableName = "sync_status")
 public class SyncStatus {
     @PrimaryKey(autoGenerate = false)
@@ -37,4 +36,21 @@ public class SyncStatus {
     private String conflictStrategy;    // "last_write_wins", "manual", "merge"
     private boolean hasConflict;        // True if conflict detected
     private String conflictData;        // JSON of conflicting data
+
+    @Ignore
+    public SyncStatus(String entityId, String entityType, String userId, boolean needsSync, boolean isSyncing, boolean syncFailed, long lastSyncTime, long lastModifiedTime, int syncAttempts, String syncError, String conflictStrategy, boolean hasConflict, String conflictData) {
+        this.entityId = entityId;
+        this.entityType = entityType;
+        this.userId = userId;
+        this.needsSync = needsSync;
+        this.isSyncing = isSyncing;
+        this.syncFailed = syncFailed;
+        this.lastSyncTime = lastSyncTime;
+        this.lastModifiedTime = lastModifiedTime;
+        this.syncAttempts = syncAttempts;
+        this.syncError = syncError;
+        this.conflictStrategy = conflictStrategy;
+        this.hasConflict = hasConflict;
+        this.conflictData = conflictData;
+    }
 }

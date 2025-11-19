@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor  // Room có thể dùng constructor này
 @Entity(tableName = "users")
 @TypeConverters({DateConverter.class, ProfileConverter.class})
 public class User {
@@ -57,5 +56,20 @@ public class User {
         this.lastLogin = System.currentTimeMillis();
         this.needsSync = true;
         this.lastSyncedAt = new Date();
+    }
+
+    @Ignore
+    public User(String uid, String email, String displayName, String photoUrl, long createdAt, long lastLogin, String role, Map<String, Object> profile, Date updatedAt, Date lastSyncedAt, boolean needsSync) {
+        this.uid = uid;
+        this.email = email;
+        this.displayName = displayName;
+        this.photoUrl = photoUrl;
+        this.createdAt = createdAt;
+        this.lastLogin = lastLogin;
+        this.role = role;
+        this.profile = profile;
+        this.updatedAt = updatedAt;
+        this.lastSyncedAt = lastSyncedAt;
+        this.needsSync = needsSync;
     }
 }

@@ -11,7 +11,7 @@ import com.example.healthylifehub.data.local.dao.ReminderDao;
 import com.example.healthylifehub.data.local.dao.ReminderHistoryDao;
 import com.example.healthylifehub.data.local.dao.SyncStatusDao;
 import com.example.healthylifehub.data.local.dao.UserDao;
-import com.example.healthylifehub.data.local.migrations.DatabaseMigrations;
+import com.example.healthylifehub.data.local.dao.HealthArticleDao;
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.example.healthylifehub.data.model.MedicalRecord;
 import com.example.healthylifehub.data.model.NotificationSettings;
@@ -19,6 +19,8 @@ import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.ReminderHistory;
 import com.example.healthylifehub.data.model.SyncStatus;
 import com.example.healthylifehub.data.model.User;
+import com.example.healthylifehub.data.model.HealthArticle;
+import com.example.healthylifehub.data.local.migrations.DatabaseMigrations;
 
 /**
  * Room Database for offline-first caching
@@ -39,7 +41,8 @@ import com.example.healthylifehub.data.model.User;
         ReminderHistory.class,
         SyncStatus.class,
         MedicalRecord.class,
-        NotificationSettings.class
+        NotificationSettings.class,
+        HealthArticle.class
     },
     version = 10,  // Incremented for notification settings enhancements
     exportSchema = false
@@ -57,7 +60,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract SyncStatusDao syncStatusDao();
     public abstract MedicalRecordDao medicalRecordDao();
     public abstract NotificationSettingsDao notificationSettingsDao();
-    
+    public abstract HealthArticleDao healthArticleDao();
+
     /**
      * Get database instance (Singleton pattern)
      */

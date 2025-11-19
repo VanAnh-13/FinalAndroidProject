@@ -166,11 +166,34 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
         Log.d(TAG, "Loading history data for metric type: " + metricType);
     }
     
+    
     private void loadHistoryDataForPeriod(String period) {
         Log.d(TAG, "Loading data for period: " + period);
         
+        // Calculate date range based on period
+        Calendar calendar = Calendar.getInstance();
+        long endDate = calendar.getTimeInMillis();
+        
+        switch (period) {
+            case "day":
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                break;
+            case "week":
+                calendar.add(Calendar.DAY_OF_MONTH, -7);
+                break;
+            case "month":
+                calendar.add(Calendar.MONTH, -1);
+                break;
+            case "year":
+                calendar.add(Calendar.YEAR, -1);
+                break;
+        }
+        
+        long startDate = calendar.getTimeInMillis();
+        
         // Load history from Firebase with date range
-        LiveData<List<MetricHistory>> historyLiveData = metricsRepository.loadMetricHistory(metricType);
+        LiveData<List<MetricHistory>> historyLiveData = 
+            metricsRepository.loadMetricHistoryByDateRange(metricType, startDate, endDate);
         
         // Remove previous observers to avoid duplicate updates
         historyLiveData.removeObservers(this);
@@ -377,34 +400,15 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
             MetricHistory latest = historyList.get(0);
             getBinding().tvCurrentValue.setText(latest.getValue());
             
-            // TÍNH TOÁN THỐNG KÊ:
-            // - Sum: Tổng các giá trị
-            // - Highest: Giá trị cao nhất trong kỳ
-            // - Lowest: Giá trị thấp nhất trong kỳ
-            // - Average: Sum / Count
-            double sum = 0;
-            double highest = Double.MIN_VALUE;
-            double lowest = Double.MAX_VALUE;
-            
-            for (MetricHistory history : historyList) {
-                double value = history.getValueAsDouble();
-                sum += value;
-                highest = Math.max(highest, value);
-                lowest = Math.min(lowest, value);
+            if (METRIC_BLOOD_PRESSURE.equals(metricType)) {
+                calculateAndDisplayBloodPressureStatistics(historyList, latest);
+            } else {
+                calculateAndDisplayStandardStatistics(historyList, latest);
             }
-            
-            double average = sum / historyList.size();
-            
-            // Hiển thị thống kê đã tính toán (định dạng với 1 chữ số thập phân)
-            getBinding().tvCurrentStat.setText(String.format("%.1f", latest.getValueAsDouble()));
-            getBinding().tvAverageValue.setText(String.format("%.1f", average));
-            getBinding().tvHighestValue.setText(String.format("%.1f", highest));
-            getBinding().tvLowestValue.setText(String.format("%.1f", lowest));
             
             // Tính toán và hiển thị phần trăm thay đổi
             calculateAndDisplayPercentageChange(historyList);
             
-            Log.d(TAG, "✅ Đã tính toán thống kê: avg=" + average + ", min=" + lowest + ", max=" + highest);
         } catch (Exception e) {
             Log.e(TAG, "Lỗi khi tính toán thống kê: " + e.getMessage());
             
@@ -416,6 +420,68 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
             getBinding().tvLowestValue.setText("--");
             getBinding().tvChangePercentage.setText("0%");
         }
+    }
+
+    private void calculateAndDisplayBloodPressureStatistics(List<MetricHistory> historyList, MetricHistory latest) {
+        double sumSys = 0;
+        double sumDia = 0;
+        double maxSys = Double.MIN_VALUE;
+        double maxDia = Double.MIN_VALUE;
+        double minSys = Double.MAX_VALUE;
+        double minDia = Double.MAX_VALUE;
+        
+        for (MetricHistory history : historyList) {
+            double sys = history.getSystolic();
+            double dia = history.getDiastolic();
+            
+            sumSys += sys;
+            sumDia += dia;
+            
+            maxSys = Math.max(maxSys, sys);
+            maxDia = Math.max(maxDia, dia);
+            
+            minSys = Math.min(minSys, sys);
+            minDia = Math.min(minDia, dia);
+        }
+        
+        double avgSys = sumSys / historyList.size();
+        double avgDia = sumDia / historyList.size();
+        
+        // Hiển thị thống kê cho huyết áp (Sys/Dia)
+        getBinding().tvCurrentStat.setText(latest.getValue());
+        getBinding().tvAverageValue.setText(String.format("%.0f/%.0f", avgSys, avgDia));
+        getBinding().tvHighestValue.setText(String.format("%.0f/%.0f", maxSys, maxDia));
+        getBinding().tvLowestValue.setText(String.format("%.0f/%.0f", minSys, minDia));
+        
+        Log.d(TAG, "✅ Đã tính toán thống kê huyết áp: avg=" + avgSys + "/" + avgDia);
+    }
+
+    private void calculateAndDisplayStandardStatistics(List<MetricHistory> historyList, MetricHistory latest) {
+        // TÍNH TOÁN THỐNG KÊ:
+        // - Sum: Tổng các giá trị
+        // - Highest: Giá trị cao nhất trong kỳ
+        // - Lowest: Giá trị thấp nhất trong kỳ
+        // - Average: Sum / Count
+        double sum = 0;
+        double highest = Double.MIN_VALUE;
+        double lowest = Double.MAX_VALUE;
+        
+        for (MetricHistory history : historyList) {
+            double value = history.getValueAsDouble();
+            sum += value;
+            highest = Math.max(highest, value);
+            lowest = Math.min(lowest, value);
+        }
+        
+        double average = sum / historyList.size();
+        
+        // Hiển thị thống kê đã tính toán (định dạng với 1 chữ số thập phân)
+        getBinding().tvCurrentStat.setText(String.format("%.1f", latest.getValueAsDouble()));
+        getBinding().tvAverageValue.setText(String.format("%.1f", average));
+        getBinding().tvHighestValue.setText(String.format("%.1f", highest));
+        getBinding().tvLowestValue.setText(String.format("%.1f", lowest));
+        
+        Log.d(TAG, "✅ Đã tính toán thống kê chuẩn: avg=" + average + ", min=" + lowest + ", max=" + highest);
     }
     
     private void calculateAndDisplayPercentageChange(List<MetricHistory> historyList) {
@@ -435,9 +501,12 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
         // Split data into current and previous half
         int midpoint = historyList.size() / 2;
         
+        boolean isBloodPressure = METRIC_BLOOD_PRESSURE.equals(metricType);
+
         // Current period (first half - more recent)
         for (int i = 0; i < midpoint; i++) {
-            currentAverage += historyList.get(i).getValueAsDouble();
+            double value = isBloodPressure ? historyList.get(i).getSystolic() : historyList.get(i).getValueAsDouble();
+            currentAverage += value;
             currentCount++;
         }
         if (currentCount > 0) {
@@ -446,7 +515,8 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
         
         // Previous period (second half - older)
         for (int i = midpoint; i < historyList.size(); i++) {
-            previousAverage += historyList.get(i).getValueAsDouble();
+            double value = isBloodPressure ? historyList.get(i).getSystolic() : historyList.get(i).getValueAsDouble();
+            previousAverage += value;
             previousCount++;
         }
         if (previousCount > 0) {

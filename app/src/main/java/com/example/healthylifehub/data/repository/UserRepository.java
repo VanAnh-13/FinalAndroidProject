@@ -59,7 +59,8 @@ public class UserRepository extends FirebaseRepository {
     }
     
     /**
-     * Load user profile data
+     * Load user profile data with Firestore listener on background thread
+     * Requirements 3.2, 3.3: Firestore listener uses ExecutorService for background processing
      * @return LiveData of user profile map
      */
     public LiveData<Map<String, Object>> loadUserProfile() {
@@ -71,16 +72,19 @@ public class UserRepository extends FirebaseRepository {
             return profileLiveData;
         }
         
+        // Pass executor to addSnapshotListener for background processing
         db.collection(COLLECTION_USERS)
             .document(userId)
-            .addSnapshotListener((snapshot, error) -> {
+            .addSnapshotListener(executorService, (snapshot, error) -> {
                 if (error != null) {
-                    profileLiveData.setValue(null);
+                    // Post to main thread
+                    profileLiveData.postValue(null);
                     return;
                 }
                 
                 if (snapshot != null && snapshot.exists()) {
-                    profileLiveData.setValue(snapshot.getData());
+                    // Process snapshot on background thread, post to main thread
+                    profileLiveData.postValue(snapshot.getData());
                 } else {
                     // Document doesn't exist, create it with default structure
                     createDefaultUserProfile(userId);
@@ -132,7 +136,8 @@ public class UserRepository extends FirebaseRepository {
     }
     
     /**
-     * Get specific profile field
+     * Get specific profile field with Firestore listener on background thread
+     * Requirements 3.2, 3.3: Firestore listener uses ExecutorService
      * @param fieldPath Path to field (e.g., "profile.fullName")
      * @return LiveData of field value
      */
@@ -145,15 +150,17 @@ public class UserRepository extends FirebaseRepository {
             return fieldLiveData;
         }
         
+        // Pass executor to addSnapshotListener for background processing
         db.collection(COLLECTION_USERS)
             .document(userId)
-            .addSnapshotListener((snapshot, error) -> {
+            .addSnapshotListener(executorService, (snapshot, error) -> {
                 if (error != null || snapshot == null || !snapshot.exists()) {
-                    fieldLiveData.setValue(null);
+                    fieldLiveData.postValue(null);
                     return;
                 }
                 
-                fieldLiveData.setValue(snapshot.get(fieldPath));
+                // Process on background thread, post to main thread
+                fieldLiveData.postValue(snapshot.get(fieldPath));
             });
         
         return fieldLiveData;
@@ -181,9 +188,9 @@ public class UserRepository extends FirebaseRepository {
                 if (userProfile.getFullName() != null) {
                     profileData.put("fullName", userProfile.getFullName());
                 }
-                if (userProfile.getBirthDate() != null) {
+                if (userProfile.getDateOfBirth() != null) {
                     // Convert date string to Timestamp
-                    Timestamp birthTimestamp = convertDateStringToTimestamp(userProfile.getBirthDate());
+                    Timestamp birthTimestamp = convertDateStringToTimestamp(userProfile.getDateOfBirth());
                     if (birthTimestamp != null) {
                         profileData.put("dateOfBirth", birthTimestamp);
                     }
@@ -193,15 +200,11 @@ public class UserRepository extends FirebaseRepository {
                     String gender = convertGenderToEnglish(userProfile.getGender());
                     profileData.put("gender", gender);
                 }
-                if (userProfile.getHeight() != null) {
-                    // Extract numeric value and store as Number
-                    double height = extractNumericValue(userProfile.getHeight());
-                    profileData.put("height", height);
+                if (userProfile.getHeight() > 0) {
+                    profileData.put("height", userProfile.getHeight());
                 }
-                if (userProfile.getWeight() != null) {
-                    // Extract numeric value and store as Number
-                    double weight = extractNumericValue(userProfile.getWeight());
-                    profileData.put("weight", weight);
+                if (userProfile.getWeight() > 0) {
+                    profileData.put("weight", userProfile.getWeight());
                 }
                 if (userProfile.getBloodType() != null) {
                     profileData.put("bloodType", userProfile.getBloodType());
@@ -356,6 +359,7 @@ public class UserRepository extends FirebaseRepository {
     
     /**
      * Load medical history for current user (as simple String)
+     * Requirements 3.2, 3.3: Firestore listener uses ExecutorService
      * @return LiveData of medical history string
      */
     public LiveData<String> loadMedicalHistory() {
@@ -367,25 +371,26 @@ public class UserRepository extends FirebaseRepository {
             return historyLiveData;
         }
         
+        // Pass executor to addSnapshotListener for background processing
         db.collection(COLLECTION_USERS)
             .document(userId)
-            .addSnapshotListener((snapshot, error) -> {
+            .addSnapshotListener(executorService, (snapshot, error) -> {
                 if (error != null || snapshot == null || !snapshot.exists()) {
-                    historyLiveData.setValue("");
+                    historyLiveData.postValue("");
                     return;
                 }
                 
-                // Get from nested profile.medicalHistory
+                // Get from nested profile.medicalHistory - process on background thread
                 Map<String, Object> profileData = (Map<String, Object>) snapshot.get("profile");
                 if (profileData != null && profileData.containsKey("medicalHistory")) {
                     Object history = profileData.get("medicalHistory");
                     if (history instanceof String) {
-                        historyLiveData.setValue((String) history);
+                        historyLiveData.postValue((String) history);
                     } else {
-                        historyLiveData.setValue("");
+                        historyLiveData.postValue("");
                     }
                 } else {
-                    historyLiveData.setValue("");
+                    historyLiveData.postValue("");
                 }
             });
         

@@ -22,10 +22,6 @@ public class LoginViewModel extends BaseViewModel {
     private final MutableLiveData<DataState<User>> loginState = new MutableLiveData<>();
     private final MutableLiveData<String> emailError = new MutableLiveData<>();
     private final MutableLiveData<String> passwordError = new MutableLiveData<>();
-    
-    // Store observers to remove them later
-    private androidx.lifecycle.Observer<DataState<User>> loginObserver;
-    private androidx.lifecycle.Observer<DataState<User>> googleSignInObserver;
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
@@ -50,15 +46,22 @@ public class LoginViewModel extends BaseViewModel {
             return;
         }
 
-        // Remove previous observer if exists to prevent memory leaks
-        LiveData<DataState<User>> loginLiveData = authRepository.loginWithEmail(email, password);
-        if (loginObserver != null) {
-            loginLiveData.removeObserver(loginObserver);
-        }
+        // Set loading state
+        loginState.setValue(DataState.loading());
         
-        // Create new observer and observe
-        loginObserver = state -> loginState.setValue(state);
-        loginLiveData.observeForever(loginObserver);
+        // Call CompletableFuture-based async method
+        authRepository.loginWithEmailAsync(email, password)
+            .thenAcceptAsync(user -> {
+                // Update loginState LiveData on main thread with success
+                loginState.setValue(DataState.success(user));
+            }, androidx.core.content.ContextCompat.getMainExecutor(getApplication()))
+            .exceptionally(throwable -> {
+                // Handle error on main thread
+                String errorMessage = throwable.getCause() != null ? 
+                    throwable.getCause().getMessage() : "Login failed";
+                loginState.setValue(DataState.error(errorMessage));
+                return null;
+            });
     }
 
     public Intent getGoogleSignInIntent() {
@@ -66,15 +69,22 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     public void handleGoogleSignInResult(Intent data) {
-        // Remove previous observer if exists to prevent memory leaks
-        LiveData<DataState<User>> googleLiveData = authRepository.loginWithGoogle(data);
-        if (googleSignInObserver != null) {
-            googleLiveData.removeObserver(googleSignInObserver);
-        }
+        // Set loading state
+        loginState.setValue(DataState.loading());
         
-        // Create new observer and observe
-        googleSignInObserver = state -> loginState.setValue(state);
-        googleLiveData.observeForever(googleSignInObserver);
+        // Call CompletableFuture-based async method
+        authRepository.loginWithGoogleAsync(data)
+            .thenAcceptAsync(user -> {
+                // Update loginState LiveData on main thread with success
+                loginState.setValue(DataState.success(user));
+            }, androidx.core.content.ContextCompat.getMainExecutor(getApplication()))
+            .exceptionally(throwable -> {
+                // Handle error on main thread
+                String errorMessage = throwable.getCause() != null ? 
+                    throwable.getCause().getMessage() : "Google sign-in failed";
+                loginState.setValue(DataState.error(errorMessage));
+                return null;
+            });
     }
 
     private boolean validateInput(String email, String password) {
@@ -113,16 +123,6 @@ public class LoginViewModel extends BaseViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        
-        // Remove LiveData observers to prevent memory leaks
-        if (loginObserver != null) {
-            // Note: We can't remove the observer here since we don't have reference to the LiveData
-            // The observers are already removed when new login attempts are made
-            loginObserver = null;
-        }
-        if (googleSignInObserver != null) {
-            googleSignInObserver = null;
-        }
         
         // Clean up RxJava disposables
         if (compositeDisposable != null && !compositeDisposable.isDisposed()) {

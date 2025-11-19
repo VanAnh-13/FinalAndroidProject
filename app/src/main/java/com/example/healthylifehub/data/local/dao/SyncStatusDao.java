@@ -82,4 +82,17 @@ public interface SyncStatusDao {
      */
     @Query("UPDATE sync_status SET syncAttempts = 0 WHERE entityId = :entityId")
     void resetSyncAttempts(String entityId);
+    
+    /**
+     * Get last sync time for a specific entity type
+     * Returns the most recent successful sync time for the given user and entity type
+     */
+    @Query("SELECT MAX(lastSyncTime) FROM sync_status WHERE userId = :userId AND entityType = :entityType")
+    Long getLastSyncTimeForType(String userId, String entityType);
+    
+    /**
+     * Get all sync statuses for a user and entity type
+     */
+    @Query("SELECT * FROM sync_status WHERE userId = :userId AND entityType = :entityType")
+    List<SyncStatus> getSyncStatusesByType(String userId, String entityType);
 }

@@ -16,7 +16,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(tableName = "reminders")
 public class Reminder {
 	@PrimaryKey(autoGenerate = false)
@@ -47,6 +46,23 @@ public class Reminder {
 		this.totalExpected = 0;
 		this.completedCount = 0;
 	}
+
+    @Ignore
+    public Reminder(String reminderId, String userId, String title, String description, long reminderTime, String frequency, boolean isActive, String medicineId, long createdAt, long updatedAt, Long deadline, int totalExpected, int completedCount) {
+        this.reminderId = reminderId;
+        this.userId = userId;
+        this.title = title;
+        this.description = description;
+        this.reminderTime = reminderTime;
+        this.frequency = frequency;
+        this.isActive = isActive;
+        this.medicineId = medicineId;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deadline = deadline;
+        this.totalExpected = totalExpected;
+        this.completedCount = completedCount;
+    }
 	
 	/**
 	 * Calculate progress percentage for this reminder

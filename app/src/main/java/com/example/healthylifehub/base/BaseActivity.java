@@ -1,5 +1,6 @@
 package com.example.healthylifehub.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import androidx.appcompat.app.AppCompatActivity;
@@ -79,6 +80,14 @@ public abstract class BaseActivity<VB extends ViewBinding> extends AppCompatActi
         initData();
         bindData();
         setOnClick();
+    }
+    
+    /**
+     * Override attachBaseContext to apply language settings
+     */
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(com.example.healthylifehub.utils.LocaleHelper.applyLanguage(newBase));
     }
 
     /**
