@@ -433,7 +433,7 @@
                         android:id="@+id/tv_metrics_tracked"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5"
+                        android:text="@string/notification_badge_count"
                         android:textSize="@dimen/text_size_title"
                         android:textStyle="bold"
                         android:textColor="@color/primary"/>
@@ -471,7 +471,7 @@
                         android:id="@+id/tv_reminders_created"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
+                        android:text="@string/mock_reminders_count"
                         android:textSize="@dimen/text_size_title"
                         android:textStyle="bold"
                         android:textColor="@color/primary"/>
@@ -509,7 +509,7 @@
                         android:id="@+id/tv_records_entered"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="27"
+                        android:text="@string/mock_records_count"
                         android:textSize="@dimen/text_size_title"
                         android:textStyle="bold"
                         android:textColor="@color/primary"/>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/padding_normal">
 
     <!-- Warning Message -->
     <LinearLayout
@@ -13,12 +13,12 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/bg_warning_light"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp">
+        android:padding="@dimen/padding_medium"
+        android:layout_marginBottom="@dimen/margin_normal">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small"
             android:src="@drawable/ic_warning"
             app:tint="@color/warning" />
 
@@ -26,9 +26,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:text="Hành động này không thể hoàn tác!"
-            android:textSize="14sp"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:text="@string/delete_account_warning_title"
+            android:textSize="@dimen/text_size_normal"
             android:textStyle="bold"
             android:textColor="@color/warning" />
 
@@ -37,10 +37,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nhập mật khẩu để xác nhận xóa tài khoản:"
-        android:textSize="14sp"
+        android:text="@string/delete_account_password_prompt"
+        android:textSize="@dimen/text_size_normal"
         android:textColor="@color/text_primary"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/margin_normal" />
 
     <!-- Password Input -->
     <com.google.android.material.textfield.TextInputLayout
@@ -54,7 +54,7 @@
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Mật khẩu hiện tại"
+            android:hint="@string/current_password_hint"
             android:inputType="textPassword"
             android:maxLines="1" />
 
@@ -64,10 +64,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Sau khi xóa, bạn sẽ mất:\n• Toàn bộ dữ liệu sức khỏe\n• Lịch sử nhắc nhở\n• Hồ sơ y tế\n• Cài đặt cá nhân\n\nDữ liệu không thể khôi phục."
-        android:textSize="12sp"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:text="@string/delete_account_consequences"
+        android:textSize="@dimen/text_size_small"
         android:textColor="@color/error_red"
-        android:lineSpacingExtra="2dp" />
+        android:lineSpacingExtra="@dimen/line_spacing_tiny" />
 
 </LinearLayout>

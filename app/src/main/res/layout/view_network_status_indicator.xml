@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="12dp">
+    android:padding="@dimen/padding_small">
 
-    <!-- Status Indicator Circle -->
     <View
         android:id="@+id/view_status_indicator"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="@dimen/indicator_size_small"
+        android:layout_height="@dimen/indicator_size_small"
+        android:layout_marginEnd="@dimen/margin_small"
         android:background="@drawable/circle_indicator" />
 
     <!-- Status Text -->
@@ -22,8 +20,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="⚠️ Không có mạng"
-        android:textSize="14sp"
+        android:text="@string/network_status_no_connection"
+        android:textSize="@dimen/text_size_normal"
         android:textStyle="bold"
         android:textColor="@android:color/black" />
 

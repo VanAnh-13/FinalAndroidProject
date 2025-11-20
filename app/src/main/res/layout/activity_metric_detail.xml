@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="80dp">
+            android:paddingBottom="@dimen/padding_xxl">
 
             <!-- Top Bar -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -155,16 +155,16 @@
                     android:id="@+id/tv_metric_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/heart_rate_bpm"
                     android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    tools:text="Nhịp tim (bpm)"/>
 
                 <TextView
                     android:id="@+id/tv_current_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="85 bpm"
+                    tools:text="85 bpm"
                     android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_size_xxl"
                     android:textStyle="bold"
@@ -187,7 +187,7 @@
                         android:id="@+id/tv_change_percentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+5%"
+                        tools:text="+5%"
                         android:textColor="@color/success_green"
                         android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold"

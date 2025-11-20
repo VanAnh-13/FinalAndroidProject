@@ -12,6 +12,7 @@ import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.ReminderHistory;
 import com.example.healthylifehub.services.ReminderSchedulingService;
 import com.example.healthylifehub.utils.ApplicationContextProvider;
+import com.example.healthylifehub.sync.SyncManager;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,10 +34,12 @@ public class RemindersRepository extends FirebaseRepository {
     private final ReminderDao reminderDao;
     private final ReminderHistoryDao reminderHistoryDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final SyncManager syncManager;
     private final ReminderSchedulingService schedulingService;
-    
+
     public RemindersRepository() {
         super();
+        this.syncManager = new SyncManager(ApplicationContextProvider.getContext());
         AppDatabase database = AppDatabase.getInstance(ApplicationContextProvider.getContext());
         this.reminderDao = database.reminderDao();
         this.reminderHistoryDao = database.reminderHistoryDao();
@@ -154,6 +157,10 @@ public class RemindersRepository extends FirebaseRepository {
                 reminderDao.insert(reminder);
                 Log.d(TAG, "📱 Saved to local DB first: " + reminderId);
                 
+                // Trigger immediate sync after reminder create (Requirement 12.1)
+                syncManager.triggerImmediateSync();
+                Log.d(TAG, "🔄 Triggered immediate sync after reminder create");
+
                 Map<String, Object> reminderData = toMap(reminder);
                 
                 Task<Void> task = db.collection("users")
@@ -178,13 +185,13 @@ public class RemindersRepository extends FirebaseRepository {
                     public void onSuccess(int count) {
                         Log.d(TAG, "✅ Scheduled " + count + " notifications for new reminder: " + reminderId);
                     }
-                    
+
                     @Override
                     public void onError(String error) {
                         Log.e(TAG, "❌ Failed to schedule notifications for new reminder: " + error);
                     }
                 });
-                
+
                 return reminderId;
             } catch (Exception e) {
                 Log.e(TAG, "Error creating reminder", e);
@@ -204,6 +211,10 @@ public class RemindersRepository extends FirebaseRepository {
                 reminderDao.update(reminder);
                 Log.d(TAG, "📱 Updated local DB: " + reminder.getReminderId());
                 
+                // Trigger immediate sync after reminder update (Requirement 12.1)
+                syncManager.triggerImmediateSync();
+                Log.d(TAG, "🔄 Triggered immediate sync after reminder update");
+
                 Map<String, Object> reminderData = toMap(reminder);
                 
                 Task<Void> task = db.collection("users")
@@ -228,13 +239,13 @@ public class RemindersRepository extends FirebaseRepository {
                     public void onSuccess(int count) {
                         Log.d(TAG, "✅ Rescheduled " + count + " notifications for updated reminder: " + reminder.getReminderId());
                     }
-                    
+
                     @Override
                     public void onError(String error) {
                         Log.e(TAG, "❌ Failed to reschedule notifications for updated reminder: " + error);
                     }
                 });
-                
+
                 return true;
             } catch (Exception e) {
                 Log.e(TAG, "Error updating reminder", e);
@@ -280,7 +291,7 @@ public class RemindersRepository extends FirebaseRepository {
                         public void onSuccess(int count) {
                             Log.d(TAG, "✅ Cancelled notifications for deactivated reminder: " + reminderId);
                         }
-                        
+
                         @Override
                         public void onError(String error) {
                             Log.e(TAG, "❌ Failed to cancel notifications for deactivated reminder: " + error);
@@ -295,7 +306,7 @@ public class RemindersRepository extends FirebaseRepository {
                             public void onSuccess(int count) {
                                 Log.d(TAG, "✅ Rescheduled " + count + " notifications for reactivated reminder: " + reminderId);
                             }
-                            
+
                             @Override
                             public void onError(String error) {
                                 Log.e(TAG, "❌ Failed to reschedule notifications for reactivated reminder: " + error);
@@ -303,7 +314,7 @@ public class RemindersRepository extends FirebaseRepository {
                         });
                     }
                 }
-                
+
                 return true;
             } catch (Exception e) {
                 Log.e(TAG, "Error toggling status", e);
@@ -343,13 +354,13 @@ public class RemindersRepository extends FirebaseRepository {
                     public void onSuccess(int count) {
                         Log.d(TAG, "✅ Cancelled notifications for deleted reminder: " + reminderId);
                     }
-                    
+
                     @Override
                     public void onError(String error) {
                         Log.e(TAG, "❌ Failed to cancel notifications for deleted reminder: " + error);
                     }
                 });
-                
+
                 return true;
             } catch (Exception e) {
                 Log.e(TAG, "Error deleting reminder", e);
@@ -407,18 +418,18 @@ public class RemindersRepository extends FirebaseRepository {
             } else if (deadlineObj instanceof Long) {
                 reminder.setDeadline((Long) deadlineObj);
             }
-            
+
             // Parse progress tracking fields
             Long totalExpected = doc.getLong("totalExpected");
             if (totalExpected != null) {
                 reminder.setTotalExpected(totalExpected.intValue());
             }
-            
+
             Long completedCount = doc.getLong("completedCount");
             if (completedCount != null) {
                 reminder.setCompletedCount(completedCount.intValue());
             }
-            
+
             // Parse createdAt
             Object createdObj = doc.get("createdAt");
             if (createdObj instanceof Timestamp) {
@@ -462,11 +473,11 @@ public class RemindersRepository extends FirebaseRepository {
             long deadlineSeconds = reminder.getDeadline() / 1000;
             map.put("deadline", new Timestamp(deadlineSeconds, 0));
         }
-        
+
         // Add progress tracking fields
         map.put("totalExpected", reminder.getTotalExpected());
         map.put("completedCount", reminder.getCompletedCount());
-        
+
         // Convert milliseconds to seconds for Firestore Timestamp
         long createdSeconds = reminder.getCreatedAt() / 1000;
         map.put("createdAt", new Timestamp(createdSeconds, 0));
@@ -476,14 +487,14 @@ public class RemindersRepository extends FirebaseRepository {
         
         return map;
     }
-    
+
     // ==================== PROGRESS TRACKING METHODS ====================
     // Requirements: 5.4, 4.5
-    
+
     /**
      * Get all reminders with progress tracking data
      * Requirements: 5.4
-     * 
+     *
      * @return LiveData list of reminders with updated progress
      */
     public LiveData<List<Reminder>> getAllRemindersWithProgress() {
@@ -491,10 +502,10 @@ public class RemindersRepository extends FirebaseRepository {
         if (userId == null) {
             return new MediatorLiveData<>();
         }
-        
+
         // Get reminders and update their progress from history
         LiveData<List<Reminder>> reminders = reminderDao.getAllReminders(userId);
-        
+
         // Update progress for each reminder in background
         executorService.execute(() -> {
             try {
@@ -507,14 +518,14 @@ public class RemindersRepository extends FirebaseRepository {
                 Log.e(TAG, "❌ Failed to update reminder progress", e);
             }
         });
-        
+
         return reminders;
     }
-    
+
     /**
      * Get reminder history for a specific reminder
      * Requirements: 4.5
-     * 
+     *
      * @param reminderId The reminder ID
      * @return LiveData list of history entries
      */
@@ -522,14 +533,14 @@ public class RemindersRepository extends FirebaseRepository {
         if (reminderId == null || reminderId.trim().isEmpty()) {
             return new MediatorLiveData<>();
         }
-        
+
         return reminderHistoryDao.getHistoryByReminderId(reminderId);
     }
-    
+
     /**
      * Update reminder progress by recalculating from history
      * Requirements: 5.4
-     * 
+     *
      * @param reminderId The reminder ID to update
      * @return CompletableFuture with success status
      */
@@ -543,10 +554,10 @@ public class RemindersRepository extends FirebaseRepository {
             }
         }, executorService);
     }
-    
+
     /**
      * Internal method to update reminder progress from history
-     * 
+     *
      * @param reminderId The reminder ID
      * @return true if updated successfully
      */
@@ -558,48 +569,48 @@ public class RemindersRepository extends FirebaseRepository {
                 Log.w(TAG, "⚠️ Reminder not found for progress update: " + reminderId);
                 return false;
             }
-            
+
             // Get completed count from history
             int completedCount = reminderHistoryDao.getCompletedCountByReminderId(reminderId);
-            
+
             // Update reminder if count changed
             if (reminder.getCompletedCount() != completedCount) {
                 reminder.setCompletedCount(completedCount);
                 reminder.setUpdatedAt(System.currentTimeMillis());
-                
+
                 reminderDao.update(reminder);
-                Log.d(TAG, "✅ Updated progress for reminder: " + reminderId + 
+                Log.d(TAG, "✅ Updated progress for reminder: " + reminderId +
                           " -> " + completedCount + "/" + reminder.getTotalExpected());
-                
+
                 // Sync to Firebase if online
                 syncProgressToFirebase(reminder);
-                
+
                 return true;
             }
-            
+
             return true; // No update needed, but not an error
-            
+
         } catch (Exception e) {
             Log.e(TAG, "❌ Error updating reminder progress from history", e);
             return false;
         }
     }
-    
+
     /**
      * Sync progress data to Firebase
-     * 
+     *
      * @param reminder The reminder with updated progress
      */
     private void syncProgressToFirebase(Reminder reminder) {
         String userId = getCurrentUserId();
         if (userId == null) return;
-        
+
         try {
             Map<String, Object> progressData = new HashMap<>();
             progressData.put("completedCount", reminder.getCompletedCount());
             progressData.put("totalExpected", reminder.getTotalExpected());
             progressData.put("updatedAt", new Timestamp(reminder.getUpdatedAt() / 1000, 0));
-            
+
             db.collection("users")
                 .document(userId)
                 .collection(COLLECTION_REMINDERS)
@@ -611,55 +622,55 @@ public class RemindersRepository extends FirebaseRepository {
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "⚠️ Failed to sync progress to Firebase (offline mode): " + reminder.getReminderId());
                 });
-                
+
         } catch (Exception e) {
             Log.e(TAG, "❌ Error syncing progress to Firebase", e);
         }
     }
-    
+
     /**
      * Get reminders that are approaching their deadline (within 3 days)
      * Requirements: 2.5, 7.6
-     * 
+     *
      * @return CompletableFuture with list of approaching deadline reminders
      */
     public CompletableFuture<List<Reminder>> getApproachingDeadlineReminders() {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
             if (userId == null) return new java.util.ArrayList<>();
-            
+
             try {
                 long currentTime = System.currentTimeMillis();
                 long threeDaysFromNow = currentTime + (3 * 24 * 60 * 60 * 1000L);
-                
+
                 List<Reminder> allReminders = reminderDao.getAllRemindersSync(userId);
                 List<Reminder> approachingReminders = new java.util.ArrayList<>();
-                
+
                 for (Reminder reminder : allReminders) {
-                    if (reminder.isActive() && 
-                        reminder.hasDeadline() && 
-                        !reminder.isExpired() && 
+                    if (reminder.isActive() &&
+                        reminder.hasDeadline() &&
+                        !reminder.isExpired() &&
                         !reminder.isCompleted() &&
                         reminder.getDeadline() <= threeDaysFromNow) {
-                        
+
                         approachingReminders.add(reminder);
                     }
                 }
-                
+
                 Log.d(TAG, "📅 Found " + approachingReminders.size() + " reminders approaching deadline");
                 return approachingReminders;
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "❌ Error getting approaching deadline reminders", e);
                 return new java.util.ArrayList<>();
             }
         }, executorService);
     }
-    
+
     /**
      * Get completion statistics for a reminder
      * Requirements: 4.5
-     * 
+     *
      * @param reminderId The reminder ID
      * @return CompletableFuture with completion rate (0.0 to 100.0)
      */
@@ -673,11 +684,11 @@ public class RemindersRepository extends FirebaseRepository {
             }
         }, executorService);
     }
-    
+
     /**
      * Add database transaction support for consistent updates
      * Requirements: 5.4
-     * 
+     *
      * @param reminderId The reminder ID
      * @param actionType "completed" or "skipped"
      * @param timestamp Action timestamp
@@ -688,7 +699,7 @@ public class RemindersRepository extends FirebaseRepository {
             try {
                 // Use database transaction for consistency
                 AppDatabase database = AppDatabase.getInstance(ApplicationContextProvider.getContext());
-                
+
                 database.runInTransaction(() -> {
                     // Create history record
                     ReminderHistory history = new ReminderHistory();
@@ -697,111 +708,111 @@ public class RemindersRepository extends FirebaseRepository {
                     history.setActionType(actionType);
                     history.setTimestamp(timestamp);
                     history.setScheduledTime(timestamp);
-                    
+
                     reminderHistoryDao.insert(history);
-                    
+
                     // Update reminder progress if completed
                     if ("completed".equals(actionType)) {
                         updateReminderProgressFromHistory(reminderId);
                     }
-                    
+
                     return null;
                 });
-                
+
                 Log.d(TAG, "✅ Recorded " + actionType + " action for reminder: " + reminderId);
                 return true;
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "❌ Failed to record reminder action", e);
                 return false;
             }
         }, executorService);
     }
-    
+
     // ==================== DEADLINE MANAGEMENT METHODS ====================
     // Requirements: 2.4, 2.5, 7.6
-    
+
     /**
      * Get expired reminders for automatic deactivation
      * Requirements: 2.4
-     * 
+     *
      * @return CompletableFuture with list of expired reminders
      */
     public CompletableFuture<List<Reminder>> getExpiredReminders() {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
             if (userId == null) return new java.util.ArrayList<>();
-            
+
             try {
                 long currentTime = System.currentTimeMillis();
                 List<Reminder> expiredReminders = reminderDao.getExpiredReminders(userId, currentTime);
-                
+
                 Log.d(TAG, "📅 Found " + expiredReminders.size() + " expired reminders for user: " + userId);
                 return expiredReminders;
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "❌ Error getting expired reminders", e);
                 return new java.util.ArrayList<>();
             }
         }, executorService);
     }
-    
+
     /**
      * Deactivate expired reminders and calculate final progress
      * Requirements: 2.4, 7.6
-     * 
+     *
      * @return CompletableFuture with number of reminders deactivated
      */
     public CompletableFuture<Integer> deactivateExpiredReminders() {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
             if (userId == null) return 0;
-            
+
             try {
                 long currentTime = System.currentTimeMillis();
                 List<Reminder> expiredReminders = reminderDao.getExpiredReminders(userId, currentTime);
-                
+
                 if (expiredReminders.isEmpty()) {
                     Log.d(TAG, "📭 No expired reminders found for deactivation");
                     return 0;
                 }
-                
+
                 int deactivatedCount = 0;
-                
+
                 for (Reminder reminder : expiredReminders) {
                     if (reminder.isActive()) {
                         // Calculate final progress before deactivation
                         float finalProgress = reminder.getProgressPercentage();
-                        
+
                         // Deactivate the reminder
                         reminder.setActive(false);
                         reminder.setUpdatedAt(currentTime);
-                        
+
                         reminderDao.update(reminder);
                         deactivatedCount++;
-                        
-                        Log.d(TAG, "🔒 Deactivated expired reminder: " + reminder.getTitle() + 
+
+                        Log.d(TAG, "🔒 Deactivated expired reminder: " + reminder.getTitle() +
                                   " (Final progress: " + String.format("%.1f", finalProgress) + "%)");
-                        
+
                         // Sync to Firebase
                         syncReminderToFirebase(reminder);
                     }
                 }
-                
+
                 Log.d(TAG, "✅ Deactivated " + deactivatedCount + " expired reminders");
                 return deactivatedCount;
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "❌ Error deactivating expired reminders", e);
                 return 0;
             }
         }, executorService);
     }
-    
+
     /**
      * Extend deadline for a reminder
      * Requirements: 2.4 (deadline extension functionality)
-     * 
+     *
      * @param reminderId The reminder ID
      * @param newDeadline The new deadline timestamp
      * @return CompletableFuture with success status
@@ -812,68 +823,68 @@ public class RemindersRepository extends FirebaseRepository {
                 Log.w(TAG, "⚠️ Invalid reminder ID for deadline extension");
                 return false;
             }
-            
+
             if (newDeadline <= System.currentTimeMillis()) {
                 Log.w(TAG, "⚠️ New deadline must be in the future");
                 return false;
             }
-            
+
             try {
                 Reminder reminder = reminderDao.getReminderById(reminderId);
                 if (reminder == null) {
                     Log.w(TAG, "⚠️ Reminder not found: " + reminderId);
                     return false;
                 }
-                
+
                 Long oldDeadline = reminder.getDeadline();
-                
+
                 // Update deadline and recalculate total expected
                 reminder.setDeadline(newDeadline);
                 reminder.setUpdatedAt(System.currentTimeMillis());
-                
+
                 // Recalculate total expected based on new deadline
                 // Note: You'll need to implement ProgressCalculator.calculateTotalExpected
                 // For now, we'll use a simple calculation
                 int newTotalExpected = calculateTotalExpectedForReminder(reminder);
                 reminder.setTotalExpected(newTotalExpected);
-                
+
                 reminderDao.update(reminder);
-                
-                Log.d(TAG, "✅ Extended deadline for reminder: " + reminder.getTitle() + 
-                          " from " + (oldDeadline != null ? new java.util.Date(oldDeadline) : "None") + 
+
+                Log.d(TAG, "✅ Extended deadline for reminder: " + reminder.getTitle() +
+                          " from " + (oldDeadline != null ? new java.util.Date(oldDeadline) : "None") +
                           " to " + new java.util.Date(newDeadline) +
                           " (New total expected: " + newTotalExpected + ")");
-                
+
                 // Sync to Firebase
                 syncReminderToFirebase(reminder);
-                
+
                 return true;
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "❌ Failed to extend deadline for reminder: " + reminderId, e);
                 return false;
             }
         }, executorService);
     }
-    
+
     /**
      * Get reminders that need deadline warnings (within 3 days)
      * Requirements: 2.5
-     * 
+     *
      * @return CompletableFuture with list of reminders needing warnings
      */
     public CompletableFuture<List<Reminder>> getRemindersNeedingDeadlineWarnings() {
         return CompletableFuture.supplyAsync(() -> {
             String userId = getCurrentUserId();
             if (userId == null) return new java.util.ArrayList<>();
-            
+
             try {
                 long currentTime = System.currentTimeMillis();
                 long threeDaysFromNow = currentTime + (3 * 24 * 60 * 60 * 1000L);
-                
+
                 List<Reminder> warningReminders = reminderDao.getRemindersExpiringSoon(
                         userId, currentTime, threeDaysFromNow);
-                
+
                 // Filter to only include active, non-completed reminders
                 List<Reminder> filteredReminders = new java.util.ArrayList<>();
                 for (Reminder reminder : warningReminders) {
@@ -881,22 +892,22 @@ public class RemindersRepository extends FirebaseRepository {
                         filteredReminders.add(reminder);
                     }
                 }
-                
-                Log.d(TAG, "⚠️ Found " + filteredReminders.size() + 
+
+                Log.d(TAG, "⚠️ Found " + filteredReminders.size() +
                           " reminders needing deadline warnings for user: " + userId);
-                
+
                 return filteredReminders;
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "❌ Error getting reminders needing deadline warnings", e);
                 return new java.util.ArrayList<>();
             }
         }, executorService);
     }
-    
+
     /**
      * Calculate total expected reminders based on frequency and deadline
-     * 
+     *
      * @param reminder The reminder
      * @return Total expected count
      */
@@ -904,11 +915,11 @@ public class RemindersRepository extends FirebaseRepository {
         if (!reminder.hasDeadline()) {
             return 0; // Unlimited reminders
         }
-        
+
         long startTime = reminder.getCreatedAt();
         long endTime = reminder.getDeadline();
         String frequency = reminder.getFrequency();
-        
+
         switch (frequency.toLowerCase()) {
             case "daily":
                 return (int) ((endTime - startTime) / (24 * 60 * 60 * 1000L)) + 1;
@@ -923,19 +934,19 @@ public class RemindersRepository extends FirebaseRepository {
                 return 1;
         }
     }
-    
+
     /**
      * Sync reminder to Firebase (helper method)
-     * 
+     *
      * @param reminder The reminder to sync
      */
     private void syncReminderToFirebase(Reminder reminder) {
         String userId = getCurrentUserId();
         if (userId == null) return;
-        
+
         try {
             Map<String, Object> reminderData = toMap(reminder);
-            
+
             db.collection("users")
                 .document(userId)
                 .collection(COLLECTION_REMINDERS)
@@ -947,9 +958,36 @@ public class RemindersRepository extends FirebaseRepository {
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "⚠️ Failed to sync reminder to Firebase (offline mode): " + reminder.getReminderId());
                 });
-                
+
         } catch (Exception e) {
             Log.e(TAG, "❌ Error syncing reminder to Firebase", e);
+        }
+    }
+
+    /**
+     * Load reminders synchronously for parallel execution.
+     * This method blocks until reminders are loaded from Room database.
+     * Should be called from background thread via CompletableFuture.
+     *
+     * Requirements: 6.1
+     * - 6.1: Fetch reminders in parallel with other dashboard data
+     *
+     * @param userId User ID to load reminders for
+     * @return List of reminders from local database
+     */
+    public List<Reminder> loadRemindersSync(String userId) {
+        if (userId == null) {
+            return new java.util.ArrayList<>();
+        }
+
+        try {
+            // Load from Room database synchronously
+            List<Reminder> reminders = reminderDao.getAllRemindersSync(userId);
+            Log.d(TAG, "✅ Loaded " + reminders.size() + " reminders synchronously for parallel execution");
+            return reminders;
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error loading reminders synchronously", e);
+            return new java.util.ArrayList<>();
         }
     }
 }

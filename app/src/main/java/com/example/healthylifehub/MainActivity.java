@@ -19,7 +19,9 @@ import com.example.healthylifehub.ui.profile.fragment.ProfileFragment;
 import com.example.healthylifehub.ui.records.fragment.RecordsFragment;
 import com.example.healthylifehub.ui.reminders.fragment.RemindersFragment;
 import com.example.healthylifehub.utils.navigation.FragmentSwitcher;
+import com.example.healthylifehub.utils.NetworkMonitor;
 import com.example.healthylifehub.utils.PermissionManager;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -41,6 +43,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
 
     private Fragment currentFragment;
     private MainNavigator mainNavigator;
+    private NetworkMonitor networkMonitor;
+    private Snackbar offlineSnackbar;
 
     public MainActivity() {
         super(ActivityMainBinding::inflate);
@@ -51,6 +55,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
         initializeFragments();
         addFragmentsToContainer();
         setupNavigator();
+        // Defer setupNavigationDrawer to setOnClick() to avoid Firebase timeout on startup
     }
 
     private void initializeFragments() {
@@ -152,11 +157,70 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
         setupBottomNavigation();
         setupDrawerNavigation();
         setupNavigationDrawer();
-        
+        setupNetworkMonitoring();
+
         // Request notification permission for Android 13+
         requestNotificationPermissionIfNeeded();
     }
     
+    /**
+     * Setup network monitoring to show offline indicator
+     */
+    private void setupNetworkMonitoring() {
+        networkMonitor = NetworkMonitor.getInstance(this);
+
+        // Observe network connectivity status
+        networkMonitor.isConnected().observe(this, isConnected -> {
+            if (isConnected != null) {
+                updateNetworkStatus(isConnected);
+            }
+        });
+    }
+
+    /**
+     * Update UI based on network status
+     */
+    private void updateNetworkStatus(boolean isConnected) {
+        if (!isConnected) {
+            // Show offline indicator
+            showOfflineIndicator();
+        } else {
+            // Hide offline indicator
+            hideOfflineIndicator();
+        }
+    }
+
+    /**
+     * Show offline indicator as a persistent Snackbar
+     */
+    private void showOfflineIndicator() {
+        if (offlineSnackbar == null || !offlineSnackbar.isShown()) {
+            offlineSnackbar = Snackbar.make(
+              getBinding().getRoot(),
+                getString(R.string.network_offline_message),
+                Snackbar.LENGTH_INDEFINITE
+            );
+            offlineSnackbar.setAction(getString(R.string.ok), v -> offlineSnackbar.dismiss());
+            offlineSnackbar.show();
+        }
+    }
+
+    /**
+     * Hide offline indicator
+     */
+    private void hideOfflineIndicator() {
+        if (offlineSnackbar != null && offlineSnackbar.isShown()) {
+            offlineSnackbar.dismiss();
+
+            // Show brief "back online" message
+            Snackbar.make(
+                getBinding().getRoot(),
+                getString(R.string.network_online_message),
+                Snackbar.LENGTH_SHORT
+            ).show();
+        }
+    }
+
     /**
      * Request POST_NOTIFICATIONS permission for Android 13+
      */
@@ -187,7 +251,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
                 dialog.dismiss();
                 // Show info that some features won't work
                 android.widget.Toast.makeText(this, 
-                    getString(R.string.some_features_disabled), 
+                    getString(R.string.some_features_disabled),
                     android.widget.Toast.LENGTH_LONG).show();
             })
             .setCancelable(false)
@@ -206,7 +270,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
                 @Override
                 public void onPermissionGranted() {
                     android.widget.Toast.makeText(MainActivity.this, 
-                        getString(R.string.notification_enabled_success), 
+                        getString(R.string.notification_enabled_success),
                         android.widget.Toast.LENGTH_SHORT).show();
                 }
                 
@@ -241,9 +305,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
     private void setupBottomNavigation() {
         getBinding().bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = mainNavigator.getFragmentForBottomItem(item.getItemId());
-            if (selectedFragment != null && selectedFragment != currentFragment) {
-                switchFragment(currentFragment, selectedFragment);
-                currentFragment = selectedFragment;
+            if (selectedFragment != null) {
+                if (selectedFragment != currentFragment) {
+                    switchFragment(currentFragment, selectedFragment);
+                    currentFragment = selectedFragment;
+                }
                 return true;
             }
             return false;
@@ -267,8 +333,33 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
         if (outcome.newCurrentFragment != null) {
             currentFragment = outcome.newCurrentFragment;
         }
-        if (outcome.bottomNavItemId != 0) {
+        if (outcome.bottomNavItemId != null && outcome.bottomNavItemId != 0) {
             getBinding().bottomNavigation.setSelectedItemId(outcome.bottomNavItemId);
+        }
+    }
+
+    /**
+     * Navigate to a specific tab programmatically
+     * Called when sidebar navigation changes tabs
+     * @param tabName Name of the tab (dashboard, metrics, reminders, records, profile)
+     */
+    public void navigateToTab(String tabName) {
+        switch (tabName) {
+            case "dashboard":
+                getBinding().bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
+                break;
+            case "metrics":
+                getBinding().bottomNavigation.setSelectedItemId(R.id.nav_metrics);
+                break;
+            case "reminders":
+                getBinding().bottomNavigation.setSelectedItemId(R.id.nav_reminders);
+                break;
+            case "records":
+                getBinding().bottomNavigation.setSelectedItemId(R.id.nav_records);
+                break;
+            case "profile":
+                getBinding().bottomNavigation.setSelectedItemId(R.id.nav_profile);
+                break;
         }
     }
 
@@ -292,4 +383,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements c
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Dismiss offline indicator if shown
+        if (offlineSnackbar != null && offlineSnackbar.isShown()) {
+            offlineSnackbar.dismiss();
+        }
+    }
 }

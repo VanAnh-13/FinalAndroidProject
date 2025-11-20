@@ -22,7 +22,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(
     tableName = "health_metrics",
     indices = {@Index(value = {"userId", "type", "measuredAt"})}
@@ -54,6 +53,21 @@ public class HealthMetric {
         this.synced = false;
         this.needsSync = true;
         this.lastSyncedAt = new Date();
+    }
+
+    @Ignore
+    public HealthMetric(String id, String userId, String type, double value, double systolic, double diastolic, Date measuredAt, String notes, boolean synced, Date lastSyncedAt, boolean needsSync) {
+        this.id = id;
+        this.userId = userId;
+        this.type = type;
+        this.value = value;
+        this.systolic = systolic;
+        this.diastolic = diastolic;
+        this.measuredAt = measuredAt;
+        this.notes = notes;
+        this.synced = synced;
+        this.lastSyncedAt = lastSyncedAt;
+        this.needsSync = needsSync;
     }
     
     /**

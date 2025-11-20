@@ -1,23 +1,38 @@
 package com.example.healthylifehub.data.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+/**
+ * UserProfile - Contains user profile information for registration
+ */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfile {
-    private String userId;
     private String fullName;
-    private String email;
-    private String birthDate;
+    private String dateOfBirth;
     private String gender;
-    private String height;
-    private String weight;
+    private double height;
+    private double weight;
     private String bloodType;
     private String medicalHistory;
-    private String bmi;
+    private String email;
+    private double bmi;
+    
+    /**
+     * Simple constructor for basic registration
+     */
+    public UserProfile(String fullName) {
+        this.fullName = fullName;
+        this.dateOfBirth = null;
+        this.gender = "";
+        this.height = 0;
+        this.weight = 0;
+        this.bloodType = "";
+        this.medicalHistory = "";
+        this.email = "";
+        this.bmi = 0;
+    }
 }

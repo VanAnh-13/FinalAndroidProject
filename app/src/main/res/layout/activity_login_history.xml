@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
-            app:title="Lịch sử đăng nhập"
+            app:title="@string/login_history_title"
             app:titleTextColor="@android:color/white"
             app:navigationIcon="@drawable/ic_arrow_back" />
 
@@ -53,16 +53,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Chưa có lịch sử đăng nhập"
-            android:textSize="16sp"
+            android:text="@string/no_login_history"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="@color/text_secondary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Lịch sử đăng nhập sẽ xuất hiện ở đây"
-            android:textSize="14sp"
+            android:text="@string/login_history_placeholder"
+            android:textSize="@dimen/text_size_normal"
             android:textColor="@color/text_secondary"
             android:alpha="0.7" />
 

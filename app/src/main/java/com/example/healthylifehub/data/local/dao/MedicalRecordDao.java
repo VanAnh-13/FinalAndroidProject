@@ -105,4 +105,18 @@ public interface MedicalRecordDao {
      */
     @Delete
     Completable deleteRx(MedicalRecord record);
+    
+    /**
+     * Search medical records by query (searches title, diagnosis, description, doctor, hospital)
+     * This is a basic text search using LIKE queries
+     * For production, consider implementing FTS (Full-Text Search) for better performance
+     */
+    @Query("SELECT * FROM medical_records WHERE " +
+           "title LIKE '%' || :query || '%' OR " +
+           "diagnosis LIKE '%' || :query || '%' OR " +
+           "description LIKE '%' || :query || '%' OR " +
+           "doctor LIKE '%' || :query || '%' OR " +
+           "hospital LIKE '%' || :query || '%' " +
+           "ORDER BY date DESC")
+    List<MedicalRecord> searchRecords(String query);
 }

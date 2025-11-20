@@ -17,7 +17,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(
     tableName = "reminder_history",
     foreignKeys = @ForeignKey(
@@ -45,8 +44,15 @@ public class ReminderHistory {
     private long timestamp;             // When the action was performed
     
     private long scheduledTime;         // When the reminder was originally scheduled
-    
 
+    @androidx.room.Ignore
+    public ReminderHistory(@NonNull String id, @NonNull String reminderId, @NonNull String actionType, long timestamp, long scheduledTime) {
+        this.id = id;
+        this.reminderId = reminderId;
+        this.actionType = actionType;
+        this.timestamp = timestamp;
+        this.scheduledTime = scheduledTime;
+    }
     
     /**
      * Check if this history entry represents a completed action

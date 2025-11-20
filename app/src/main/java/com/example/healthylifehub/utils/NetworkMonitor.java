@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.healthylifehub.sync.SyncManager;
+
 /**
  * Network Monitor
  * Monitors network connectivity changes
@@ -21,11 +23,13 @@ public class NetworkMonitor {
     private static final String TAG = "NetworkMonitor";
     private static NetworkMonitor instance;
     
+    private final Context context;
     private final ConnectivityManager connectivityManager;
     private final MutableLiveData<Boolean> isConnected = new MutableLiveData<>(false);
     private final MutableLiveData<NetworkType> networkType = new MutableLiveData<>(NetworkType.NONE);
     
     private ConnectivityManager.NetworkCallback networkCallback;
+    private boolean wasDisconnected = false;
     
     public enum NetworkType {
         NONE,
@@ -36,7 +40,8 @@ public class NetworkMonitor {
     }
     
     private NetworkMonitor(Context context) {
-        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        this.context = context.getApplicationContext();
+        connectivityManager = (ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
         registerNetworkCallback();
         checkInitialConnection();
     }
@@ -63,6 +68,13 @@ public class NetworkMonitor {
                 Log.d(TAG, "Network available: " + network);
                 isConnected.postValue(true);
                 updateNetworkType(network);
+                
+                // Trigger sync when network is restored after being disconnected
+                if (wasDisconnected) {
+                    Log.d(TAG, "Network restored - triggering immediate sync");
+                    triggerSyncOnConnectivityRestore();
+                    wasDisconnected = false;
+                }
             }
             
             @Override
@@ -70,6 +82,7 @@ public class NetworkMonitor {
                 Log.d(TAG, "Network lost: " + network);
                 isConnected.postValue(false);
                 networkType.postValue(NetworkType.NONE);
+                wasDisconnected = true;
             }
             
             @Override
@@ -165,6 +178,20 @@ public class NetworkMonitor {
      */
     public boolean isMeteredConnection() {
         return connectivityManager.isActiveNetworkMetered();
+    }
+    
+    /**
+     * Trigger sync when connectivity is restored
+     * Called automatically when network becomes available after being disconnected
+     */
+    private void triggerSyncOnConnectivityRestore() {
+        try {
+            SyncManager syncManager = new SyncManager(context);
+            syncManager.triggerImmediateSync();
+            Log.d(TAG, "Immediate sync triggered on connectivity restore");
+        } catch (Exception e) {
+            Log.e(TAG, "Error triggering sync on connectivity restore", e);
+        }
     }
     
     /**

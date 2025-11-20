@@ -1,749 +1,750 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">HealthyLife Hub</string>
     
-    <!-- Login Screen -->
-    <string name="login_title">Đăng nhập</string>
+    
+    <string name="login_title">Login</string>
     <string name="email_label">Email</string>
-    <string name="email_hint">Nhập email của bạn</string>
-    <string name="password_label">Mật khẩu</string>
-    <string name="password_hint">Nhập mật khẩu của bạn</string>
-    <string name="remember_login">Ghi nhớ đăng nhập</string>
-    <string name="forgot_password">Quên mật khẩu?</string>
-    <string name="login_button">Đăng nhập</string>
-    <string name="or_divider">Hoặc</string>
-    <string name="google_sign_in">Đăng nhập với Google</string>
-    <string name="no_account">Chưa có tài khoản?</string>
-    <string name="sign_up">Đăng ký</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="password_label">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="remember_login">Remember me</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login_button">Login</string>
+    <string name="or_divider">Or</string>
+    <string name="google_sign_in">Sign in with Google</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign up</string>
     
-    <!-- Validation Messages -->
-    <string name="error_empty_email">Vui lòng nhập email</string>
-    <string name="error_invalid_email">Email không hợp lệ</string>
-    <string name="error_invalid_email_format">Email không đúng định dạng</string>
-    <string name="error_empty_password">Vui lòng nhập mật khẩu</string>
-    <string name="error_short_password">Mật khẩu phải có ít nhất 6 ký tự</string>
-    <string name="error_login_failed">Đăng nhập thất bại</string>
-    <string name="error_network">Lỗi kết nối mạng</string>
-    <string name="error_empty_name">Vui lòng nhập họ tên</string>
-    <string name="error_passwords_not_match">Mật khẩu không khớp</string>
-    <string name="error_empty_confirm_password">Vui lòng xác nhận mật khẩu</string>
-    <string name="error_terms_not_accepted">Vui lòng đồng ý với điều khoản dịch vụ</string>
-    <string name="error_register_failed">Đăng ký thất bại</string>
     
-    <!-- Register Screen -->
-    <string name="register_title">Đăng ký tài khoản</string>
-    <string name="name_label">Họ và tên</string>
-    <string name="name_hint">Nhập họ và tên của bạn</string>
-    <string name="confirm_password_label">Xác nhận mật khẩu</string>
-    <string name="confirm_password_hint">Nhập lại mật khẩu</string>
-    <string name="terms_agreement">Tôi đồng ý với</string>
-    <string name="terms_of_service">Điều khoản dịch vụ</string>
-    <string name="register_button">Đăng ký</string>
-    <string name="google_sign_up">Đăng ký với Google</string>
-    <string name="already_have_account">Đã có tài khoản?</string>
+    <string name="error_empty_email">Please enter email</string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="error_invalid_email_format">Invalid email format</string>
+    <string name="error_empty_password">Please enter password</string>
+    <string name="error_short_password">Password must be at least 6 characters</string>
+    <string name="error_login_failed">Login failed</string>
+    <string name="error_network">Network error</string>
+    <string name="error_empty_name">Please enter name</string>
+    <string name="error_passwords_not_match">Passwords do not match</string>
+    <string name="error_empty_confirm_password">Please confirm password</string>
+    <string name="error_terms_not_accepted">Please accept terms of service</string>
+    <string name="error_register_failed">Registration failed</string>
     
-    <!-- Welcome/Onboarding Screen -->
-    <string name="welcome_skip">Bỏ qua</string>
-    <string name="welcome_register">Đăng ký</string>
-    <string name="exit_dialog_title">Thoát ứng dụng</string>
-    <string name="exit_dialog_message">Bạn có chắc chắn muốn thoát không?</string>
-    <string name="exit_button">Thoát</string>
-    <string name="cancel_button">Hủy</string>
     
-    <!-- Onboarding Content -->
-    <string name="onboarding_title_1">Theo dõi sức khỏe toàn diện</string>
-    <string name="onboarding_desc_1">Ghi nhận và theo dõi các chỉ số sức khỏe quan trọng như huyết áp, đường huyết, nhịp tim và cân nặng</string>
-    <string name="onboarding_title_2">Nhắc nhở thông minh</string>
-    <string name="onboarding_desc_2">Nhận nhắc nhở kịp thời về uống thuốc, đo chỉ số sức khỏe và các hoạt động chăm sóc sức khỏe</string>
-    <string name="onboarding_title_3">Quản lý hồ sơ y tế</string>
-    <string name="onboarding_desc_3">Lưu trữ và quản lý hồ sơ y tế, kết quả xét nghiệm và lịch sử khám bệnh một cách an toàn</string>
+    <string name="register_title">Create Account</string>
+    <string name="name_label">Full Malee</string>
+    <string name="name_hint">Enter your full name</string>
+    <string name="confirm_password_label">Confirm Password</string>
+    <string name="confirm_password_hint">Re-enter password</string>
+    <string name="terms_agreement">I agree to the</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="register_button">Register</string>
+    <string name="google_sign_up">Sign up with Google</string>
+    <string name="already_have_account">Already have an account?</string>
     
-    <!-- Default Values -->
-    <string name="default_user_name">Người dùng</string>
     
-    <!-- Empty States -->
-    <string name="no_medical_records">Chưa có hồ sơ bệnh án</string>
-    <string name="add_medical_record_hint">Nhấn + để thêm hồ sơ bệnh án mới</string>
+    <string name="welcome_skip">Skip</string>
+    <string name="welcome_register">Register</string>
+    <string name="exit_dialog_title">Exit App</string>
+    <string name="exit_dialog_message">Are you sure you want to exit?</string>
+    <string name="exit_button">Exit</string>
+    <string name="cancel_button">Cancel</string>
     
-    <!-- Loading States -->
-    <string name="loading_data">Đang tải dữ liệu...</string>
-    <string name="no_data_available">Chưa có dữ liệu</string>
-    <string name="add_first_entry">Thêm dữ liệu đầu tiên</string>
     
-    <!-- Error States -->
-    <string name="network_error_title">Lỗi kết nối</string>
-    <string name="network_error_message">Không thể kết nối mạng. Vui lòng kiểm tra kết nối và thử lại.</string>
-    <string name="data_error_title">Lỗi dữ liệu</string>
-    <string name="data_error_message">Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.</string>
-    <string name="permission_error_title">Thiếu quyền truy cập</string>
-    <string name="permission_error_message">Ứng dụng cần quyền truy cập để thực hiện chức năng này.</string>
-    <string name="validation_error_title">Dữ liệu không hợp lệ</string>
-    <string name="validation_error_message">Vui lòng kiểm tra lại thông tin đã nhập.</string>
-    <string name="unknown_error_title">Có lỗi xảy ra</string>
-    <string name="unknown_error_message">Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.</string>
-    <string name="retry">Thử lại</string>
+    <string name="onboarding_title_1">Comprehensive Health Tracking</string>
+    <string name="onboarding_desc_1">Record and track important health metrics like blood pressure, blood sugar, heart rate, and weight</string>
+    <string name="onboarding_title_2">Smart Reminders</string>
+    <string name="onboarding_desc_2">Get timely reminders for medication, health measurements, and wellness activities</string>
+    <string name="onboarding_title_3">Medical Records Management</string>
+    <string name="onboarding_desc_3">Securely store and manage medical records, test results, and medical history</string>
     
-    <!-- Validation Messages -->
-    <string name="validation_title_required">Trường này là bắt buộc</string>
-    <string name="validation_title_too_long">Nội dung quá dài</string>
     
-    <!-- Progress Tracking -->
-    <string name="progress_tracking">Theo dõi tiến độ</string>
-    <string name="share_progress">Chia sẻ tiến độ</string>
-    <string name="completion_rate">Tỷ lệ hoàn thành</string>
-    <string name="current_streak">Chuỗi hiện tại</string>
-    <string name="best_streak">Chuỗi tốt nhất</string>
-    <string name="adjust_progress_manually">Điều chỉnh tiến độ thủ công</string>
-    <string name="adjust">Điều chỉnh</string>
-    <string name="days_remaining">Còn %d ngày</string>
-    <string name="expired">Hết hạn</string>
-    <string name="unlimited_time">Không giới hạn thời gian</string>
+    <string name="default_user_name">User</string>
     
-    <!-- Manual Progress Adjustment -->
-    <string name="adjust_progress_title">Điều chỉnh tiến độ</string>
-    <string name="adjust_progress_message">Nhập số lần hoàn thành mới:</string>
-    <string name="current_completed" formatted="false">Hiện tại: %d/%d</string>
-    <string name="invalid_number">Số không hợp lệ</string>
-    <string name="progress_updated">Tiến độ đã được cập nhật</string>
-    <string name="progress_update_failed">Cập nhật tiến độ thất bại</string>
     
-    <!-- Share Progress -->
-    <string name="share_progress_title">Chia sẻ tiến độ nhắc nhở</string>
-    <string name="share_progress_text" formatted="false">📊 Tiến độ nhắc nhở: %s\n\n✅ Hoàn thành: %d/%d (%s)\n🔥 Chuỗi hiện tại: %d ngày\n🏆 Chuỗi tốt nhất: %d ngày\n\n#HealthyLifeHub #ReminderTracking</string>
-    <string name="share_via">Chia sẻ qua</string>
+    <string name="no_medical_records">No medical records</string>
+    <string name="add_medical_record_hint">Tap + to add new medical record</string>
+    
+    
+    <string name="loading_data">Loading data...</string>
+    <string name="no_data_available">No data available</string>
+    <string name="add_first_entry">Add first entry</string>
+    
+    
+    <string name="network_error_title">Connection error</string>
+    <string name="network_error_message">Cannot connect to network. Please check your connection and try again.</string>
+    <string name="data_error_title">Data error</string>
+    <string name="data_error_message">An error occurred while loading data. Please try again.</string>
+    <string name="permission_error_title">Missing permissions</string>
+    <string name="permission_error_message">The app needs permissions to perform this function.</string>
+    <string name="validation_error_title">Invalid data</string>
+    <string name="validation_error_message">Please check the information entered.</string>
+    <string name="unknown_error_title">An error occurred</string>
+    <string name="unknown_error_message">An unknown error occurred. Please try again later.</string>
+    <string name="retry">Retry</string>
+    
+    
+    <string name="validation_title_required">This field is required</string>
+    <string name="validation_title_too_long">Content too long</string>
+    
+    
+    <string name="progress_tracking">Track progress</string>
+    <string name="share_progress">Share progress</string>
+    <string name="completion_rate">Completion rate</string>
+    <string name="current_streak">Current streak</string>
+    <string name="best_streak">Best streak</string>
+    <string name="adjust_progress_manually">Adjust progress manually</string>
+    <string name="adjust">Adjust</string>
+    <string name="days_remaining">%d days remaining</string>
+    <string name="expired">Expired</string>
+    <string name="unlimited_time">Unlimited time</string>
+    
+    
+    <string name="adjust_progress_title">Adjust Progress</string>
+    <string name="adjust_progress_message">Enter new completion count:</string>
+    <string name="current_completed" formatted="false">Current: %d/%d</string>
+    <string name="invalid_number">Invalid number</string>
+    <string name="progress_updated">Progress updated</string>
+    <string name="progress_update_failed">Progress update failed</string>
+    
+    
+    <string name="share_progress_title">Share Reminder Progress</string>
+    <string name="share_progress_text" formatted="false">📊 Reminder Progress: %s\n\n✅ Completed: %d/%d (%s)\n🔥 Current streak: %d days\n🏆 Best streak: %d days\n\n#HealthyLifeHub #ReminderTracking</string>
+    <string name="share_via">Share via</string>
     
     
 
     
-    <!-- Bottom Navigation -->
-    <string name="nav_dashboard">Trang chủ</string>
-    <string name="nav_metrics">Chỉ số</string>
-    <string name="nav_analytics">Thống kê</string>
-    <string name="nav_add">Thêm</string>
-    <string name="nav_records">Hồ sơ</string>
-    <string name="nav_profile">Cá nhân</string>
     
-    <!-- Dashboard -->
-    <string name="good_morning">Chào buổi sáng,</string>
-    <string name="good_afternoon">Chào buổi chiều,</string>
-    <string name="good_evening">Chào buổi tối,</string>
-    <string name="welcome_subtitle">Hãy cùng kiểm tra sức khỏe hôm nay!</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_metrics">Metrics</string>
+    <string name="nav_analytics">Analytics</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_records">Records</string>
+    <string name="nav_profile">Profile</string>
     
-    <!-- Metrics -->
-    <string name="blood_pressure">Huyết áp</string>
+    
+    <string name="good_morning">Good morning,</string>
+    <string name="good_afternoon">Good afternoon,</string>
+    <string name="good_evening">Good evening,</string>
+    <string name="welcome_subtitle">Let\'s check your health today!</string>
+    
+    
+    <string name="blood_pressure">Blood Pressure</string>
     <string name="blood_pressure_value">120/80</string>
     <string name="blood_pressure_unit">mmHg</string>
-    <string name="blood_sugar">Đường huyết</string>
+    <string name="blood_sugar">Blood Sugar</string>
     <string name="blood_sugar_value">95</string>
     <string name="blood_sugar_unit">mg/dL</string>
-    <string name="heart_rate">Nhịp tim</string>
+    <string name="heart_rate">Heart Rate</string>
     <string name="heart_rate_value">72</string>
     <string name="heart_rate_unit">BPM</string>
     <string name="bmi">BMI</string>
     <string name="bmi_value">22.5</string>
-    <string name="bmi_unit"></string>
+    <string name="bmi_unit" />
     
-    <!-- Chart -->
-    <string name="blood_pressure_trend">Xu hướng huyết áp</string>
-    <string name="period_30_days">30 Ngày</string>
-    <string name="period_7_days">7 Ngày</string>
-    <string name="period_90_days">90 Ngày</string>
     
-    <!-- Reminders -->
-    <string name="todays_reminders">Nhắc nhở hôm nay</string>
-    <string name="snooze">Báo lại</string>
-    <string name="done">Hoàn thành</string>
-    <string name="no_reminders">Không có nhắc nhở nào</string>
+    <string name="blood_pressure_trend">Blood Pressure Trend</string>
+    <string name="period_30_days">30 Days</string>
+    <string name="period_7_days">7 Days</string>
+    <string name="period_90_days">90 Days</string>
     
-    <!-- Quick Actions -->
-    <string name="quick_actions">Thao tác nhanh</string>
-    <string name="add_metric">Thêm chỉ số</string>
-    <string name="analysis">Phân tích</string>
-    <string name="reminder">Nhắc nhở</string>
-    <string name="reports">Báo cáo</string>
     
-    <!-- Navigation Drawer -->
+    <string name="todays_reminders">Today\'s Reminders</string>
+    <string name="snooze">Snooze</string>
+    <string name="done">Done</string>
+    <string name="no_reminders">No reminders</string>
+    
+    
+    <string name="quick_actions">Quick Actions</string>
+    <string name="add_metric">Add Metric</string>
+    <string name="analysis">Analysis</string>
+    <string name="reminder">Reminders</string>
+    <string name="reports">Reports</string>
+    
+    
     <string name="nav_header_title">Jessica Smith</string>
     <string name="nav_header_subtitle">jessica.smith@example.com</string>
-    <string name="nav_reminders">Nhắc nhở</string>
-    <string name="nav_settings">Cài đặt</string>
-    <string name="nav_help">Trợ giúp &amp; Hỗ trợ</string>
-    <string name="nav_logout">Đăng xuất</string>
-    <string name="logout">Đăng xuất</string>
-    <string name="drawer_open">Mở menu</string>
-    <string name="drawer_close">Đóng menu</string>
+    <string name="nav_reminders">Reminders</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_help">Help &amp; Support</string>
+    <string name="nav_logout">Logout</string>
+    <string name="logout">Logout</string>
+    <string name="drawer_open">Open menu</string>
+    <string name="drawer_close">Close menu</string>
 
-    <!-- Metric Detail Screen -->
-    <string name="day">Ngày</string>
-    <string name="week">Tuần</string>
-    <string name="month">Tháng</string>
-    <string name="year">Năm</string>
-    <string name="heart_rate_bpm">Nhịp tim (bpm)</string>
-    <string name="last_7_days">7 ngày qua</string>
-    <string name="average">Trung bình</string>
-    <string name="highest">Cao nhất</string>
-    <string name="lowest">Thấp nhất</string>
-    <string name="history">Lịch sử</string>
-
-    <!-- Quick Actions Screen -->
-    <string name="add_metric_desc">Ghi lại cân nặng, giấc ngủ, v.v.</string>
-    <string name="analyze_trends">Phân tích xu hướng</string>
-    <string name="analyze_trends_desc">Xem tiến trình gần đây</string>
-    <string name="set_reminder">Đặt nhắc nhở</string>
-    <string name="set_reminder_desc">Cho thuốc hoặc tập luyện</string>
-    <string name="generate_report">Tạo báo cáo</string>
-    <string name="generate_report_desc">Tạo tóm tắt hàng tuần</string>
-    <string name="start_activity">Bắt đầu hoạt động</string>
-    <string name="start_activity_desc">Theo dõi bài tập mới</string>
-    <string name="scan_food">Quét thực phẩm</string>
-    <string name="scan_food_desc">Ghi lại bữa ăn nhanh chóng</string>
-
-    <!-- Profile Screen -->
-    <string name="edit_profile">Chỉnh sửa hồ sơ</string>
-    <string name="health_information">Thông tin sức khỏe</string>
-    <string name="height">Chiều cao</string>
-    <string name="weight">Cân nặng</string>
-    <string name="blood_type">Nhóm máu</string>
-    <string name="birth_date">Ngày sinh</string>
-    <string name="gender">Giới tính</string>
-    <string name="male">Nam</string>
-    <string name="female">Nữ</string>
-    <string name="medical_history">Tiền sử bệnh án</string>
-    <string name="medical_history_sample">Dị ứng phấn hoa, Tiền sử đau dạ dày.</string>
-    <string name="edit">Chỉnh sửa</string>
-    <string name="statistics">Thống kê</string>
-    <string name="metrics_tracked">Chỉ số theo dõi</string>
-    <string name="reminders_created">Lời nhắc đã tạo</string>
-    <string name="records_entered">Hồ sơ đã nhập</string>
-    <string name="actions">Hành động</string>
-    <string name="export_health_reports">Xuất báo cáo sức khỏe</string>
-    <string name="manage_notifications">Quản lý thông báo</string>
-    <string name="privacy_security">Bảo mật và quyền riêng tư</string>
-    <string name="help">Trợ giúp</string>
-
-    <!-- Edit Profile Screen -->
-    <string name="cancel">Hủy</string>
-    <string name="save">Lưu</string>
-    <string name="profile">Hồ sơ</string>
-    <string name="full_name">Họ và tên</string>
-    <string name="enter_full_name">Nhập họ và tên</string>
-    <string name="email">Email</string>
-    <string name="enter_email">Nhập email</string>
-    <string name="select_birth_date">Chọn ngày sinh</string>
-    <string name="other">Khác</string>
-    <string name="enter_height">Nhập chiều cao</string>
-    <string name="enter_weight">Nhập cân nặng</string>
-    <string name="select_blood_type">Chọn nhóm máu</string>
-    <string name="enter_medical_history">Nhập tiền sử bệnh án</string>
-    <string name="please_enter_name">Vui lòng nhập họ tên</string>
-    <string name="please_enter_email">Vui lòng nhập email</string>
-    <string name="profile_updated_successfully">Cập nhật hồ sơ thành công</string>
     
-    <!-- Profile Validation -->
-    <string name="error_invalid_height">Chiều cao phải từ 50cm đến 300cm</string>
-    <string name="error_invalid_weight">Cân nặng phải từ 10kg đến 500kg</string>
-    <string name="error_invalid_age">Tuổi phải từ 1 đến 150</string>
-    <string name="error_future_birth_date">Ngày sinh không thể là ngày trong tương lai</string>
-    <string name="error_name_too_short">Họ tên phải có ít nhất 2 ký tự</string>
-    <string name="error_name_too_long">Họ tên không được quá 100 ký tự</string>
-<!-- Notifications -->
-    <string name="notifications">Thông báo</string>
-    <string name="all">Tất cả</string>
-    <string name="medication">Thuốc</string>
-    <string name="activity">Hoạt động</string>
-    <string name="appointments">Lịch hẹn</string>
-    <string name="insights">Thông tin</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="heart_rate_bpm">Heart Rate (bpm)</string>
+    <string name="last_7_days">Last 7 days</string>
+    <string name="average">Medium</string>
+    <string name="highest">Highest</string>
+    <string name="lowest">Lowest</string>
+    <string name="history">History</string>
 
-    <!-- Metrics -->
-    <string name="health_metrics">Chỉ số sức khỏe</string>
-    <string name="search">Tìm kiếm</string>
-    <string name="newest">Mới nhất</string>
-    <string name="filter">Bộ lọc</string>
-    <string name="add_new_metric">Thêm chỉ số mới</string>
-    <string name="all_metrics">Tất cả</string>
-    <string name="blood_pressure_tab">Huyết áp</string>
-    <string name="blood_sugar_tab">Đường huyết</string>
-    <string name="weight_tab">Cân nặng</string>
-    <string name="heart_rate_tab">Nhịp tim</string>
+    
+    <string name="add_metric_desc">Record weight, sleep, etc.</string>
+    <string name="analyze_trends">Analyze Trends</string>
+    <string name="analyze_trends_desc">View recent progress</string>
+    <string name="set_reminder">Set Reminder</string>
+    <string name="set_reminder_desc">For medication or exercise</string>
+    <string name="generate_report">Generate Report</string>
+    <string name="generate_report_desc">Create weekly summary</string>
+    <string name="start_activity">Start Activity</string>
+    <string name="start_activity_desc">Track new workout</string>
+    <string name="scan_food">Scan Food</string>
+    <string name="scan_food_desc">Log meals quickly</string>
 
-    <!-- Add/Edit Metric -->
-    <string name="close">Đóng</string>
-    <string name="metric_type">Loại chỉ số</string>
-    <string name="systolic">Tâm thu (Systolic)</string>
-    <string name="diastolic">Tâm trương (Diastolic)</string>
-    <string name="value">Giá trị</string>
-    <string name="measurement_date">Ngày đo</string>
-    <string name="measurement_time">Giờ đo</string>
-    <string name="notes">Ghi chú</string>
-    <string name="save_and_analyze">Lưu và phân tích</string>
-    <string name="edit_metric">Chỉnh sửa chỉ số</string>
-    <string name="select_date">Chọn ngày</string>
-    <string name="select_time">Chọn giờ</string>
-    <string name="enter_notes">Nhập ghi chú của bạn</string>
-    <string name="validation_error">Vui lòng nhập giá trị hợp lệ</string>
+    
+    <string name="edit_profile">Edit Profile</string>
+    <string name="health_information">Health Information</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="blood_type">Blood Type</string>
+    <string name="birth_date">Day sinh</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="medical_history">Medical History</string>
+    <string name="medical_history_sample">Pollen allergy, History of stomach pain.</string>
+    <string name="edit">Edit</string>
+    <string name="statistics">Statistics</string>
+    <string name="metrics_tracked">Metrics Tracked</string>
+    <string name="reminders_created">Reminders Created</string>
+    <string name="records_entered">Records Entered</string>
+    <string name="actions">Actions</string>
+    <string name="export_health_reports">Export Health Reports</string>
+    <string name="manage_notifications">Manage Notifications</string>
+    <string name="privacy_security">Privacy &amp; Security</string>
+    <string name="help">Help</string>
 
-    <!-- Metric Stats -->
-    <string name="current">Hiện tại</string>
+    
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="profile">Profile</string>
+    <string name="full_name">Full Name</string>
+    <string name="enter_full_name">Enter full name</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Enter email</string>
+    <string name="select_birth_date">Select birth date</string>
+    <string name="other">Other</string>
+    <string name="enter_height">Enter height</string>
+    <string name="enter_weight">Enter weight</string>
+    <string name="select_blood_type">Select blood type</string>
+    <string name="enter_medical_history">Enter medical history</string>
+    <string name="please_enter_name">Please enter name</string>
+    <string name="please_enter_email">Please enter email</string>
+    <string name="profile_updated_successfully">Profile updated successfully</string>
+    
+    
+    <string name="error_invalid_height">Height must be between 50cm and 300cm</string>
+    <string name="error_invalid_weight">Weight must be between 10kg and 500kg</string>
+    <string name="error_invalid_age">Age must be between 1 and 150</string>
+    <string name="error_future_birth_date">Birth date cannot be in the future</string>
+    <string name="error_name_too_short">Name must be at least 2 characters</string>
+    <string name="error_name_too_long">Name must not exceed 100 characters</string>
 
-    <!-- Metric Analysis -->
-    <string name="heart_rate_analysis">Phân tích Nhịp tim</string>
-    <string name="heart_rate_trend">Xu hướng nhịp tim</string>
-    <string name="this_month">Tháng này</string>
-    <string name="key_statistics">Thống kê chính</string>
-    <string name="alerts">Cảnh báo</string>
-    <string name="recommendations">Khuyến nghị</string>
-    <string name="export_report">Xuất báo cáo</string>
+    <string name="notifications">Notifications</string>
+    <string name="all">All</string>
+    <string name="medication">Medication</string>
+    <string name="activity">Activity</string>
+    <string name="appointments">Appointments</string>
+    <string name="insights">Insights</string>
 
-    <!-- Anomaly Alert -->
-    <string name="health_alert">Cảnh báo Sức khỏe</string>
-    <string name="high_severity">Mức độ Cao</string>
-    <string name="high_heart_rate_detected">Phát hiện Nhịp tim Cao bất thường</string>
-    <string name="high_heart_rate_desc">Nhịp tim của bạn đang cao hơn bình thường. Vui lòng nghỉ ngơi và theo dõi triệu chứng.</string>
-    <string name="recommended_actions">Hành động Khuyến nghị</string>
-    <string name="rest_and_monitor">Nghỉ ngơi và Theo dõi</string>
-    <string name="rest_and_monitor_desc">Ngồi xuống trong môi trường yên tĩnh và theo dõi các triệu chứng của bạn.</string>
-    <string name="contact_healthcare">Liên hệ Chuyên gia Y tế</string>
-    <string name="contact_healthcare_desc">Nếu các triệu chứng vẫn tiếp diễn, vui lòng tìm kiếm tư vấn y tế.</string>
-    <string name="contact_doctor">Liên hệ Bác sĩ</string>
-    <string name="learn_more">Tìm hiểu thêm</string>
-    <string name="ive_seen_this">Tôi đã biết</string>
+    
+    <string name="health_metrics">Health Metrics</string>
+    <string name="search">Search</string>
+    <string name="newest">Newest</string>
+    <string name="filter">Filter</string>
+    <string name="add_new_metric">Add New Metric</string>
+    <string name="all_metrics">All</string>
+    <string name="blood_pressure_tab">Blood Pressure</string>
+    <string name="blood_sugar_tab">Blood Sugar</string>
+    <string name="weight_tab">Weight</string>
+    <string name="heart_rate_tab">Heart Rate</string>
 
-    <!-- Add/Edit Reminder -->
-    <string name="add_reminder">Thêm Nhắc Nhở</string>
-    <string name="edit_reminder">Chỉnh sửa Nhắc Nhở</string>
-    <string name="reminder_type">Loại nhắc nhở</string>
-    <string name="measurement">Đo chỉ số</string>
-    <string name="appointment">Tái khám</string>
-    <string name="title">Tiêu đề</string>
-    <string name="note_optional">Ghi chú (tùy chọn)</string>
-    <string name="link_medicine_optional">Liên kết với thuốc (tùy chọn)</string>
-    <string name="time">Thời gian</string>
-    <string name="repeat">Lặp lại</string>
-    <string name="save_reminder">Lưu nhắc nhở</string>
-    <string name="no_repeat">Không lặp lại</string>
-    <string name="daily">Hàng ngày</string>
-    <string name="weekly">Hàng tuần</string>
-    <string name="monthly">Hàng tháng</string>
-    <string name="custom">Tùy chỉnh</string>
-    <string name="no_medicine">Không có</string>
-    <string name="completed">Hoàn thành</string>
-    <string name="skip">Bỏ</string>
-    <string name="smart_suggestions">Gợi ý thông minh</string>
-    <string name="water_reminder_suggestion">Bạn có muốn tạo lời nhắc uống đủ nước trong ngày không?</string>
-    <string name="later">Để sau</string>
-    <string name="create_reminder">Tạo lời nhắc</string>
+    
+    <string name="close">Close</string>
+    <string name="metric_type">Metric Type</string>
+    <string name="systolic">Systolic</string>
+    <string name="diastolic">Diastolic</string>
+    <string name="value">Value</string>
+    <string name="measurement_date">Measurement Date</string>
+    <string name="measurement_time">Measurement Time</string>
+    <string name="notes">Notes</string>
+    <string name="save_and_analyze">Save and Analyze</string>
+    <string name="edit_metric">Edit Metric</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="enter_notes">Enter your notes</string>
+    <string name="validation_error">Please enter valid value</string>
 
-    <!-- Reminder Detail -->
+    
+    <string name="current">Current</string>
+
+    
+    <string name="heart_rate_analysis">Analysis Heart Rate</string>
+    <string name="heart_rate_trend">Heart Rate Trend</string>
+    <string name="this_month">This Month</string>
+    <string name="key_statistics">Key Statistics</string>
+    <string name="alerts">Alerts</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="export_report">Export Report</string>
+
+    
+    <string name="health_alert">Health Alert</string>
+    <string name="high_severity">High Severity</string>
+    <string name="high_heart_rate_detected">Abnormal High Heart Rate Detected</string>
+    <string name="high_heart_rate_desc">Your heart rate is higher than normal. Please rest and monitor symptoms.</string>
+    <string name="recommended_actions">Actions Recommendations</string>
+    <string name="rest_and_monitor">Rest and Monitor</string>
+    <string name="rest_and_monitor_desc">Sit down in a quiet environment and monitor your symptoms.</string>
+    <string name="contact_healthcare">Contact Healthcare Provider</string>
+    <string name="contact_healthcare_desc">If symptoms persist, please seek medical advice.</string>
+    <string name="contact_doctor">Contact Doctor</string>
+    <string name="learn_more">Learn More</string>
+    <string name="ive_seen_this">I\'ve Seen This</string>
+
+    
+    <string name="add_reminder">Add Reminder</string>
+    <string name="edit_reminder">Edit Reminder</string>
+    <string name="reminder_type">Reminder Type</string>
+    <string name="measurement">Measurement</string>
+    <string name="appointment">Appointment</string>
+    <string name="title">Title</string>
+    <string name="note_optional">Note (optional)</string>
+    <string name="link_medicine_optional">Link to medicine (optional)</string>
+    <string name="time">Time</string>
+    <string name="repeat">Repeat</string>
+    <string name="save_reminder">Save Reminder</string>
+    <string name="no_repeat">No Repeat</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="custom">Custom</string>
+    <string name="no_medicine">None</string>
+    <string name="completed">Done</string>
+    <string name="skip">Skip</string>
+    <string name="smart_suggestions">Smart Suggestions</string>
+    <string name="water_reminder_suggestion">Would you like to create a reminder to drink enough water during the day?</string>
+    <string name="later">Later</string>
+    <string name="create_reminder">Create Reminder</string>
+
+    
     <string name="reminder_detail">Reminder Detail</string>
-    <string name="delete">Xóa</string>
+    <string name="delete">Delete</string>
     <string name="mark_taken">Mark as Taken</string>
     <string name="reschedule">Reschedule</string>
     <string name="repeats">Repeats</string>
     <string name="delete_reminder">Delete Reminder</string>
 
-    <!-- Smart Suggestions -->
-    <string name="optimize_reminder">Tối ưu hoá lời nhắc</string>
-    <string name="optimize_reminder_desc">Bạn thường uống thuốc lúc 8:15 AM. Thay đổi thời gian nhắc nhở thành 8:15 AM?</string>
-    <string name="apply">Áp dụng</string>
-    <string name="new_reminder_suggestion">Gợi ý lời nhắc mới</string>
-    <string name="new_reminder_suggestion_desc">Chúng tôi nhận thấy bạn ghi lại lượng nước uống. Tạo lời nhắc uống nước mỗi 2 giờ?</string>
-    <string name="create">Tạo</string>
-    <string name="merge_reminders">Gộp lời nhắc</string>
-    <string name="merge_reminders_desc">Bạn có 2 lời nhắc uống thuốc gần nhau. Gộp chúng thành một?</string>
-    <string name="merge">Gộp</string>
-    <string name="no_suggestions">Không có gợi ý mới</string>
-    <string name="no_suggestions_desc">Bạn đã xem hết các gợi ý thông minh. Hãy quay lại sau để xem các đề xuất mới!</string>
+    
+    <string name="optimize_reminder">Optimize Reminder</string>
+    <string name="optimize_reminder_desc">You usually take medicine at 8:15 AM. Change reminder time to 8:15 AM?</string>
+    <string name="apply">Apply</string>
+    <string name="new_reminder_suggestion">New Reminder Suggestion</string>
+    <string name="new_reminder_suggestion_desc">We noticed you log water intake. Create a water reminder every 2 hours?</string>
+    <string name="create">Create</string>
+    <string name="merge_reminders">Merge Reminders</string>
+    <string name="merge_reminders_desc">You have 2 medication reminders close together. Merge them into one?</string>
+    <string name="merge">Merge</string>
+    <string name="no_suggestions">No New Suggestions</string>
+    <string name="no_suggestions_desc">You\'ve seen all smart suggestions. Check back later for new recommendations!</string>
 
-    <!-- Medical Records -->
-    <string name="medical_records">Hồ sơ Y tế</string>
-    <string name="search_records">Tìm kiếm hồ sơ...</string>
-    <string name="add_record">Thêm hồ sơ</string>
-    <string name="timeline">Dòng thời gian</string>
-    <string name="medicines">Thuốc</string>
-    <string name="allergies">Dị ứng</string>
+    
+    <string name="medical_records">Medical Records</string>
+    <string name="search_records">Search records...</string>
+    <string name="add_record">Add Record</string>
+    <string name="timeline">Timeline</string>
+    <string name="medicines">Medication</string>
+    <string name="allergies">Allergies</string>
     <string name="year_2024">2024</string>
     <string name="year_2023">2023</string>
-    <string name="no_records_found">Không có hồ sơ</string>
-    <string name="no_records_desc">Thêm hồ sơ y tế đầu tiên để bắt đầu xây dựng dòng thời gian sức khỏe của bạn.</string>
-    <string name="add_first_record">Thêm hồ sơ đầu tiên</string>
+    <string name="no_records_found">No Records Found</string>
+    <string name="no_records_desc">Add your first medical record to start building your health timeline.</string>
+    <string name="add_first_record">Add First Record</string>
     
-    <!-- Record Types -->
-    <string name="cardiology_consultation">Tư vấn Tim mạch</string>
-    <string name="annual_checkup">Khám sức khỏe định kỳ</string>
-    <string name="allergy_test">Xét nghiệm dị ứng</string>
-    <string name="flu_vaccination">Tiêm phòng cúm</string>
     
-    <!-- Sample Records -->
-    <string name="record_date_1">15 Tháng 8 2024</string>
-    <string name="record_desc_1">BS. Jane Doe, Bệnh viện Đa khoa Thành phố. Chẩn đoán: Tiếng thổi tim lành tính.</string>
-    <string name="record_date_2">22 Tháng 5 2024</string>
-    <string name="record_desc_2">BS. John Smith, Phòng khám Sức khỏe. Tất cả chỉ số bình thường.</string>
-    <string name="record_date_3">10 Tháng 2 2024</string>
-    <string name="record_desc_3">Trung tâm Chẩn đoán. Kết quả đính kèm.</string>
-    <string name="record_date_4">05 Tháng 10 2023</string>
-    <string name="record_desc_4">Nhà thuốc Cộng đồng. Tiêm bởi Y tá Davis.</string>
-
-    <!-- Add/Edit Record -->
-    <string name="add_medical_record">Thêm hồ sơ bệnh án</string>
-    <string name="edit_medical_record">Chỉnh sửa hồ sơ bệnh án</string>
-    <string name="record_title">Tiêu đề</string>
-    <string name="examination_date">Ngày khám</string>
-    <string name="hospital_clinic">Bệnh viện/Phòng khám</string>
-    <string name="doctor">Bác sĩ</string>
-    <string name="diagnosis">Chẩn đoán</string>
-    <string name="detailed_content">Nội dung chi tiết</string>
-    <string name="attachments">Tệp đính kèm</string>
-    <string name="save_record">Lưu hồ sơ</string>
-    <string name="add_file">Thêm tệp</string>
+    <string name="cardiology_consultation">Cardiology Consultation</string>
+    <string name="annual_checkup">Annual Checkup</string>
+    <string name="allergy_test">Allergy Test</string>
+    <string name="flu_vaccination">Flu Vaccination</string>
     
-    <!-- Hospital List -->
-    <string name="hospital_vinmec">Bệnh viện Đa khoa Quốc tế Vinmec</string>
-    <string name="hospital_cho_ray">Bệnh viện Chợ Rẫy</string>
-    <string name="hospital_other">Nhập tên khác</string>
+    
+    <string name="record_date_1">15 Month 8 2024</string>
+    <string name="record_desc_1">Dr. Jane Doe, City General Hospital. Diagnosis: Benign heart murmur.</string>
+    <string name="record_date_2">22 Month 5 2024</string>
+    <string name="record_desc_2">Dr. John Smith, Health Clinic. All metrics normal.</string>
+    <string name="record_date_3">10 Month 2 2024</string>
+    <string name="record_desc_3">Diagnostic Center. Results attached.</string>
+    <string name="record_date_4">05 Month 10 2023</string>
+    <string name="record_desc_4">Community Pharmacy. Administered by Nurse Davis.</string>
 
-    <!-- Record Detail -->
-    <string name="medical_record">Hồ sơ Y tế</string>
-    <string name="core_details">Thông tin cơ bản</string>
-    <string name="diagnosis_notes">Chẩn đoán &amp; Ghi chú</string>
-    <string name="doctor_notes">Ghi chú của bác sĩ</string>
-    <string name="prescriptions">Đơn thuốc</string>
-    <string name="no_prescriptions">Không có đơn thuốc đính kèm với hồ sơ này.</string>
+    
+    <string name="add_medical_record">Add Medical Record</string>
+    <string name="edit_medical_record">Edit Medical Record</string>
+    <string name="record_title">Title</string>
+    <string name="examination_date">Examination Date</string>
+    <string name="hospital_clinic">Hospital/Clinic</string>
+    <string name="doctor">Doctor</string>
+    <string name="diagnosis">Diagnosis</string>
+    <string name="detailed_content">Detailed Content</string>
+    <string name="attachments">Attachments</string>
+    <string name="save_record">Save Record</string>
+    <string name="add_file">Add File</string>
+    
+    
+    <string name="hospital_vinmec">Vinmec International General Hospital</string>
+    <string name="hospital_cho_ray">Cho Ray Hospital</string>
+    <string name="hospital_other">Enter other name</string>
 
-    <!-- Medicines -->
-    <string name="scan_medicine">Quét thuốc</string>
-    <string name="add_medicine">Thêm thuốc</string>
-    <string name="active_medicines">Đang dùng</string>
-    <string name="stopped_medicines">Đã ngưng</string>
+    
+    <string name="medical_record">Medical Records</string>
+    <string name="core_details">Core Details</string>
+    <string name="diagnosis_notes">Diagnosis &amp; Notes</string>
+    <string name="doctor_notes">Doctor\'s Notes</string>
+    <string name="prescriptions">Prescriptions</string>
+    <string name="no_prescriptions">No prescriptions attached to this record.</string>
 
-    <!-- Add Medicine -->
-    <string name="scan_prescription">Chụp đơn thuốc</string>
-    <string name="manual_entry">Nhập thủ công</string>
+    
+    <string name="scan_medicine">Scan Medicine</string>
+    <string name="add_medicine">Add Medicine</string>
+    <string name="active_medicines">Active</string>
+    <string name="stopped_medicines">Stopped</string>
+
+    
+    <string name="scan_prescription">Scan Prescription</string>
+    <string name="manual_entry">Manual Entry</string>
     <string name="camera_preview">Camera preview</string>
-    <string name="place_prescription_in_frame">Đặt đơn thuốc vào trong khung hình</string>
-    <string name="gallery">Thư viện</string>
-    <string name="capture">Chụp</string>
-    <string name="flash">Đèn flash</string>
-    <string name="processing_prescription">Đang xử lý đơn thuốc...</string>
-    <string name="medicine_name">Tên thuốc</string>
-    <string name="dosage">Liều lượng</string>
-    <string name="usage_instructions">Hướng dẫn sử dụng</string>
-    <string name="start_date">Ngày bắt đầu</string>
-    <string name="save_medicine">Lưu thuốc</string>
+    <string name="place_prescription_in_frame">Place prescription in frame</string>
+    <string name="gallery">Gallery</string>
+    <string name="capture">Capture</string>
+    <string name="flash">Flash</string>
+    <string name="processing_prescription">Processing prescription...</string>
+    <string name="medicine_name">Medicine Name</string>
+    <string name="dosage">Dosage</string>
+    <string name="usage_instructions">Usage Instructions</string>
+    <string name="start_date">Start Date</string>
+    <string name="save_medicine">Save Medicine</string>
 
-    <!-- Settings Screen -->
-    <string name="settings">Cài đặt</string>
-    <string name="account">Tài khoản</string>
-    <string name="general">Chung</string>
-    <string name="data_sync">Đồng bộ dữ liệu</string>
-    <string name="units">Đơn vị đo lường</string>
-    <string name="units_metric">Hệ Mét</string>
-    <string name="display">Hiển thị</string>
-    <string name="language">Ngôn ngữ</string>
-    <string name="language_vietnamese">Tiếng Việt</string>
-    <string name="theme">Chủ đề</string>
-    <string name="theme_light">Sáng</string>
-    <string name="theme_dark">Tối</string>
-    <string name="theme_system">Theo hệ thống</string>
-    <string name="about">Về ứng dụng</string>
-    <string name="delete_account">Xóa tài khoản</string>
-    <string name="navigate">Điều hướng</string>
-<!-- Export Reports Screen -->
-    <string name="export_reports">Xuất báo cáo</string>
-    <string name="select_time_range">Chọn khoảng thời gian</string>
-    <string name="last_30_days">30 ngày qua</string>
-    <string name="file_format">Định dạng file</string>
+    
+    <string name="settings">Settings</string>
+    <string name="account">Account</string>
+    <string name="general">General</string>
+    <string name="data_sync">Data Sync</string>
+    <string name="units">Units</string>
+    <string name="units_metric">Metric</string>
+    <string name="display">Display</string>
+    <string name="language">Language</string>
+    <string name="language_vietnamese">Vietnamese</string>
+    <string name="theme">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System Default</string>
+    <string name="about">About</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="navigate">Navigate</string>
+
+    <string name="export_reports">Export Report</string>
+    <string name="select_time_range">Select Time Range</string>
+    <string name="last_30_days">Last 30 Days</string>
+    <string name="file_format">File Format</string>
     <string name="pdf">PDF</string>
     <string name="excel">Excel</string>
-    <string name="report_content">Nội dung báo cáo</string>
-    <string name="personal_information">Thông tin cá nhân</string>
-    <string name="trend_charts">Biểu đồ xu hướng</string>
-    <string name="medicine_list">Danh sách thuốc</string>
-    <string name="analysis_recommendations">Phân tích &amp; Khuyến nghị</string>
-    <string name="preview">Xem trước</string>
-    <string name="report_preview">Bản xem trước báo cáo</string>
-    <string name="generated_reports">Báo cáo đã tạo</string>
-    <string name="create_report">Tạo báo cáo</string>
-    <string name="no_reports_created">Bạn chưa tạo báo cáo nào</string>
-    <string name="reports_will_appear_here">Các báo cáo bạn tạo sẽ xuất hiện ở đây.</string>
-    <string name="health_report">Báo cáo Sức khỏe</string>
-    <string name="metrics_data">Dữ liệu chỉ số</string>
+    <string name="report_content">Report Content</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="trend_charts">Trend Charts</string>
+    <string name="medicine_list">Medicine List</string>
+    <string name="analysis_recommendations">Analysis &amp; Recommendations</string>
+    <string name="preview">Preview</string>
+    <string name="report_preview">Report Preview</string>
+    <string name="generated_reports">Generated Reports</string>
+    <string name="create_report">Generate Report</string>
+    <string name="no_reports_created">You haven\'t created any reports</string>
+    <string name="reports_will_appear_here">Reports you create will appear here.</string>
+    <string name="health_report">Health Report</string>
+    <string name="metrics_data">Metrics Data</string>
 
-    <!-- Forgot Password Screen -->
-    <string name="forgot_password_title">Quên mật khẩu</string>
-    <string name="forgot_password_description">Nhập email của bạn để nhận liên kết đặt lại mật khẩu</string>
-    <string name="send_reset_link">Gửi liên kết đặt lại</string>
-    <string name="back_to_login">Quay lại đăng nhập</string>
-    <string name="reset_link_sent">Liên kết đặt lại mật khẩu đã được gửi đến email của bạn</string>
-    <string name="check_email">Vui lòng kiểm tra email của bạn</string>
-    <string name="error_send_reset_link">Không thể gửi liên kết đặt lại. Vui lòng thử lại.</string>
     
-    <!-- Reset Password Screen -->
-    <string name="reset_password_title">Đặt lại mật khẩu</string>
-    <string name="new_password">Mật khẩu mới</string>
-    <string name="new_password_hint">Nhập mật khẩu mới</string>
-    <string name="confirm_new_password">Xác nhận mật khẩu mới</string>
-    <string name="confirm_new_password_hint">Nhập lại mật khẩu mới</string>
-    <string name="reset_password_button">Đặt lại mật khẩu</string>
-    <string name="password_reset_success">Mật khẩu đã được đặt lại thành công</string>
-    <string name="error_reset_password">Không thể đặt lại mật khẩu. Vui lòng thử lại.</string>
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="forgot_password_description">Enter your email to receive password reset link</string>
+    <string name="send_reset_link">Send Reset Link</string>
+    <string name="back_to_login">Back to Login</string>
+    <string name="reset_link_sent">Password reset link has been sent to your email</string>
+    <string name="check_email">Please check your email</string>
+    <string name="error_send_reset_link">Cannot send reset link. Please try again.</string>
     
-    <!-- Password Requirements -->
-    <string name="password_requirements_title">Yêu cầu mật khẩu:</string>
-    <string name="password_req_length">• Ít nhất 8 ký tự</string>
-    <string name="password_req_uppercase">• Ít nhất 1 chữ hoa</string>
-    <string name="password_req_lowercase">• Ít nhất 1 chữ thường</string>
-    <string name="password_req_number">• Ít nhất 1 số</string>
-    <string name="password_req_special">• Ít nhất 1 ký tự đặc biệt (@$!%*?&amp;)</string>
-    <string name="password_weak">Yếu</string>
-    <string name="password_medium">Trung bình</string>
-    <string name="password_strong">Mạnh</string>
     
-    <!-- Security -->
-    <string name="account_locked">Tài khoản đã bị khóa do nhiều lần đăng nhập thất bại. Vui lòng thử lại sau %d phút.</string>
-    <string name="too_many_attempts">Quá nhiều lần thử. Vui lòng đợi %d giây.</string>
+    <string name="reset_password_title">Reset Password</string>
+    <string name="new_password">New Password</string>
+    <string name="new_password_hint">Enter new password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="confirm_new_password_hint">Re-enter new password</string>
+    <string name="reset_password_button">Reset Password</string>
+    <string name="password_reset_success">Password reset successfully</string>
+    <string name="error_reset_password">Cannot reset password. Please try again.</string>
+    
+    
+    <string name="password_requirements_title">Password Requirements:</string>
+    <string name="password_req_length">• At least 8 characters</string>
+    <string name="password_req_uppercase">• At least 1 uppercase letter</string>
+    <string name="password_req_lowercase">• At least 1 lowercase letter</string>
+    <string name="password_req_number">• At least 1 number</string>
+    <string name="password_req_special">• At least 1 special character (@$!%*?&amp;)</string>
+    <string name="password_weak">Weak</string>
+    <string name="password_medium">Medium</string>
+    <string name="password_strong">Strong</string>
+    
+    
+    <string name="account_locked">Account locked due to multiple failed login attempts. Please try again after %d minutes.</string>
+    <string name="too_many_attempts">Too many attempts. Please wait %d seconds.</string>
 
-    <!-- Deadline functionality -->
-    <string name="deadline_optional">Thời hạn (tùy chọn)</string>
-    <string name="deadline_helper_text">Chọn ngày kết thúc để theo dõi tiến độ</string>
-    <string name="deadline_warning_text">Nhắc nhở này sẽ hết hạn trong vòng 3 ngày</string>
-    <string name="select_deadline">Chọn thời hạn</string>
-    <string name="clear_deadline">Xóa thời hạn</string>
-    <string name="deadline_must_be_future">Thời hạn phải là ngày trong tương lai</string>
-    <string name="deadline_validation_error">Vui lòng chọn ngày hợp lệ</string>
+    
+    <string name="deadline_optional">Deadline (optional)</string>
+    <string name="deadline_helper_text">Select end date to track progress</string>
+    <string name="deadline_warning_text">This reminder will expire in 3 days</string>
+    <string name="select_deadline">Select Deadline</string>
+    <string name="clear_deadline">Clear Deadline</string>
+    <string name="deadline_must_be_future">Deadline must be a future date</string>
+    <string name="deadline_validation_error">Please select a valid date</string>
 
-    <!-- Reminder History -->
-    <string name="reminder_history">Lịch sử nhắc nhở</string>
-    <string name="action_completed">Đã hoàn thành</string>
-    <string name="action_skipped">Đã bỏ qua</string>
-    <string name="action_icon">Biểu tượng hành động</string>
-    <string name="scheduled_for">Đã lên lịch lúc %s</string>
-    <string name="just_now">Vừa xong</string>
-    <string name="minutes_ago">%d phút trước</string>
-    <string name="hours_ago">%d giờ trước</string>
-    <string name="days_ago">%d ngày trước</string>
-    <string name="no_history">Chưa có lịch sử</string>
-    <string name="no_history_desc">Lịch sử tương tác với nhắc nhở sẽ xuất hiện ở đây</string>
+    
+    <string name="reminder_history">Reminder History</string>
+    <string name="action_completed">Completed</string>
+    <string name="action_skipped">Skipped</string>
+    <string name="action_icon">Action Icon</string>
+    <string name="scheduled_for">Scheduled for %s</string>
+    <string name="just_now">Just now</string>
+    <string name="minutes_ago">%d minutes ago</string>
+    <string name="hours_ago">%d hours ago</string>
+    <string name="days_ago">%d days ago</string>
+    <string name="no_history">No History</string>
+    <string name="no_history_desc">Reminder interaction history will appear here</string>
 
-    <!-- Error Handling and Validation -->
-    <string name="error_invalid_reminder_data">Dữ liệu nhắc nhở không hợp lệ</string>
-    <string name="error_notification_failed">Không thể gửi thông báo</string>
-    <string name="error_database_operation">Lỗi thao tác cơ sở dữ liệu</string>
-    <string name="error_background_processing">Lỗi xử lý nền</string>
-    <string name="error_retry_exceeded">Đã vượt quá số lần thử lại</string>
-    <string name="error_permission_required">Cần cấp quyền để tiếp tục</string>
-    <string name="error_validation_failed">Dữ liệu nhập không hợp lệ</string>
-    <string name="error_network_unavailable">Không có kết nối mạng</string>
-    <string name="error_unexpected">Đã xảy ra lỗi không mong muốn</string>
     
-    <!-- Retry Messages -->
-    <string name="retry_in_progress">Đang thử lại...</string>
-    <string name="retry_failed">Thử lại thất bại</string>
-    <string name="retry_success">Thử lại thành công</string>
-    <string name="max_retries_reached">Đã đạt số lần thử tối đa</string>
+    <string name="error_invalid_reminder_data">Invalid reminder data</string>
+    <string name="error_notification_failed">Cannot send notification</string>
+    <string name="error_database_operation">Database operation error</string>
+    <string name="error_background_processing">Background processing error</string>
+    <string name="error_retry_exceeded">Retry limit exceeded</string>
+    <string name="error_permission_required">Permission required to continue</string>
+    <string name="error_validation_failed">Invalid input data</string>
+    <string name="error_network_unavailable">No network connection</string>
+    <string name="error_unexpected">An unexpected error occurred</string>
+    
+    
+    <string name="retry_in_progress">Retrying...</string>
+    <string name="retry_failed">Retry failed</string>
+    <string name="retry_success">Retry successful</string>
+    <string name="max_retries_reached">Maximum retries reached</string>
 
-    <string name="validation_time_invalid">Thời gian không hợp lệ</string>
-    <string name="validation_deadline_past">Thời hạn không thể là quá khứ</string>
-    <string name="validation_deadline_too_far">Thời hạn quá xa trong tương lai</string>
-    <string name="validation_frequency_invalid">Tần suất không hợp lệ</string>
+    <string name="validation_time_invalid">Invalid time</string>
+    <string name="validation_deadline_past">Deadline cannot be in the past</string>
+    <string name="validation_deadline_too_far">Deadline too far in the future</string>
+    <string name="validation_frequency_invalid">Invalid frequency</string>
     
-    <!-- Notification Error Messages -->
-    <string name="notification_permission_denied">Quyền thông báo bị từ chối</string>
-    <string name="notification_send_failed">Gửi thông báo thất bại</string>
     
-    <!-- Accessibility Strings -->
-    <string name="accessibility_menu_button">Mở menu điều hướng</string>
-    <string name="accessibility_notifications_button">Xem thông báo</string>
-    <string name="accessibility_notification_badge">%s thông báo chưa đọc</string>
-    <string name="accessibility_metric_card" formatted="false">Thẻ chỉ số %s, giá trị hiện tại %s</string>
-    <string name="accessibility_metric_card_action">Nhấn để xem chi tiết %s</string>
-    <string name="accessibility_chart">Biểu đồ xu hướng %s</string>
-    <string name="accessibility_quick_action">Thao tác nhanh %s</string>
-    <string name="accessibility_quick_action_hint">Nhấn để %s</string>
-    <string name="accessibility_reminder_item" formatted="false">Nhắc nhở %s lúc %s</string>
-    <string name="accessibility_reminder_action">Nhấn để xem chi tiết nhắc nhở</string>
-    <string name="accessibility_bottom_nav">Điều hướng chính</string>
-    <string name="accessibility_drawer_nav">Menu điều hướng bên</string>
-    <string name="accessibility_form_field">Trường nhập %s</string>
-    <string name="accessibility_required_field">Trường bắt buộc %s</string>
-    <string name="accessibility_optional_field">Trường tùy chọn %s</string>
-    <string name="accessibility_dropdown">Danh sách thả xuống %s</string>
-    <string name="accessibility_time_picker">Chọn thời gian %s</string>
-    <string name="accessibility_date_picker">Chọn ngày %s</string>
-    <string name="accessibility_chip_selected">%s đã chọn</string>
-    <string name="accessibility_chip_unselected">%s chưa chọn</string>
-    <string name="accessibility_button_primary">Nút chính %s</string>
-    <string name="accessibility_button_secondary">Nút phụ %s</string>
-    <string name="accessibility_close_button">Đóng</string>
-    <string name="accessibility_save_button">Lưu thông tin</string>
-    <string name="accessibility_delete_button">Xóa mục này</string>
-    <string name="accessibility_edit_button">Chỉnh sửa mục này</string>
-    <string name="accessibility_loading">Đang tải dữ liệu</string>
-    <string name="accessibility_error_state">Có lỗi xảy ra</string>
-    <string name="accessibility_empty_state">Không có dữ liệu</string>
-    <string name="accessibility_progress_bar">Thanh tiến trình, %d phần trăm hoàn thành</string>
-    <string name="accessibility_switch_on">Bật</string>
-    <string name="accessibility_switch_off">Tắt</string>
-    <string name="accessibility_tab_selected">Tab %s đã chọn</string>
-    <string name="accessibility_tab_unselected">Tab %s chưa chọn</string>
-    <string name="accessibility_navigation_up">Quay lại</string>
-    <string name="accessibility_expand">Mở rộng</string>
-    <string name="accessibility_collapse">Thu gọn</string>
-    <string name="accessibility_search">Tìm kiếm</string>
-    <string name="accessibility_filter">Bộ lọc</string>
-    <string name="accessibility_sort">Sắp xếp</string>
-    <string name="accessibility_refresh">Làm mới</string>
-    <string name="accessibility_share">Chia sẻ</string>
-    <string name="accessibility_more_options">Tùy chọn khác</string>
+    <string name="notification_permission_denied">Notification permission denied</string>
+    <string name="notification_send_failed">Notification send failed</string>
     
-    <!-- Smart Reminder AI Strings -->
-    <string name="optimize_reminder_time">Tối ưu hóa thời gian nhắc nhở</string>
-    <string name="change_to_time" formatted="false">Thay đổi thời gian nhắc nhở "%s" thành %d:00</string>
-    <string name="optimal_time_reason" formatted="false">Bạn thường hoạt động tích cực nhất vào %d:00</string>
-    <string name="create_water_reminder">Tạo nhắc nhở uống nước</string>
-    <string name="water_reminder_description">Tạo nhắc nhở uống nước hàng ngày để duy trì sức khỏe</string>
-    <string name="no_water_reminder_reason">Chúng tôi nhận thấy bạn chưa có nhắc nhở uống nước</string>
-    <string name="merge_reminders_suggestion">Gộp các nhắc nhở tương tự</string>
-    <string name="merge_two_reminders" formatted="false">Gộp nhắc nhở "%s" và "%s" thành một</string>
-    <string name="merge_reason">Hai nhắc nhở này có thời gian gần nhau</string>
-    <string name="change_frequency_suggestion">Thay đổi tần suất nhắc nhở</string>
-    <string name="change_to_weekly" formatted="false">Thay đổi nhắc nhở "%s" từ hàng ngày thành hàng tuần</string>
-    <string name="low_completion_reason" formatted="false">Tỷ lệ hoàn thành của bạn là %d%%, thay đổi tần suất có thể giúp cải thiện</string>
-    <string name="accessibility_list_item" formatted="false">Mục %d trong %d</string>
-    <string name="accessibility_page_indicator" formatted="false">Trang %d trong %d</string>
-    <string name="accessibility_value_changed">Giá trị đã thay đổi thành %s</string>
-    <string name="accessibility_selection_changed">Lựa chọn đã thay đổi thành %s</string>
-    <string name="accessibility_action_completed">Hành động đã hoàn thành</string>
-    <string name="accessibility_action_failed">Hành động thất bại</string>
     
-    <!-- Screen Reader Announcements -->
-    <string name="announce_data_loaded">Dữ liệu đã được tải</string>
-    <string name="announce_data_saved">Dữ liệu đã được lưu</string>
-    <string name="announce_data_deleted">Dữ liệu đã được xóa</string>
-    <string name="announce_navigation_changed">Đã chuyển đến %s</string>
-    <string name="announce_error_occurred">Có lỗi xảy ra: %s</string>
-    <string name="announce_validation_error">Lỗi xác thực: %s</string>
-    <string name="announce_form_submitted">Biểu mẫu đã được gửi</string>
-    <string name="announce_reminder_created">Nhắc nhở đã được tạo</string>
-    <string name="announce_reminder_updated">Nhắc nhở đã được cập nhật</string>
-    <string name="announce_reminder_deleted">Nhắc nhở đã được xóa</string>
-    <string name="announce_metric_added">Chỉ số đã được thêm</string>
-    <string name="announce_metric_updated">Chỉ số đã được cập nhật</string>
-    <string name="announce_loading_started">Bắt đầu tải dữ liệu</string>
-    <string name="announce_loading_completed">Hoàn thành tải dữ liệu</string>
+    <string name="accessibility_menu_button">Open navigation menu</string>
+    <string name="accessibility_notifications_button">View notifications</string>
+    <string name="accessibility_notification_badge">%s unread notifications</string>
+    <string name="accessibility_metric_card" formatted="false">Metric card %s, current value %s</string>
+    <string name="accessibility_metric_card_action">Tap to view %s details</string>
+    <string name="accessibility_chart">Trend Charts %s</string>
+    <string name="accessibility_quick_action">Quick Actions %s</string>
+    <string name="accessibility_quick_action_hint">Tap to %s</string>
+    <string name="accessibility_reminder_item" formatted="false">Reminder %s at %s</string>
+    <string name="accessibility_reminder_action">Tap to view reminder details</string>
+    <string name="accessibility_bottom_nav">Main navigation</string>
+    <string name="accessibility_drawer_nav">Side navigation menu</string>
+    <string name="accessibility_form_field">Input field %s</string>
+    <string name="accessibility_required_field">Required field %s</string>
+    <string name="accessibility_optional_field">Optional field %s</string>
+    <string name="accessibility_dropdown">Dropdown list %s</string>
+    <string name="accessibility_time_picker">Select time %s</string>
+    <string name="accessibility_date_picker">Select Date %s</string>
+    <string name="accessibility_chip_selected">%s selected</string>
+    <string name="accessibility_chip_unselected">%s unselected</string>
+    <string name="accessibility_button_primary">Primary button %s</string>
+    <string name="accessibility_button_secondary">Secondary button %s</string>
+    <string name="accessibility_close_button">Close</string>
+    <string name="accessibility_save_button">Save information</string>
+    <string name="accessibility_delete_button">Delete this item</string>
+    <string name="accessibility_edit_button">Edit this item</string>
+    <string name="accessibility_loading">Loading data</string>
+    <string name="accessibility_error_state">An error occurred</string>
+    <string name="accessibility_empty_state">No data</string>
+    <string name="accessibility_progress_bar">Progress bar, %d percent complete</string>
+    <string name="accessibility_switch_on">On</string>
+    <string name="accessibility_switch_off">Off</string>
+    <string name="accessibility_tab_selected">Tab %s selected</string>
+    <string name="accessibility_tab_unselected">Tab %s unselected</string>
+    <string name="accessibility_navigation_up">Navigate up</string>
+    <string name="accessibility_expand">Expand</string>
+    <string name="accessibility_collapse">Collapse</string>
+    <string name="accessibility_search">Search</string>
+    <string name="accessibility_filter">Filter</string>
+    <string name="accessibility_sort">Sort</string>
+    <string name="accessibility_refresh">Refresh</string>
+    <string name="accessibility_share">Share</string>
+    <string name="accessibility_more_options">More options</string>
     
-    <!-- Keyboard Navigation Hints -->
-    <string name="keyboard_hint_tab_navigate">Dùng Tab để điều hướng</string>
-    <string name="keyboard_hint_enter_activate">Nhấn Enter để kích hoạt</string>
-    <string name="keyboard_hint_space_select">Nhấn Space để chọn</string>
-    <string name="keyboard_hint_arrow_navigate">Dùng phím mũi tên để điều hướng</string>
-    <string name="keyboard_hint_escape_close">Nhấn Escape để đóng</string>
     
-    <!-- Focus Management -->
-    <string name="focus_moved_to">Tiêu điểm đã chuyển đến %s</string>
-    <string name="focus_trapped_in_dialog">Tiêu điểm được giữ trong hộp thoại</string>
-    <string name="focus_returned_to_trigger">Tiêu điểm đã quay lại nút kích hoạt</string>
+    <string name="optimize_reminder_time">Optimize reminder time</string>
+    <string name="change_to_time" formatted="false">Change reminder time "%s" to %d:00</string>
+    <string name="optimal_time_reason" formatted="false">You are usually most active at %d:00</string>
+    <string name="create_water_reminder">Create water reminder</string>
+    <string name="water_reminder_description">Create daily water reminder to maintain health</string>
+    <string name="no_water_reminder_reason">We noticed you don\'t have a water reminder</string>
+    <string name="merge_reminders_suggestion">Merge similar reminders</string>
+    <string name="merge_two_reminders" formatted="false">Merge reminders "%s" and "%s" into one</string>
+    <string name="merge_reason">These two reminders are close in time</string>
+    <string name="change_frequency_suggestion">Change reminder frequency</string>
+    <string name="change_to_weekly" formatted="false">Change reminder "%s" from daily to weekly</string>
+    <string name="low_completion_reason" formatted="false">Your completion rate is %d%%, changing frequency may help improve</string>
+    <string name="accessibility_list_item" formatted="false">Item %d of %d</string>
+    <string name="accessibility_page_indicator" formatted="false">Page %d of %d</string>
+    <string name="accessibility_value_changed">Value changed to %s</string>
+    <string name="accessibility_selection_changed">Selection changed to %s</string>
+    <string name="accessibility_action_completed">Action completed</string>
+    <string name="accessibility_action_failed">Action failed</string>
     
-    <!-- Content Descriptions for Icons -->
-    <string name="icon_blood_pressure">Biểu tượng huyết áp</string>
-    <string name="icon_blood_sugar">Biểu tượng đường huyết</string>
-    <string name="icon_heart_rate">Biểu tượng nhịp tim</string>
-    <string name="icon_bmi">Biểu tượng BMI</string>
-    <string name="icon_weight">Biểu tượng cân nặng</string>
-    <string name="icon_height">Biểu tượng chiều cao</string>
-    <string name="icon_temperature">Biểu tượng nhiệt độ</string>
-    <string name="icon_medication">Biểu tượng thuốc</string>
-    <string name="icon_appointment">Biểu tượng lịch hẹn</string>
-    <string name="icon_exercise">Biểu tượng tập luyện</string>
-    <string name="icon_sleep">Biểu tượng giấc ngủ</string>
-    <string name="icon_water">Biểu tượng nước</string>
-    <string name="icon_food">Biểu tượng thực phẩm</string>
-    <string name="icon_calendar">Biểu tượng lịch</string>
-    <string name="icon_clock">Biểu tượng đồng hồ</string>
-    <string name="icon_warning">Biểu tượng cảnh báo</string>
-    <string name="icon_info">Biểu tượng thông tin</string>
-    <string name="icon_success">Biểu tượng thành công</string>
-    <string name="icon_error">Biểu tượng lỗi</string>
     
-    <!-- Role Descriptions -->
-    <string name="role_metric_card">Thẻ chỉ số sức khỏe</string>
-    <string name="role_reminder_card">Thẻ nhắc nhở</string>
-    <string name="role_quick_action">Nút thao tác nhanh</string>
-    <string name="role_navigation_tab">Tab điều hướng</string>
-    <string name="role_chart">Biểu đồ dữ liệu</string>
-    <string name="role_form_section">Phần biểu mẫu</string>
-    <string name="role_status_indicator">Chỉ báo trạng thái</string>
-    <string name="role_progress_indicator">Chỉ báo tiến trình</string>
+    <string name="announce_data_loaded">Data loaded</string>
+    <string name="announce_data_saved">Data saved</string>
+    <string name="announce_data_deleted">Data deleted</string>
+    <string name="announce_navigation_changed">Navigated to %s</string>
+    <string name="announce_error_occurred">An error occurred: %s</string>
+    <string name="announce_validation_error">Validation error: %s</string>
+    <string name="announce_form_submitted">Form submitted</string>
+    <string name="announce_reminder_created">Reminder created</string>
+    <string name="announce_reminder_updated">Reminder updated</string>
+    <string name="announce_reminder_deleted">Reminder deleted</string>
+    <string name="announce_metric_added">Metric added</string>
+    <string name="announce_metric_updated">Metric updated</string>
+    <string name="announce_loading_started">Loading started</string>
+    <string name="announce_loading_completed">Loading completed</string>
     
-    <!-- Additional Accessibility Strings -->
-    <string name="accessibility_profile_avatar">Ảnh đại diện người dùng</string>
-    <string name="accessibility_user_email">Email người dùng</string>
-    <string name="accessibility_service_description">Dịch vụ hỗ trợ truy cập cho HealthyLife Hub</string>
     
-    <!-- Notification Error Messages -->
-    <string name="notification_action_failed">Hành động thông báo thất bại</string>
-    <string name="notification_disabled">Thông báo đã bị tắt</string>
+    <string name="keyboard_hint_tab_navigate">Use Tab to navigate</string>
+    <string name="keyboard_hint_enter_activate">Press Enter to activate</string>
+    <string name="keyboard_hint_space_select">Press Space to select</string>
+    <string name="keyboard_hint_arrow_navigate">Use arrow keys to navigate</string>
+    <string name="keyboard_hint_escape_close">Press Escape to close</string>
     
-    <!-- Database Error Messages -->
-    <string name="database_connection_failed">Kết nối cơ sở dữ liệu thất bại</string>
-    <string name="database_operation_failed">Thao tác cơ sở dữ liệu thất bại</string>
-    <string name="reminder_not_found">Không tìm thấy nhắc nhở</string>
-    <string name="data_corruption_detected">Phát hiện dữ liệu bị hỏng</string>
     
-    <!-- Background Processing Messages -->
-    <string name="background_work_failed">Xử lý nền thất bại</string>
-    <string name="work_manager_unavailable">Dịch vụ xử lý nền không khả dụng</string>
-    <string name="background_task_cancelled">Tác vụ nền đã bị hủy</string>
+    <string name="focus_moved_to">Focus moved to %s</string>
+    <string name="focus_trapped_in_dialog">Focus trapped in dialog</string>
+    <string name="focus_returned_to_trigger">Focus returned to trigger</string>
     
-    <!-- User-Friendly Error Messages -->
-    <string name="error_try_again">Vui lòng thử lại</string>
-    <string name="error_check_connection">Kiểm tra kết nối mạng</string>
-    <string name="error_restart_app">Thử khởi động lại ứng dụng</string>
-    <string name="error_contact_support">Liên hệ hỗ trợ nếu vấn đề tiếp tục</string>
+    
+    <string name="icon_blood_pressure">Blood pressure icon</string>
+    <string name="icon_blood_sugar">Blood sugar icon</string>
+    <string name="icon_heart_rate">Heart rate icon</string>
+    <string name="icon_bmi">BMI icon</string>
+    <string name="icon_weight">Weight icon</string>
+    <string name="icon_height">Height icon</string>
+    <string name="icon_temperature">Temperature icon</string>
+    <string name="icon_medication">Medication icon</string>
+    <string name="icon_appointment">Appointment icon</string>
+    <string name="icon_exercise">Exercise icon</string>
+    <string name="icon_sleep">Sleep icon</string>
+    <string name="icon_water">Water icon</string>
+    <string name="icon_food">Food icon</string>
+    <string name="icon_calendar">Calendar icon</string>
+    <string name="icon_clock">Clock icon</string>
+    <string name="icon_warning">Warning icon</string>
+    <string name="icon_info">Info icon</string>
+    <string name="icon_success">Success icon</string>
+    <string name="icon_error">Error icon</string>
+    
+    
+    <string name="role_metric_card">Health metric card</string>
+    <string name="role_reminder_card">Reminder card</string>
+    <string name="role_quick_action">Quick action button</string>
+    <string name="role_navigation_tab">Navigation tab</string>
+    <string name="role_chart">Data chart</string>
+    <string name="role_form_section">Form section</string>
+    <string name="role_status_indicator">Status indicator</string>
+    <string name="role_progress_indicator">Progress indicator</string>
+    
+    
+    <string name="accessibility_profile_avatar">User profile avatar</string>
+    <string name="accessibility_user_email">User email</string>
+    <string name="accessibility_service_description">Accessibility service for HealthyLife Hub</string>
+    
+    
+    <string name="notification_action_failed">Notification action failed</string>
+    <string name="notification_disabled">Notifications disabled</string>
+    
+    
+    <string name="database_connection_failed">Database connection failed</string>
+    <string name="database_operation_failed">Database operation failed</string>
+    <string name="reminder_not_found">Reminder not found</string>
+    <string name="data_corruption_detected">Data corruption detected</string>
+    
+    
+    <string name="background_work_failed">Background processing failed</string>
+    <string name="work_manager_unavailable">Background service unavailable</string>
+    <string name="background_task_cancelled">Background task cancelled</string>
+    
+    
+    <string name="error_try_again">Please try again</string>
+    <string name="error_check_connection">Check network connection</string>
+    <string name="error_restart_app">Try restarting the app</string>
+    <string name="error_contact_support">Contact support if problem persists</string>
 
-    <!-- Common -->
+    
     <string name="ok">OK</string>
     
-    <!-- Common UI Strings -->
-    <string name="loading">Đang tải...</string>
+    
+    <string name="loading">Loading...</string>
     <string name="loading_data_ellipsis">Loading...</string>
     <string name="not_available">N/A</string>
     <string name="dash">--</string>
-    <string name="today">Hôm nay</string>
-    <string name="yesterday">Hôm qua</string>
-    <string name="stable">ổn định</string>
-    <string name="increasing">tăng</string>
-    <string name="decreasing">giảm</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="stable">Stable</string>
+    <string name="increasing">Increasing</string>
+    <string name="decreasing">Decreasing</string>
     <string name="notification_badge_count">3</string>
     
-    <!-- Toast Messages -->
-    <string name="alert_clicked">Đã nhấn cảnh báo</string>
-    <string name="recommendation_clicked">Đã nhấn khuyến nghị</string>
-    <string name="filter_options">Tùy chọn bộ lọc</string>
-    <string name="reminder_snoozed">Đã báo lại nhắc nhở</string>
-    <string name="reminder_completed">Đã hoàn thành</string>
-    <string name="settings_saved"> Đã lưu cài đặt</string>
     
-    <!-- Chart and Data -->
-    <string name="no_blood_pressure_data">Chưa có dữ liệu huyết áp</string>
-    <string name="no_valid_blood_pressure_data">Chưa có dữ liệu huyết áp hợp lệ</string>
-    <string name="select_time_period">Chọn khoảng thời gian</string>
+    <string name="alert_clicked">Alert clicked</string>
+    <string name="recommendation_clicked">Recommendation clicked</string>
+    <string name="filter_options">Filter options</string>
+    <string name="reminder_snoozed">Reminder snoozed</string>
+    <string name="reminder_completed">Completed</string>
+    <string name="settings_saved">Settings saved</string>
     
-    <!-- Notification Permission -->
-    <string name="notification_permission_title">Cho phép thông báo</string>
-    <string name="notification_permission_message">HealthyLife Hub cần quyền thông báo để:\n\n• Nhắc nhở uống thuốc đúng giờ\n• Cảnh báo chỉ số sức khỏe bất thường\n• Gửi gợi ý cải thiện sức khỏe\n\nBạn có thể tắt từng loại thông báo trong Cài đặt.</string>
-    <string name="allow">Cho phép</string>
-    <string name="no">Không</string>
-    <string name="notification_disabled_title">Thông báo bị tắt</string>
-    <string name="notification_disabled_message">Để bật lại thông báo, vui lòng:\n\n1. Mở Cài đặt điện thoại\n2. Tìm \'HealthyLife Hub\'\n3. Chọn \'Quyền\' hoặc \'Permissions\'\n4. Bật \'Thông báo\' hoặc \'Notifications\'</string>
-    <string name="understood">Đã hiểu</string>
-    <string name="open_settings">Mở Cài đặt</string>
-    <string name="some_features_disabled"> Một số tính năng nhắc nhở sẽ không hoạt động</string>
-    <string name="notification_enabled_success">Đã bật thông báo thành công!</string>
     
-    <!-- Network Status -->
-    <string name="network_offline"> Không có kết nối mạng\nDữ liệu sẽ được lưu cục bộ</string>
-    <string name="network_connecting"> Đang kết nối...\nVui lòng chờ</string>
+    <string name="no_blood_pressure_data">No blood pressure data available</string>
+    <string name="no_valid_blood_pressure_data">No valid blood pressure data available</string>
+    <string name="select_time_period">Select Time Range</string>
     
-    <!-- User Feedback Messages -->
+    
+    <string name="notification_permission_title">Allow notifications</string>
+    <string name="notification_permission_message">HealthyLife Hub needs notification permission to:\n\n• Remind you to take medication on time\n• Alert you to abnormal health metrics\n• Send health improvement suggestions\n\nYou can disable each notification type in Settings.</string>
+    <string name="allow">Allow</string>
+    <string name="no">No</string>
+    <string name="notification_disabled_title">Notifications disabled</string>
+    <string name="notification_disabled_message">To re-enable notifications, please:\n\n1. Open phone Settings\n2. Find \'HealthyLife Hub\'\n3. Select \'Permissions\'\n4. Enable \'Notifications\'</string>
+    <string name="understood">Understood</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="some_features_disabled">Some reminder features will not work</string>
+    <string name="notification_enabled_success">Notifications enabled successfully!</string>
+    
+    
+    <string name="network_offline">No network connection\nData will be saved locally</string>
+    <string name="network_connecting">Connecting...\nPlease wait</string>
+    
+    
     <string name="success_prefix">✅ </string>
     <string name="error_prefix">❌ </string>
     <string name="warning_prefix">⚠️ </string>
@@ -752,7 +753,7 @@
     
 
     
-    <!-- Test Activity Strings -->
+    
     <string name="system_status">System Status</string>
     <string name="loading_permission_status">Loading permission status...</string>
     <string name="loading_settings_status">Loading settings status...</string>
@@ -773,21 +774,264 @@
     <string name="utility_actions"> Utility Actions</string>
     <string name="clear_all_notifications">Clear All Notifications</string>
     
-    <!-- Help and Support -->
-    <string name="quick_learn">Tìm hiểu nhanh</string>
-    <string name="frequently_asked_questions">Câu hỏi thường gặp</string>
-    <string name="getting_started_guide">Hướng dẫn bắt đầu</string>
-    <string name="feature_guide">Hướng dẫn tính năng</string>
-    <string name="troubleshooting">Khắc phục sự cố</string>
-    <string name="contact_support">Liên hệ hỗ trợ</string>
-    <string name="contact_support_team">Liên hệ đội hỗ trợ</string>
-    <string name="send_feedback">Gửi góp ý</string>
-    <string name="report_bug">Báo lỗi</string>
-    <string name="community_reviews">Cộng đồng &amp; Đánh giá</string>
-    <string name="rate_app">Đánh giá ứng dụng</string>
-    <string name="join_community">Tham gia cộng đồng</string>
-    <string name="video_tutorials">Video hướng dẫn</string>
-    <string name="app_info">Thông tin ứng dụng</string>
-    <string name="app_version">Phiên bản 1.0.0</string>
-    <string name="app_description">Ứng dụng quản lý sức khỏe cá nhân toàn diện</string>
+    
+    <string name="quick_learn">Quick Learn</string>
+    <string name="frequently_asked_questions">Frequently Asked Questions</string>
+    <string name="getting_started_guide">Getting Started Guide</string>
+    <string name="feature_guide">Feature Guide</string>
+    <string name="troubleshooting">Troubleshooting</string>
+    <string name="contact_support">Contact Support</string>
+    <string name="contact_support_team">Contact Support Team</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="report_bug">Report Bug</string>
+    <string name="community_reviews">Community &amp; Reviews</string>
+    <string name="rate_app">Rate App</string>
+    <string name="join_community">Join Community</string>
+    <string name="video_tutorials">Video Tutorials</string>
+    <string name="app_info">App Info</string>
+    <string name="app_version">Version 1.0.0</string>
+    <string name="app_description">Comprehensive personal health management app</string>
+    <string name="title_temperature">Temperature</string>
+    <string name="default_user_name_placeholder">John Doe!</string>
+    <string name="action_skip">Skip</string>
+    <string name="sample_reminder_title">Take blood pressure medication</string>
+    <string name="sample_description">Description</string>
+    <string name="sample_time">08:00 AM</string>
+    <string name="sample_frequency">Daily</string>
+    <string name="sample_deadline">Deadline</string>
+    <string name="sample_progress">0%</string>
+    <string name="network_status_no_connection">⚠️⚠️ No network</string>
+    <string name="mock_reminders_count">12</string>
+    <string name="mock_records_count">27</string>
+    <string name="nav_header_desc">User profile avatar</string>
+    
+    <string name="unit_mmhg">mmHg</string>
+    <string name="unit_bpm">bpm</string>
+    <string name="unit_mg_dl">mg/dL</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_celsius">°C</string>
+    <string name="format_date_time_short">dd/MM, HH:mm</string>
+    <string name="format_date_time_full">dd/MM/yyyy HH:mm</string>
+    <string name="placeholder_dash">--</string>
+    <string name="default_value_zero">0</string>
+
+    
+    <string name="sample_title">Sample Title</string>
+    <string name="sample_pdf_file_size">PDF - 2.1 MB</string>
+    <string name="time_placeholder">14:30</string>
+    <string name="os_android">Android</string>
+    <string name="ip_address_placeholder">IP: 192.168.1.1</string>
+    <string name="default_user_email">jessica.smith@example.com</string>
+
+    
+    <string name="analytics_detail_title">📊 Detailed Analysis</string>
+    <string name="refresh">🔄 Refresh</string>
+    <string name="select_metric">Select metric:</string>
+    <string name="metric_blood_pressure">🩸 Blood Pressure</string>
+    <string name="metric_heart_rate">❤️ Heart Rate</string>
+    <string name="metric_weight">⚖️ Weight</string>
+    <string name="metric_blood_sugar">🍬 Blood Sugar</string>
+    <string name="time_range">Time range:</string>
+    <string name="range_day">📅 Day</string>
+    <string name="range_week">📆 Week</string>
+    <string name="range_month">📊 Month</string>
+    <string name="range_year">📈 Year</string>
+    <string name="no_data">No data available</string>
+    <string name="add_metric_hint">Add health metrics to view chart</string>
+    <string name="detail_info">💡 Detailed Info</string>
+    <string name="date_label">📅 Day:</string>
+    <string name="insight_day">Shows all measurements in the day</string>
+    <string name="insight_week">Shows average per day in the week</string>
+    <string name="insight_month">Shows average per week in the month</string>
+    <string name="insight_year">Shows average per month in the year</string>
+    <string name="week_label">📆 Week:</string>
+    <string name="insight_week_desc">Last 7 days, average value per day</string>
+    <string name="month_label">📊 Month:</string>
+    <string name="insight_month_desc">30 days, divided into 10 periods of 3 days</string>
+    <string name="year_label">📈 Year:</string>
+    <string name="insight_year_desc">Last 12 months, average value per month</string>
+
+    
+    <string name="login_history_title">Login History</string>
+    <string name="no_login_history">No Login History</string>
+    <string name="login_history_placeholder">Login history will appear here</string>
+
+    
+    <string name="privacy_security_title">Privacy &amp; Security</string>
+    <string name="account_info_title">Account Info</string>
+    <string name="user_name_placeholder">Username</string>
+    <string name="email_placeholder">email@example.com</string>
+    <string name="last_sign_in_placeholder">Last sign in: ...</string>
+    <string name="data_privacy_title">Data Privacy</string>
+    <string name="data_collection_title">Data Collection</string>
+    <string name="data_collection_desc">Allow data collection to improve service</string>
+    <string name="personalized_ads_title">Personalized Ads</string>
+    <string name="personalized_ads_desc">Show ads based on preferences</string>
+    <string name="usage_analytics_title">Usage Analytics</string>
+    <string name="usage_analytics_desc">Send analytics data to improve app</string>
+    <string name="location_services_title">Location Services</string>
+    <string name="location_services_desc">Use location for nearby hospital feature</string>
+    <string name="account_security_title">Account Security</string>
+    <string name="change_password_title">Change Password</string>
+    <string name="change_password_desc">Change login password</string>
+    <string name="two_factor_title">Two-Factor Authentication</string>
+    <string name="two_factor_desc">Additional protection for your account</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="login_history_desc">View recent login attempts</string>
+    <string name="connected_apps_title">Connected Apps</string>
+    <string name="connected_apps_desc">Manage third-party app access</string>
+    <string name="data_management_title">Data Management</string>
+    <string name="export_data_title">Export Personal Data</string>
+    <string name="export_data_desc">Download all your data</string>
+    <string name="delete_account_title">Delete Account</string>
+    <string name="delete_account_desc">Permanently delete account and all data</string>
+    <string name="legal_title">Legal</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="terms_of_service_title">Terms of Service</string>
+
+    
+    <string name="prescription_image">Prescription Image</string>
+    <string name="prescription_preview">Prescription Preview</string>
+    <string name="processing_image">Processing image...</string>
+    <string name="extracted_medicines">Extracted Medications</string>
+
+    
+    <string name="change_password_instruction">Enter information to change password</string>
+    <string name="current_password">Current Password</string>
+    <string name="password_requirements_full"> Password must be at least 6 characters\n Should include uppercase, lowercase and numbers\n• Do not use personal information</string>
+
+    
+    <string name="filter_metrics">Filter Metrics</string>
+    <string name="measurement_time_range">Measurement Time</string>
+    <string name="date_from">From Date</string>
+    <string name="date_to">To Date</string>
+    <string name="dash_separator"> - </string>
+    <string name="value_range">Value Range</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="reset">Reset</string>
+
+    
+    <string name="health_analytics_title">📊 Health Analytics</string>
+    <string name="cached_info">📦 Cached (5s old)</string>
+    <string name="days_7">7 Days</string>
+    <string name="days_30">30 Days</string>
+    <string name="days_90">90 Days</string>
+    <string name="blood_pressure_chart_title">🩸 Blood Pressure (mmHg)</string>
+    <string name="blood_pressure_stats_placeholder">Avg: 120/80 | Min: 110 | Max: 140 | Trend: ➡️ +2.0</string>
+    <string name="blood_sugar_chart_title">🍬 Blood Sugar (mg/dL)</string>
+    <string name="blood_sugar_stats_placeholder">Avg: 100.0 | Min: 80.0 | Max: 140.0 | Trend: 📉 -5.0 mg/dL</string>
+    <string name="weight_chart_title">⚖️ Weight (kg)</string>
+    <string name="weight_stats_placeholder">Avg: 70.0 | Min: 68.5 | Max: 72.0 | Trend: 📈 +0.5 kg</string>
+    <string name="heart_rate_chart_title">❤️ Heart Rate (bpm)</string>
+    <string name="heart_rate_stats_placeholder">Avg: 72.0 | Min: 60.0 | Max: 90.0 | Trend: ➡️ +1.0 bpm</string>
+
+    
+    <string name="add_metric_coming_soon">Add metric form - Coming soon</string>
+
+    
+    <string name="search_metric_title">Search Metrics</string>
+    <string name="search_metric_hint">Enter value or notes</string>
+
+    
+    <string name="network_status_title">Connection Status</string>
+    <string name="network_icon_desc">Network icon</string>
+    <string name="network_error_message_local">⚠️No network connection\nData will be saved locally</string>
+
+    
+    <string name="legal_document_title">Legal Document</string>
+    <string name="loading_content">Loading content...</string>
+
+    
+    <string name="notification_settings_title">Notification Settings</string>
+    <string name="notifications_enabled">Notifications Enabled</string>
+    <string name="notifications_enabled_desc">App can send notifications</string>
+    <string name="reminders">Reminders</string>
+    <string name="enable_reminders">Enable Reminders</string>
+    <string name="reminders_desc">Medication and health check reminders</string>
+    <string name="sound">Sound</string>
+    <string name="vibration">Vibration</string>
+    <string name="volume">Volume</string>
+    <string name="notification_sound">Notification Sound</string>
+    <string name="select_sound">Select Sound</string>
+    <string name="vibration_pattern">Vibration Pattern</string>
+    <string name="select_vibration_pattern">Select Vibration Pattern</string>
+    <string name="health_alerts">Health Alerts</string>
+    <string name="health_alerts_desc">Notifications about abnormal metrics</string>
+    <string name="critical_alerts">Critical Alerts</string>
+    <string name="anomaly_detection">Anomaly Detection</string>
+    <string name="improvement_suggestions">Improvement Suggestions</string>
+    <string name="improvement_suggestions_desc">Health improvement advice</string>
+    <string name="weekly_reports">Weekly Reports</string>
+    <string name="smart_ai">Smart AI</string>
+    <string name="quiet_hours">Quiet Hours</string>
+    <string name="enable_quiet_hours">Enable Quiet Hours</string>
+    <string name="quiet_hours_desc">Disable notifications during this time</string>
+    <string name="advanced_settings">Advanced Settings</string>
+    <string name="bundle_notifications">Bundle Notifications</string>
+    <string name="show_on_lock_screen">Show on Lock Screen</string>
+    <string name="preview_notification">🔔 Preview Notification</string>
+
+    
+    <string name="delete_account_warning_title">This action cannot be undone!</string>
+    <string name="delete_account_password_prompt">Enter password to confirm account deletion:</string>
+    <string name="current_password_hint">Current Password</string>
+    <string name="delete_account_consequences">After deletion, you will lose:\n All health data\n Reminder history\n Medical records\n Personal settings\n\nData cannot be recovered.</string>
+
+    
+    <string name="sample_report_filename">report.pdf</string>
+
+    
+    <string name="default_start_time">22:00</string>
+    <string name="default_end_time">07:00</string>
+    
+    
+    <string name="open_excel_file">Open Excel File</string>
+    <string name="no_excel_app_message">No Excel app found on device.\n\nWould you like to:\n1. Open file on Microsoft 365 Online (Excel Online)\n2. Download Excel app from Google Play Store\n3. Share file to open with another app</string>
+    <string name="open_microsoft_365">Open on Microsoft 365</string>
+    <string name="download_excel_app">Download Excel App</string>
+    <string name="share">Share</string>
+    <string name="opening_microsoft_365">Opening Microsoft 365 Online.\nYou can upload the file to view and edit.</string>
+    <string name="cannot_open_browser">Cannot open browser. Please visit: https://www.office.com</string>
+    <string name="cannot_open_play_store">Cannot open Google Play Store</string>
+    <string name="share_report">Share Report</string>
+    <string name="error_sharing_report">Error sharing: %s</string>
+    <string name="error_file_path">File path error: %s</string>
+    <string name="error_no_app_to_open">No app found to open file</string>
+    <string name="error_cannot_open_file">Cannot open file: %s</string>
+    <string name="no_app_for_pdf">No app to open file. Please download from Google Play Store:\n- PDF: Adobe Reader, Google PDF Viewer</string>
+    
+    <!-- Toast and Snackbar Messages (previously hardcoded) -->
+    <string name="network_offline_message">⚠️ No network connection - Data will sync when connected</string>
+    <string name="network_online_message">✅ Connected - Syncing data...</string>
+    <string name="some_features_may_not_work">Some features may not work fully</string>
+    <string name="custom_sound_coming_soon">Custom sound feature will be updated in next version</string>
+    <string name="selected_sound">Selected: %s</string>
+    <string name="selected_vibration">Selected: %s</string>
+    <string name="loading_settings">Loading settings...</string>
+    <string name="grant_notification_permission_first">Please grant notification permission first</string>
+    <string name="sent_sample_reminder">Sample reminder sent</string>
+    <string name="sent_sample_health_alert">Sample health alert sent</string>
+    <string name="sent_sample_smart_suggestion">Sample smart suggestion sent</string>
+    <string name="sent_sample_general_notification">Sample general notification sent</string>
+    <string name="no_reminder_data">No reminder data</string>
+    <string name="marked_complete">✅ Marked complete</string>  
+    <string name="update_error">❌ Update error</string>
+    <string name="marked_complete_next_scheduled">✅ Marked complete. Next reminder scheduled</string>
+    <string name="skipped_next_scheduled">⏭️ Skipped. Next reminder scheduled</string>
+    <string name="reschedule_set">🔔 Reminder rescheduled</string>
+    <string name="reminder_deleted">🗑️ Reminder deleted</string>
+    <string name="delete_error">❌ Delete error</string>
+    <string name="no_app_to_share">No app found to share</string>
+    <string name="action_undone">Undone</string>
+    <string name="error">Error: %s</string>
+    <string name="report_generated_success">✅ Report generated successfully</string>
+    <string name="report_generation_error">❌ Report generation error</string>
+    <string name="report_export_success">✅ Report exported successfully</string>
+    <string name="report_export_error">❌ Report export error</string>
+    <string name="share_report_error">Share error</string>
+    <string name="pdf_generation_error">PDF generation error</string>
+    <string name="excel_export_error">Excel export error</string>
+    <string name="email_error">Email error</string>
 </resources>
+

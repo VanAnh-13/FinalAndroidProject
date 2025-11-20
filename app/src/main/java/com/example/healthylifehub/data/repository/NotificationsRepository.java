@@ -24,27 +24,22 @@ public class NotificationsRepository extends FirebaseRepository {
      * @return LiveData list of notifications
      */
     public LiveData<List<NotificationItem>> loadNotifications() {
-        MutableLiveData<List<NotificationItem>> notificationsLiveData = new MutableLiveData<>();
-        
         String userId = getCurrentUserId();
         if (userId == null) {
-            notificationsLiveData.setValue(new ArrayList<>());
-            return notificationsLiveData;
+            return new MutableLiveData<>(new ArrayList<>());
         }
         
-        db.collection("users")
+        com.google.firebase.firestore.Query query = db.collection("users")
             .document(userId)
             .collection(COLLECTION_NOTIFICATIONS)
-            .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .addSnapshotListener((value, error) -> {
-                if (error != null) {
-                    notificationsLiveData.setValue(new ArrayList<>());
-                    return;
-                }
-                
-                if (value != null) {
-                    List<NotificationItem> notifications = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : value) {
+            .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING);
+
+        return new com.example.healthylifehub.data.livedata.FirestoreQueryLiveData<List<NotificationItem>>(query) {
+            @Override
+            protected List<NotificationItem> parseSnapshot(com.google.firebase.firestore.QuerySnapshot snapshot) {
+                List<NotificationItem> notifications = new ArrayList<>();
+                if (snapshot != null) {
+                    for (QueryDocumentSnapshot doc : snapshot) {
                         String id = doc.getId(); // Get document ID
                         String title = doc.getString("title");
                         String message = doc.getString("message");
@@ -71,11 +66,53 @@ public class NotificationsRepository extends FirebaseRepository {
                             notifications.add(item);
                         }
                     }
-                    notificationsLiveData.setValue(notifications);
                 }
-            });
+                return notifications;
+            }
+        };
+    }
+    
+    /**
+     * Get unread notification count synchronously for parallel execution.
+     * This method blocks until count is retrieved from Firestore.
+     * Should be called from background thread via CompletableFuture.
+     * 
+     * Requirements: 6.1
+     * - 6.1: Fetch notification count in parallel with other dashboard data
+     * 
+     * @param userId User ID to get count for
+     * @return Integer count of unread notifications
+     */
+    public Integer getUnreadCountSync(String userId) {
+        if (userId == null) {
+            return 0;
+        }
         
-        return notificationsLiveData;
+        try {
+            com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot> task = 
+                db.collection("users")
+                    .document(userId)
+                    .collection(COLLECTION_NOTIFICATIONS)
+                    .whereEqualTo("isRead", false)
+                    .get();
+            
+            // Wait for task to complete (with timeout)
+            long startTime = System.currentTimeMillis();
+            long timeout = 3000; // 3 seconds
+            while (!task.isComplete() && System.currentTimeMillis() - startTime < timeout) {
+                Thread.sleep(50);
+            }
+            
+            if (task.isSuccessful() && task.getResult() != null) {
+                int count = task.getResult().size();
+                Log.d("NotificationsRepository", "✅ Loaded unread count synchronously: " + count);
+                return count;
+            }
+        } catch (Exception e) {
+            Log.e("NotificationsRepository", "❌ Error loading unread count synchronously", e);
+        }
+        
+        return 0;
     }
     
     /**
@@ -83,27 +120,25 @@ public class NotificationsRepository extends FirebaseRepository {
      * @return LiveData integer count
      */
     public LiveData<Integer> getUnreadCount() {
-        MutableLiveData<Integer> countLiveData = new MutableLiveData<>();
-        
         String userId = getCurrentUserId();
         if (userId == null) {
-            countLiveData.setValue(0);
-            return countLiveData;
+            return new MutableLiveData<>(0);
         }
         
-        db.collection("users")
+        com.google.firebase.firestore.Query query = db.collection("users")
             .document(userId)
             .collection(COLLECTION_NOTIFICATIONS)
-            .whereEqualTo("isRead", false)
-            .addSnapshotListener((value, error) -> {
-                if (error != null || value == null) {
-                    countLiveData.setValue(0);
-                    return;
+            .whereEqualTo("isRead", false);
+
+        return new com.example.healthylifehub.data.livedata.FirestoreQueryLiveData<Integer>(query) {
+            @Override
+            protected Integer parseSnapshot(com.google.firebase.firestore.QuerySnapshot snapshot) {
+                if (snapshot == null) {
+                    return 0;
                 }
-                countLiveData.setValue(value.size());
-            });
-        
-        return countLiveData;
+                return snapshot.size();
+            }
+        };
     }
     
     /**

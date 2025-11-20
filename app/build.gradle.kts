@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -17,6 +18,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
         
         // Read Google Web Client ID from local.properties (NOT committed to Git)
         // REQUIRED: Add this line to your local.properties: google.web.client.id=YOUR_CLIENT_ID
@@ -80,6 +82,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.lottie)
     implementation(libs.androidx.viewbinding)
     // Unit Testing
     testImplementation(libs.junit)
@@ -143,9 +146,11 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 
     // Google Sign-In
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
     
     // Google Play Services Tasks (for Tasks.await)
     implementation("com.google.android.gms:play-services-tasks:18.1.0")
@@ -179,7 +184,11 @@ dependencies {
     // Apache POI for Excel export
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation("com.fasterxml:aalto-xml:1.3.2")
     
     // iText for PDF export
     implementation("com.itextpdf:itext7-core:7.2.5")
+
+    // ML Kit Text Recognition
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
 }

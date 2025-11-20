@@ -8,27 +8,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="@dimen/padding_large">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bộ lọc chỉ số"
-            android:textSize="20sp"
+            android:text="@string/filter_metrics"
+            android:textSize="@dimen/text_size_xl"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="@dimen/margin_normal"/>
 
         <!-- Thời gian -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thời gian đo"
-            android:textSize="16sp"
+            android:text="@string/measurement_time_range"
+            android:textSize="@dimen/text_size_medium"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Từ ngày"
+                android:hint="@string/date_from"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -56,15 +56,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" - "
-                android:textSize="16sp"
-                android:layout_marginHorizontal="8dp"/>
+                android:text="@string/dash_separator"
+                android:textSize="@dimen/text_size_medium"
+                android:layout_marginHorizontal="@dimen/margin_small"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Đến ngày"
+                android:hint="@string/date_to"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -83,12 +83,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Khoảng giá trị"
-            android:textSize="16sp"
+            android:text="@string/value_range"
+            android:textSize="@dimen/text_size_medium"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_small"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -100,7 +100,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Từ"
+                android:hint="@string/from"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -114,15 +114,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" - "
-                android:textSize="16sp"
-                android:layout_marginHorizontal="8dp"/>
+                android:text="@string/dash_separator"
+                android:textSize="@dimen/text_size_medium"
+                android:layout_marginHorizontal="@dimen/margin_small"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Đến"
+                android:hint="@string/to"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -141,22 +141,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="@dimen/margin_large">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_reset"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đặt lại"
-                android:layout_marginEnd="8dp"/>
+                android:text="@string/reset"
+                android:layout_marginEnd="@dimen/margin_small"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_apply"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Áp dụng"/>
+                android:text="@string/apply"/>
 
         </LinearLayout>
 

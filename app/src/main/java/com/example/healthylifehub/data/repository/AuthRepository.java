@@ -12,6 +12,8 @@ import com.example.healthylifehub.BuildConfig;
 import com.example.healthylifehub.base.BaseRepository;
 import com.example.healthylifehub.base.DataState;
 import com.example.healthylifehub.data.model.User;
+import com.example.healthylifehub.data.model.UserProfile;
+import com.example.healthylifehub.utils.AsyncErrorLogger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -30,6 +32,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
@@ -394,5 +399,229 @@ public class AuthRepository extends BaseRepository {
         if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
             compositeDisposable.clear();
         }
+    }
+
+    // ========== CompletableFuture-based Async Methods ==========
+    
+    /**
+     * Task 3.1: Login with email using CompletableFuture
+     * Uses CompletableFuture.supplyAsync() with getIoExecutor()
+     * Wraps Firebase signInWithEmailAndPassword with Tasks.await()
+     * Converts FirebaseUser to User model on background thread
+     * 
+     * @param email User's email address
+     * @param password User's password
+     * @return CompletableFuture<User> containing the authenticated user
+     */
+    public CompletableFuture<User> loginWithEmailAsync(String email, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                // Step 1: Authenticate with Firebase on background thread
+                Task<AuthResult> task = firebaseAuth.signInWithEmailAndPassword(email, password);
+                Tasks.await(task);
+                
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    throw new Exception("Login failed - authentication unsuccessful");
+                }
+                
+                FirebaseUser firebaseUser = task.getResult().getUser();
+                if (firebaseUser == null) {
+                    throw new Exception("Login failed - no user returned");
+                }
+                
+                // Step 2: Update last login time
+                updateLastLoginSync(firebaseUser.getUid());
+                
+                // Step 3: Convert FirebaseUser to User model on background thread
+                User user = new User(
+                    firebaseUser.getUid(),
+                    firebaseUser.getEmail(),
+                    firebaseUser.getDisplayName(),
+                    firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl().toString() : null
+                );
+                
+                Log.d(TAG, "Login successful for user: " + user.getEmail());
+                return user;
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Login failed", e);
+                throw new CompletionException(e);
+            }
+        }, getIoExecutor())
+        .exceptionally(throwable -> {
+            // Log error with user context
+            AsyncErrorLogger.context()
+                .put("email", email)
+                .put("operation", "email_login")
+                .log("login_with_email", throwable);
+            throw new CompletionException(throwable);
+        });
+    }
+    
+    /**
+     * Task 3.2: Register with email using RxJava Observable chain
+     * Creates Observable chain: createUser → createFirestoreDoc → sendVerification
+     * Uses Schedulers.io() for background operations
+     * Uses AndroidSchedulers.mainThread() for result delivery
+     * 
+     * @param email User's email address
+     * @param password User's password
+     * @param profile User's profile information
+     * @return Observable<User> that emits the registered user
+     */
+    public io.reactivex.rxjava3.core.Observable<User> registerWithEmailAsync(
+            String email, String password, UserProfile profile) {
+        
+        return io.reactivex.rxjava3.core.Observable.fromCallable(() -> {
+            // Step 1: Create Firebase Auth account
+            Log.d(TAG, "Step 1: Creating Firebase Auth account");
+            Task<AuthResult> task = firebaseAuth.createUserWithEmailAndPassword(email, password);
+            Tasks.await(task);
+            
+            if (!task.isSuccessful() || task.getResult() == null) {
+                throw new Exception("Registration failed - account creation unsuccessful");
+            }
+            
+            FirebaseUser firebaseUser = task.getResult().getUser();
+            if (firebaseUser == null) {
+                throw new Exception("Registration failed - no user returned");
+            }
+            
+            return firebaseUser;
+        })
+        .flatMap(firebaseUser -> {
+            // Step 2: Create Firestore user document
+            Log.d(TAG, "Step 2: Creating Firestore document with profile");
+            return io.reactivex.rxjava3.core.Observable.fromCallable(() -> {
+                saveUserWithProfileToFirestoreSync(firebaseUser, profile);
+                return firebaseUser;
+            });
+        })
+        .flatMap(firebaseUser -> {
+            // Step 3: Send email verification
+            Log.d(TAG, "Step 3: Sending verification email");
+            return io.reactivex.rxjava3.core.Observable.fromCallable(() -> {
+                Task<Void> emailTask = firebaseUser.sendEmailVerification();
+                Tasks.await(emailTask);
+                
+                if (!emailTask.isSuccessful()) {
+                    Log.w(TAG, "Email verification send failed, but continuing", emailTask.getException());
+                }
+                
+                // Return User model
+                User user = new User(
+                    firebaseUser.getUid(),
+                    firebaseUser.getEmail(),
+                    profile.getFullName(),
+                    null
+                );
+                
+                Log.d(TAG, "Registration successful. Email verification sent to: " + user.getEmail());
+                return user;
+            });
+        })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread());
+    }
+    
+    /**
+     * Task 3.3: Login with Google using CompletableFuture
+     * Processes Google Sign-In result on background thread
+     * Handles token exchange asynchronously
+     * 
+     * @param data Intent containing Google Sign-In result
+     * @return CompletableFuture<User> containing the authenticated user
+     */
+    public CompletableFuture<User> loginWithGoogleAsync(Intent data) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                // Step 1: Process Google Sign-In result on background thread
+                Log.d(TAG, "Processing Google Sign-In result");
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                
+                if (account == null || account.getIdToken() == null) {
+                    throw new Exception("Google Sign-In failed - no account or token");
+                }
+                
+                // Step 2: Handle token exchange asynchronously
+                Log.d(TAG, "Exchanging Google token for Firebase credential");
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                
+                Task<AuthResult> authTask = firebaseAuth.signInWithCredential(credential);
+                Tasks.await(authTask);
+                
+                if (!authTask.isSuccessful() || authTask.getResult() == null) {
+                    throw new Exception("Firebase authentication with Google credential failed");
+                }
+                
+                FirebaseUser firebaseUser = authTask.getResult().getUser();
+                if (firebaseUser == null) {
+                    throw new Exception("Google Sign-In failed - no Firebase user returned");
+                }
+                
+                // Step 3: Save user to Firestore and convert to User model
+                User user = new User(
+                    firebaseUser.getUid(),
+                    firebaseUser.getEmail(),
+                    firebaseUser.getDisplayName(),
+                    firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl().toString() : null
+                );
+                
+                saveUserToFirestoreSync(user);
+                updateLastLoginSync(firebaseUser.getUid());
+                
+                Log.d(TAG, "Google Sign-In successful for user: " + user.getEmail());
+                return user;
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Google Sign-In failed", e);
+                throw new CompletionException(e);
+            }
+        }, getIoExecutor())
+        .exceptionally(throwable -> {
+            // Log error with operation context
+            AsyncErrorLogger.context()
+                .put("operation", "google_login")
+                .log("login_with_google", throwable);
+            throw new CompletionException(throwable);
+        });
+    }
+    
+    /**
+     * Helper method: Save user with profile to Firestore synchronously
+     * Used in RxJava registration chain
+     */
+    private void saveUserWithProfileToFirestoreSync(FirebaseUser firebaseUser, UserProfile profile) throws Exception {
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("userId", firebaseUser.getUid());
+        userData.put("email", firebaseUser.getEmail());
+        userData.put("displayName", profile.getFullName());
+        userData.put("photoURL", null);
+        userData.put("role", "user");
+        userData.put("createdAt", com.google.firebase.Timestamp.now());
+        userData.put("updatedAt", com.google.firebase.Timestamp.now());
+        
+        // Create profile nested object with provided profile data
+        Map<String, Object> profileMap = new HashMap<>();
+        profileMap.put("fullName", profile.getFullName() != null ? profile.getFullName() : "");
+        profileMap.put("dateOfBirth", profile.getDateOfBirth());
+        profileMap.put("gender", profile.getGender() != null ? profile.getGender() : "");
+        profileMap.put("height", profile.getHeight());
+        profileMap.put("weight", profile.getWeight());
+        profileMap.put("bloodType", profile.getBloodType() != null ? profile.getBloodType() : "");
+        profileMap.put("medicalHistory", profile.getMedicalHistory() != null ? profile.getMedicalHistory() : "");
+        
+        userData.put("profile", profileMap);
+
+        Task<Void> task = firestore.collection(USERS_COLLECTION)
+                .document(firebaseUser.getUid())
+                .set(userData);
+        Tasks.await(task);
+        
+        if (!task.isSuccessful()) {
+            throw new Exception("Failed to save user with profile to Firestore");
+        }
+        Log.d(TAG, "User saved to Firestore with complete profile structure");
     }
 }

@@ -6,21 +6,21 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import com.example.healthylifehub.data.local.dao.HealthMetricDao;
 import com.example.healthylifehub.data.local.dao.MedicalRecordDao;
-import com.example.healthylifehub.data.local.dao.NotificationHistoryDao;
 import com.example.healthylifehub.data.local.dao.NotificationSettingsDao;
 import com.example.healthylifehub.data.local.dao.ReminderDao;
 import com.example.healthylifehub.data.local.dao.ReminderHistoryDao;
 import com.example.healthylifehub.data.local.dao.SyncStatusDao;
 import com.example.healthylifehub.data.local.dao.UserDao;
-import com.example.healthylifehub.data.local.migrations.DatabaseMigrations;
+import com.example.healthylifehub.data.local.dao.HealthArticleDao;
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.example.healthylifehub.data.model.MedicalRecord;
-import com.example.healthylifehub.data.model.NotificationHistory;
 import com.example.healthylifehub.data.model.NotificationSettings;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.ReminderHistory;
 import com.example.healthylifehub.data.model.SyncStatus;
 import com.example.healthylifehub.data.model.User;
+import com.example.healthylifehub.data.model.HealthArticle;
+import com.example.healthylifehub.data.local.migrations.DatabaseMigrations;
 
 /**
  * Room Database for offline-first caching
@@ -42,9 +42,9 @@ import com.example.healthylifehub.data.model.User;
         SyncStatus.class,
         MedicalRecord.class,
         NotificationSettings.class,
-        NotificationHistory.class
+        HealthArticle.class
     },
-    version = 11,  // Added NotificationHistory
+    version = 10,  // Incremented for notification settings enhancements
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -60,8 +60,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract SyncStatusDao syncStatusDao();
     public abstract MedicalRecordDao medicalRecordDao();
     public abstract NotificationSettingsDao notificationSettingsDao();
-    public abstract NotificationHistoryDao notificationHistoryDao();
-    
+    public abstract HealthArticleDao healthArticleDao();
+
     /**
      * Get database instance (Singleton pattern)
      */

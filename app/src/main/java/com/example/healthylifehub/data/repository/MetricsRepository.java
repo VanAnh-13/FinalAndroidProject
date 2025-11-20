@@ -5,9 +5,12 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.healthylifehub.base.BaseRepository;
 import com.example.healthylifehub.data.model.MetricHistory;
 import com.example.healthylifehub.data.model.MetricItem;
 import com.example.healthylifehub.data.cache.CacheManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
@@ -23,16 +26,34 @@ import java.util.Map;
  * Repository for Metrics data from Firebase Firestore.
  * Collection structure: metrics/{metricId}
  * Data format matches the provided JSON structure with value object containing specific metric data
+ * 
+ * Enhanced with ExecutorService for background processing of Firestore snapshots.
+ * Extends BaseRepository to access shared thread pools for optimal resource usage.
  */
-public class MetricsRepository extends FirebaseRepository {
+public class MetricsRepository extends BaseRepository {
     
     private static final String TAG = "MetricsRepository";
     private static final String COLLECTION_HEALTH_METRICS = "healthMetrics";
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM, HH:mm", Locale.getDefault());
+    private SimpleDateFormat dateFormat;
     private final android.content.Context context;
+    
+    // Firebase instances (previously inherited from FirebaseRepository)
+    protected final FirebaseFirestore db;
+    protected final FirebaseAuth auth;
     
     public MetricsRepository(android.content.Context context) {
         this.context = context;
+        this.db = FirebaseFirestore.getInstance();
+        this.auth = FirebaseAuth.getInstance();
+        this.dateFormat = new SimpleDateFormat(context.getString(com.example.healthylifehub.R.string.format_date_time_short), Locale.getDefault());
+    }
+    
+    /**
+     * Get current user ID
+     * @return User ID or null if not logged in
+     */
+    protected String getCurrentUserId() {
+        return auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
     }
     
     /**
@@ -87,7 +108,18 @@ public class MetricsRepository extends FirebaseRepository {
     }
     
     /**
-     * Load metric history for a specific metric type
+     * Load metric history for a specific metric type (ENHANCED)
+     * 
+     * Enhancement: Uses ExecutorService for Firestore listener to process snapshots on background thread
+     * - Pass executor to addSnapshotListener() for background processing
+     * - Process snapshots on background thread (IO executor)
+     * - Post results to LiveData on main thread
+     * 
+     * Requirements: 3.2, 3.3, 6.2
+     * - 3.2: Establish Firestore snapshot listener on background thread
+     * - 3.3: Update UI automatically via LiveData on main thread
+     * - 6.2: Establish Firestore addSnapshotListener for real-time updates on background thread
+     * 
      * @param metricType Type of metric (e.g., "blood_pressure", "heart_rate")
      * @return LiveData list of metric history
      */
@@ -100,19 +132,24 @@ public class MetricsRepository extends FirebaseRepository {
             return historyLiveData;
         }
         
+        // Pass IO executor to addSnapshotListener for background processing
         db.collection("users")
             .document(userId)
             .collection(COLLECTION_HEALTH_METRICS)
             .whereEqualTo("type", metricType)
             .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .limit(20)
-            .addSnapshotListener((value, error) -> {
+            .addSnapshotListener(getIoExecutor(), (value, error) -> {
+                // This callback now runs on background thread (IO executor)
                 if (error != null) {
-                    historyLiveData.setValue(new ArrayList<>());
+                    Log.e(TAG, "Error loading metric history for type: " + metricType, error);
+                    // Post empty list to LiveData on main thread
+                    historyLiveData.postValue(new ArrayList<>());
                     return;
                 }
                 
                 if (value != null) {
+                    // Process snapshots on background thread
                     List<MetricHistory> history = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : value) {
                         try {
@@ -129,10 +166,85 @@ public class MetricsRepository extends FirebaseRepository {
                                 history.add(new MetricHistory(numericValue, displayTime, unit));
                             }
                         } catch (Exception e) {
+                            Log.w(TAG, "Skipping invalid metric history record", e);
                             // Skip invalid records
                         }
                     }
-                    historyLiveData.setValue(history);
+                    
+                    Log.d(TAG, "✅ Processed " + history.size() + " metric history records for type: " + metricType + " on background thread");
+                    
+                    // Post results to LiveData on main thread
+                    historyLiveData.postValue(history);
+                }
+            });
+        
+        return historyLiveData;
+    }
+
+    /**
+     * Load metric history for a specific metric type within a date range
+     * 
+     * @param metricType Type of metric
+     * @param startDate Start timestamp (inclusive)
+     * @param endDate End timestamp (inclusive)
+     * @return LiveData list of metric history
+     */
+    public LiveData<List<MetricHistory>> loadMetricHistoryByDateRange(String metricType, long startDate, long endDate) {
+        MutableLiveData<List<MetricHistory>> historyLiveData = new MutableLiveData<>();
+        
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            historyLiveData.setValue(new ArrayList<>());
+            return historyLiveData;
+        }
+        
+        Date start = new Date(startDate);
+        Date end = new Date(endDate);
+        
+        // Pass IO executor to addSnapshotListener for background processing
+        db.collection("users")
+            .document(userId)
+            .collection(COLLECTION_HEALTH_METRICS)
+            .whereEqualTo("type", metricType)
+            .whereGreaterThanOrEqualTo("measuredAt", start)
+            .whereLessThanOrEqualTo("measuredAt", end)
+            .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .addSnapshotListener(getIoExecutor(), (value, error) -> {
+                // This callback now runs on background thread (IO executor)
+                if (error != null) {
+                    Log.e(TAG, "Error loading metric history for type: " + metricType, error);
+                    // Post empty list to LiveData on main thread
+                    historyLiveData.postValue(new ArrayList<>());
+                    return;
+                }
+                
+                if (value != null) {
+                    // Process snapshots on background thread
+                    List<MetricHistory> history = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : value) {
+                        try {
+                            String unit = doc.getString("unit");
+                            com.google.firebase.Timestamp measuredAt = doc.getTimestamp("measuredAt");
+                            Object valueObj = doc.get("value");
+                            
+                            if (valueObj != null && measuredAt != null) {
+                                // Extract only the numeric value (without unit)
+                                String numericValue = extractNumericValue(metricType, valueObj);
+                                String displayTime = formatHistoryTime(measuredAt.toDate());
+                                
+                                // Store numeric value + unit separately for calculations
+                                history.add(new MetricHistory(numericValue, displayTime, unit));
+                            }
+                        } catch (Exception e) {
+                            Log.w(TAG, "Skipping invalid metric history record", e);
+                            // Skip invalid records
+                        }
+                    }
+                    
+                    Log.d(TAG, "✅ Processed " + history.size() + " metric history records for type: " + metricType + " in range");
+                    
+                    // Post results to LiveData on main thread
+                    historyLiveData.postValue(history);
                 }
             });
         
@@ -155,7 +267,7 @@ public class MetricsRepository extends FirebaseRepository {
                         Object systolic = valueMap.get("systolic");
                         Object diastolic = valueMap.get("diastolic");
                         if (systolic != null && diastolic != null) {
-                            return systolic + "/" + diastolic + " " + (unit != null ? unit : "mmHg");
+                            return systolic + "/" + diastolic + " " + (unit != null ? unit : context.getString(com.example.healthylifehub.R.string.unit_mmhg));
                         }
                     }
                     break;
@@ -180,7 +292,7 @@ public class MetricsRepository extends FirebaseRepository {
                         Map<String, Object> valueMap = (Map<String, Object>) valueObj;
                         Object celsius = valueMap.get("celsius");
                         if (celsius != null) {
-                            return celsius + " " + (unit != null ? unit : "°C");
+                            return celsius + " " + (unit != null ? unit : context.getString(com.example.healthylifehub.R.string.unit_celsius));
                         }
                     }
                     break;
@@ -188,7 +300,7 @@ public class MetricsRepository extends FirebaseRepository {
         } catch (Exception e) {
             // Return N/A if parsing fails
         }
-        return "N/A";
+        return context.getString(com.example.healthylifehub.R.string.not_available);
     }
     
     /**
@@ -196,10 +308,10 @@ public class MetricsRepository extends FirebaseRepository {
      */
     private String getDefaultUnit(String type) {
         switch (type) {
-            case "heart_rate": return "bpm";
-            case "blood_sugar": return "mg/dL";
-            case "weight": return "kg";
-            case "temperature": return "°C";
+            case "heart_rate": return context.getString(com.example.healthylifehub.R.string.unit_bpm);
+            case "blood_sugar": return context.getString(com.example.healthylifehub.R.string.unit_mg_dl);
+            case "weight": return context.getString(com.example.healthylifehub.R.string.unit_kg);
+            case "temperature": return context.getString(com.example.healthylifehub.R.string.unit_celsius);
             default: return "";
         }
     }
@@ -209,11 +321,11 @@ public class MetricsRepository extends FirebaseRepository {
      */
     private String getMetricTitle(String type) {
         switch (type) {
-            case "blood_pressure": return "Huyết áp";
-            case "heart_rate": return "Nhịp tim";
-            case "blood_sugar": return "Đường huyết";
-            case "weight": return "Cân nặng";
-            case "temperature": return "Nhiệt độ";
+            case "blood_pressure": return context.getString(com.example.healthylifehub.R.string.blood_pressure);
+            case "heart_rate": return context.getString(com.example.healthylifehub.R.string.heart_rate);
+            case "blood_sugar": return context.getString(com.example.healthylifehub.R.string.blood_sugar);
+            case "weight": return context.getString(com.example.healthylifehub.R.string.weight);
+            case "temperature": return context.getString(com.example.healthylifehub.R.string.title_temperature);
             default: return type;
         }
     }
@@ -272,7 +384,7 @@ public class MetricsRepository extends FirebaseRepository {
         } catch (Exception e) {
             Log.e(TAG, "Error extracting numeric value", e);
         }
-        return "0";
+        return context.getString(com.example.healthylifehub.R.string.default_value_zero);
     }
     
     /**
@@ -281,7 +393,7 @@ public class MetricsRepository extends FirebaseRepository {
      */
     private String extractNumericFromString(String str) {
         if (str == null || str.isEmpty()) {
-            return "0";
+            return context.getString(com.example.healthylifehub.R.string.default_value_zero);
         }
         
         // Remove leading/trailing spaces
@@ -304,7 +416,7 @@ public class MetricsRepository extends FirebaseRepository {
         }
         
         String result = numeric.toString().trim();
-        return result.isEmpty() ? "0" : result;
+        return result.isEmpty() ? context.getString(com.example.healthylifehub.R.string.default_value_zero) : result;
     }
     
     /**
@@ -313,7 +425,7 @@ public class MetricsRepository extends FirebaseRepository {
      */
     private String formatHistoryTime(Date date) {
         // Use format compatible with ChartDataProcessor.INPUT_DATE_FORMAT
-        SimpleDateFormat historyFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat historyFormat = new SimpleDateFormat(context.getString(com.example.healthylifehub.R.string.format_date_time_full), Locale.getDefault());
         return historyFormat.format(date);
     }
     
@@ -325,6 +437,65 @@ public class MetricsRepository extends FirebaseRepository {
         // Cache invalidation handled by CacheManager
         // Analytics will be recalculated on next fetch
         Log.d(TAG, "✅ Analytics cache will be recalculated on next fetch");
+    }
+    
+    /**
+     * Load latest metrics synchronously for parallel execution.
+     * This method blocks until metrics are loaded from Firestore.
+     * Should be called from background thread via CompletableFuture.
+     * 
+     * Requirements: 6.1
+     * - 6.1: Fetch metrics in parallel with other dashboard data
+     * 
+     * @param userId User ID to load metrics for
+     * @return Map of metric type to formatted value
+     */
+    public Map<String, String> loadLatestMetricsSync(String userId) {
+        if (userId == null) {
+            return new HashMap<>();
+        }
+        
+        Map<String, String> latestMetrics = new HashMap<>();
+        String[] metricTypes = {"blood_pressure", "blood_sugar", "heart_rate", "weight"};
+        
+        try {
+            for (String metricType : metricTypes) {
+                com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot> task = 
+                    db.collection("users")
+                        .document(userId)
+                        .collection(COLLECTION_HEALTH_METRICS)
+                        .whereEqualTo("type", metricType)
+                        .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                        .limit(1)
+                        .get();
+                
+                // Wait for task to complete (with timeout)
+                long startTime = System.currentTimeMillis();
+                long timeout = 3000; // 3 seconds per metric type
+                while (!task.isComplete() && System.currentTimeMillis() - startTime < timeout) {
+                    Thread.sleep(50);
+                }
+                
+                if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                    com.google.firebase.firestore.QueryDocumentSnapshot doc = 
+                        (com.google.firebase.firestore.QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
+                    String type = doc.getString("type");
+                    String unit = doc.getString("unit");
+                    Object valueObj = doc.get("value");
+                    
+                    if (type != null && valueObj != null) {
+                        String formattedValue = formatMetricValue(type, valueObj, unit);
+                        latestMetrics.put(type, formattedValue);
+                    }
+                }
+            }
+            
+            Log.d(TAG, "✅ Loaded " + latestMetrics.size() + " latest metrics synchronously for parallel execution");
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error loading latest metrics synchronously", e);
+        }
+        
+        return latestMetrics;
     }
     
     /**

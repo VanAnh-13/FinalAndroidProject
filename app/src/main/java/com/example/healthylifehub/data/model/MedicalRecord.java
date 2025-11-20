@@ -12,7 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(tableName = "medical_records")
 public class MedicalRecord {
     
@@ -36,6 +35,20 @@ public class MedicalRecord {
     @Ignore
     private Long updatedAt;
 
+    @Ignore
+    public MedicalRecord(String id, String date, String title, String hospital, String doctor, String diagnosis, String description, String attachment, RecordType type) {
+        this.id = id;
+        this.date = date;
+        this.title = title;
+        this.hospital = hospital;
+        this.doctor = doctor;
+        this.diagnosis = diagnosis;
+        this.description = description;
+        this.attachment = attachment;
+        this.type = type;
+    }
+
+    @Ignore
     public MedicalRecord(String date, String title, String hospital, String doctor, String diagnosis, String description, String attachment, RecordType type) {
         this.date = date;
         this.title = title;
@@ -47,6 +60,7 @@ public class MedicalRecord {
         this.type = type;
     }
 
+    @Ignore
     public MedicalRecord(String date, String title, String description, String attachment, RecordType type) {
         this(date, title, null, null, null, description, attachment, type);
     }

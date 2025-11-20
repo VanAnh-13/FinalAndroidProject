@@ -217,6 +217,22 @@ public class MedicalRecordsRepository extends FirebaseRepository {
     }
     
     /**
+     * Search medical records by query
+     * Searches across title, diagnosis, description, doctor, and hospital fields
+     * 
+     * Requirements: 8.2, 8.4
+     * 
+     * @param query Search query string
+     * @return List of matching medical records
+     */
+    public List<MedicalRecord> searchRecords(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return dao.searchRecords(query.trim());
+    }
+    
+    /**
      * Sync medical record to Firestore
      */
     private CompletableFuture<Boolean> syncToFirestore(MedicalRecord record) {

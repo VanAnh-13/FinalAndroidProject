@@ -51,8 +51,7 @@ public class SmartSuggestionsViewModel extends AndroidViewModel {
                 List<Reminder> activeReminders = filterActiveReminders(reminders);
                 List<SmartSuggestion> generatedSuggestions = SmartReminderAI.generateSmartSuggestions(
                     activeReminders, 
-                    behavior,
-                    getApplication()
+                    behavior
                 );
                 
                 suggestions.setValue(generatedSuggestions);

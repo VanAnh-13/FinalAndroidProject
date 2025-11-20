@@ -28,6 +28,7 @@ public class ProfileViewModel extends BaseViewModel {
     // LiveData for save operation result
     private final MutableLiveData<Boolean> saveResult = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     public ProfileViewModel(@NonNull Application application) {
         super(application);
@@ -219,9 +220,22 @@ public class ProfileViewModel extends BaseViewModel {
         return isSaving;
     }
     
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+    
+    /**
+     * Get main thread executor for UI updates
+     * @return Executor that runs on main thread
+     */
+    private java.util.concurrent.Executor getMainExecutor() {
+        return androidx.core.content.ContextCompat.getMainExecutor(getApplication());
+    }
+    
     /**
      * Save profile data to Firestore
-     * Uses CompletableFuture for async operation as per Project_Summary.md UC-03
+     * Uses CompletableFuture for async operation as per Requirements 3.4
+     * Updates UI state on main thread with proper error handling
      * 
      * @param fullName User's full name
      * @param email User's email
@@ -237,29 +251,43 @@ public class ProfileViewModel extends BaseViewModel {
                            String height, String weight, String bloodType, 
                            String medicalHistory, String bmi) {
         
+        // Set loading state on UI thread
         isSaving.setValue(true);
+        errorMessage.setValue(null);
         
         // Create UserProfile object
         UserProfile userProfile = new UserProfile();
         userProfile.setFullName(fullName);
         userProfile.setEmail(email);
-        userProfile.setBirthDate(birthDate);
+        userProfile.setDateOfBirth(birthDate);
         userProfile.setGender(gender);
-        userProfile.setHeight(height);
-        userProfile.setWeight(weight);
+        try {
+            userProfile.setHeight(Double.parseDouble(height));
+        } catch (NumberFormatException e) {
+            userProfile.setHeight(0);
+        }
+        try {
+            userProfile.setWeight(Double.parseDouble(weight));
+        } catch (NumberFormatException e) {
+            userProfile.setWeight(0);
+        }
         userProfile.setBloodType(bloodType);
         userProfile.setMedicalHistory(medicalHistory);
-        userProfile.setBmi(bmi);
+        try {
+            userProfile.setBmi(Double.parseDouble(bmi));
+        } catch (NumberFormatException e) {
+            userProfile.setBmi(0);
+        }
         
-        // Save to Firestore using CompletableFuture (async)
+        // Save to Firestore using CompletableFuture (async on IO thread)
         userRepository.updateUserProfile(userProfile)
-            .thenAccept(success -> {
-                // Update on main thread
+            .thenAcceptAsync(success -> {
+                // Update on main thread using postValue
                 isSaving.postValue(false);
                 saveResult.postValue(success);
                 
-                // Update local LiveData if successful
                 if (success) {
+                    // Update local LiveData if successful
                     this.height.postValue(height);
                     this.weight.postValue(weight);
                     this.bmi.postValue(bmi);
@@ -267,32 +295,67 @@ public class ProfileViewModel extends BaseViewModel {
                     this.birthDate.postValue(birthDate);
                     this.gender.postValue(gender);
                     this.medicalHistory.postValue(medicalHistory);
+                    errorMessage.postValue(null);
+                } else {
+                    // Set user-friendly error message
+                    errorMessage.postValue("Không thể lưu hồ sơ. Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
-            })
+            }, getMainExecutor())
             .exceptionally(throwable -> {
-                // Handle error
+                // Handle error with user-friendly message on main thread
                 isSaving.postValue(false);
                 saveResult.postValue(false);
-                throwable.printStackTrace();
+                
+                // Provide user-friendly error messages based on exception type
+                String message;
+                if (throwable.getCause() instanceof java.net.UnknownHostException ||
+                    throwable.getCause() instanceof java.net.SocketTimeoutException) {
+                    message = "Không có kết nối mạng. Vui lòng kiểm tra và thử lại.";
+                } else if (throwable.getMessage() != null && throwable.getMessage().contains("permission")) {
+                    message = "Bạn không có quyền cập nhật hồ sơ này.";
+                } else {
+                    message = "Đã xảy ra lỗi khi lưu hồ sơ. Vui lòng thử lại sau.";
+                }
+                errorMessage.postValue(message);
+                
+                // Log error for debugging
+                android.util.Log.e("ProfileViewModel", "Error saving profile", throwable);
                 return null;
             });
     }
     
     /**
      * Save profile with auth update (name, email, photo)
+     * Uses CompletableFuture with proper error handling
      */
     public void saveProfileWithAuth(String fullName, String email, String photoUrl) {
         isSaving.setValue(true);
+        errorMessage.setValue(null);
         
         userRepository.updateUserProfileWithAuth(fullName, email, photoUrl)
-            .thenAccept(success -> {
+            .thenAcceptAsync(success -> {
                 isSaving.postValue(false);
                 saveResult.postValue(success);
-            })
+                
+                if (!success) {
+                    errorMessage.postValue("Không thể cập nhật thông tin xác thực. Vui lòng thử lại.");
+                }
+            }, getMainExecutor())
             .exceptionally(throwable -> {
                 isSaving.postValue(false);
                 saveResult.postValue(false);
-                throwable.printStackTrace();
+                
+                // Provide user-friendly error message
+                String message;
+                if (throwable.getCause() instanceof java.net.UnknownHostException ||
+                    throwable.getCause() instanceof java.net.SocketTimeoutException) {
+                    message = "Không có kết nối mạng. Vui lòng kiểm tra và thử lại.";
+                } else {
+                    message = "Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại sau.";
+                }
+                errorMessage.postValue(message);
+                
+                android.util.Log.e("ProfileViewModel", "Error saving profile with auth", throwable);
                 return null;
             });
     }

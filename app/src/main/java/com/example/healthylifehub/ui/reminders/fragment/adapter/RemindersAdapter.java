@@ -100,18 +100,14 @@ public class RemindersAdapter extends BaseAdapter<Reminder, ItemReminderBinding>
         String frequencyText = getFrequencyText(reminder.getFrequency());
         binding.tvReminderFrequency.setText(frequencyText);
         
-        // Nếu đã hoàn thành (isActive = false): xanh lá + mờ + ẩn nút
+        // Nếu đã hoàn thành (isActive = false): mờ + ẩn nút
         if (!isActive) {
             binding.getRoot().setAlpha(0.6f); // Mờ đi
-            binding.getRoot().setBackgroundColor(binding.getRoot().getContext().getColor(
-                android.R.color.holo_green_light)); // Xanh lá
             binding.switchReminder.setEnabled(false);
             binding.btnDone.setVisibility(android.view.View.GONE); // Ẩn nút hoàn thành
             binding.btnSkip.setVisibility(android.view.View.GONE); // Ẩn nút bỏ
         } else {
             binding.getRoot().setAlpha(1.0f); // Bình thường
-            binding.getRoot().setBackgroundColor(binding.getRoot().getContext().getColor(
-                android.R.color.transparent));
             binding.switchReminder.setEnabled(true);
             binding.btnDone.setVisibility(android.view.View.VISIBLE);
             binding.btnSkip.setVisibility(android.view.View.VISIBLE);

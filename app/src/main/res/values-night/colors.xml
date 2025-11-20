@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark mode specific colors -->
+    
+    <!-- Primary colors for dark mode -->
+    <color name="primary_red_dark_mode">#ff5555</color>
+    <color name="primary_red_darker">#cc0000</color>
+    <color name="primary_red_light_dark_mode">#ff7777</color>
+    
+    <!-- Background colors for dark mode -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="background_white">#1E1E1E</color>
+    <color name="background_light">#1E1E1E</color>
+    
+    <!-- Text colors for dark mode -->
+    <color name="text_primary">#E0E0E0</color>
+    <color name="text_primary_dark">#E0E0E0</color>
+    <color name="text_secondary">#B0B0B0</color>
+    <color name="text_hint">#808080</color>
+    <color name="text_tertiary">#707070</color>
+    
+    <!-- Border and divider colors for dark mode -->
+    <color name="border_color">#3A3A3A</color>
+    <color name="divider">#3A3A3A</color>
+    <color name="card_border">#3A3A3A</color>
+    
+    <!-- Button colors for dark mode -->
+    <color name="button_unselected">#2A2A2A</color>
+    <color name="border_focused">#64B5F6</color>
+    
+    <!-- Container colors for dark mode -->
+    <color name="primary_container">#3A1F1F</color>
+    <color name="surface_variant">#3A3A3A</color>
+    <color name="on_surface_variant">#B0B0B0</color>
+    
+    <!-- Error colors for dark mode -->
+    <color name="error_container">#5A1F1F</color>
+    <color name="delete_background">#5A1F1F</color>
+    
+    <!-- Warning colors for dark mode -->
+    <color name="warning_light">#4A3A1F</color>
+    
+    <!-- Surface -->
+    <color name="surface">#1E1E1E</color>
+</resources>
