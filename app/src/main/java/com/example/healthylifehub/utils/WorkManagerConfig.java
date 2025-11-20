@@ -10,6 +10,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import com.example.healthylifehub.workers.PromotionalNotificationWorker;
 import com.example.healthylifehub.workers.ReminderUpdateWorker;
 
 import java.util.concurrent.TimeUnit;
@@ -26,6 +27,7 @@ public class WorkManagerConfig {
     // Work tags for identification and management
     public static final String TAG_REMINDER_UPDATE = "reminder_update";
     public static final String TAG_REMINDER_ACTION = "reminder_action";
+    public static final String TAG_PROMOTIONAL = "promotional_notification";
     public static final String TAG_CRITICAL = "critical";
     
     // Retry policies
@@ -180,6 +182,58 @@ public class WorkManagerConfig {
                 }, context.getMainExecutor());
         } catch (Exception e) {
             Log.e(TAG, "❌ Failed to get work info for ID: " + workId, e);
+        }
+    }
+    
+    /**
+     * Setup periodic promotional notifications (every 3 days)
+     * 
+     * @param context Application context
+     */
+    public static void setupPromotionalNotifications(Context context) {
+        try {
+            // Create constraints - only when device is idle and battery not low
+            Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                .setRequiresBatteryNotLow(true)
+                .build();
+            
+            // Create periodic work request (every 3 days)
+            androidx.work.PeriodicWorkRequest workRequest = 
+                new androidx.work.PeriodicWorkRequest.Builder(
+                    PromotionalNotificationWorker.class,
+                    3, TimeUnit.DAYS,
+                    1, TimeUnit.HOURS // Flex interval
+                )
+                .setConstraints(constraints)
+                .addTag(TAG_PROMOTIONAL)
+                .build();
+            
+            // Enqueue with replace policy to avoid duplicates
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                "promotional_notifications",
+                androidx.work.ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            );
+            
+            Log.d(TAG, "✅ Setup promotional notifications (every 3 days)");
+            
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Failed to setup promotional notifications", e);
+        }
+    }
+    
+    /**
+     * Cancel promotional notifications
+     * 
+     * @param context Application context
+     */
+    public static void cancelPromotionalNotifications(Context context) {
+        try {
+            WorkManager.getInstance(context).cancelUniqueWork("promotional_notifications");
+            Log.d(TAG, "✅ Cancelled promotional notifications");
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Failed to cancel promotional notifications", e);
         }
     }
     

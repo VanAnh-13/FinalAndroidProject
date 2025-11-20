@@ -31,6 +31,9 @@ public class AppInitializer {
             // Initialize deadline management system
             initializeDeadlineManagement(context);
             
+            // Setup promotional notifications
+            WorkManagerConfig.setupPromotionalNotifications(context);
+            
             // Reschedule notifications for all active reminders
             rescheduleNotificationsOnStartup(context);
             

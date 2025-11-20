@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.receivers.ReminderActionReceiver;
+import com.example.healthylifehub.utils.NotificationHistoryManager;
 
 /**
  * SmartNotificationManager for interactive reminder notifications
@@ -35,10 +36,12 @@ public class SmartNotificationManager {
     
     private final Context context;
     private final NotificationManagerCompat notificationManager;
+    private final NotificationHistoryManager historyManager;
     
     public SmartNotificationManager(Context context) {
         this.context = context.getApplicationContext();
         this.notificationManager = NotificationManagerCompat.from(this.context);
+        this.historyManager = new NotificationHistoryManager(this.context);
         
         // Initialize logger
         ReminderLogger.initialize(this.context);
@@ -138,6 +141,9 @@ public class SmartNotificationManager {
             
             // Send notification with retry capability
             sendNotificationWithRetry(builder, notificationId, reminder.getReminderId(), 0);
+            
+            // Save to notification history after successful send
+            historyManager.saveReminderNotification(reminder, notificationId);
             
         } catch (SecurityException e) {
             ReminderLogger.logError(ReminderLogger.LogCategory.NOTIFICATION, 
@@ -334,6 +340,10 @@ public class SmartNotificationManager {
             // Log successful notification
             ReminderLogger.logNotificationEvent("sent", reminderId, 
                 "NotificationId: " + notificationId + ", Attempt: " + (retryCount + 1));
+            
+            // Save to notification history
+            // Note: We need to get the Reminder object to save properly
+            // This will be handled in the calling method
             
         } catch (Exception e) {
             ReminderLogger.logError(ReminderLogger.LogCategory.NOTIFICATION, 

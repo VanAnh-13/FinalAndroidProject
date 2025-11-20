@@ -57,12 +57,39 @@ public class DatabaseMigrations {
     };
     
     /**
+     * Migration from version 10 to 11
+     * Adds notification_history table
+     */
+    public static final Migration MIGRATION_10_11 = new Migration(10, 11) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Create notification_history table
+            database.execSQL("CREATE TABLE IF NOT EXISTS notification_history (" +
+                    "notificationId TEXT PRIMARY KEY NOT NULL, " +
+                    "userId TEXT, " +
+                    "title TEXT, " +
+                    "message TEXT, " +
+                    "type TEXT, " +
+                    "relatedId TEXT, " +
+                    "timestamp INTEGER NOT NULL, " +
+                    "isRead INTEGER NOT NULL DEFAULT 0, " +
+                    "actionTaken TEXT)");
+            
+            // Create indices for better query performance
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_notification_history_userId ON notification_history(userId)");
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_notification_history_timestamp ON notification_history(timestamp)");
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_notification_history_isRead ON notification_history(isRead)");
+        }
+    };
+    
+    /**
      * Get all available migrations
      */
     public static Migration[] getAllMigrations() {
         return new Migration[]{
             MIGRATION_8_9,
-            MIGRATION_9_10
+            MIGRATION_9_10,
+            MIGRATION_10_11
         };
     }
 }

@@ -201,6 +201,12 @@
             android:theme="@style/Theme.Base"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.notifications.NotificationHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait" />
+
         <receiver
             android:name=".receivers.ReminderReceiver"
             android:enabled="true"
