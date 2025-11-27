@@ -11,7 +11,7 @@ import com.example.healthylifehub.data.local.dao.ReminderHistoryDao;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.ReminderHistory;
 import com.example.healthylifehub.services.ReminderSchedulingService;
-import com.example.healthylifehub.utils.ApplicationContextProvider;
+import com.example.healthylifehub.utils.app.ApplicationContextProvider;
 import com.example.healthylifehub.sync.SyncManager;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;

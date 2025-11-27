@@ -112,7 +112,7 @@ public class NetworkDialog {
      * Hiển thị lỗi với custom message
      */
     public void showError(String message) {
-        tvMessage.setText("❌ " + message);
+        tvMessage.setText(context.getString(R.string.network_error_format, message));
         ivIcon.setImageResource(R.drawable.ic_error);
         cardView.setCardBackgroundColor(context.getResources().getColor(android.R.color.holo_red_light));
         
@@ -125,7 +125,7 @@ public class NetworkDialog {
      * Hiển thị thành công với custom message
      */
     public void showSuccess(String message) {
-        tvMessage.setText("✅ " + message);
+        tvMessage.setText(context.getString(R.string.network_success_format, message));
         ivIcon.setImageResource(R.drawable.ic_check);
         cardView.setCardBackgroundColor(context.getResources().getColor(android.R.color.holo_green_light));
         

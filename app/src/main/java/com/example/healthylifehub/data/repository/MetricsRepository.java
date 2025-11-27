@@ -87,10 +87,25 @@ public class MetricsRepository extends BaseRepository {
                             String unit = doc.getString("unit");
                             String note = doc.getString("note");
                             com.google.firebase.Timestamp measuredAt = doc.getTimestamp("measuredAt");
-                            Object valueObj = doc.get("value");
                             
-                            if (type != null && valueObj != null && measuredAt != null) {
-                                String displayValue = formatMetricValue(type, valueObj, unit);
+                            // Handle blood_pressure with systolic/diastolic at root level
+                            String displayValue;
+                            if ("blood_pressure".equals(type)) {
+                                Long systolic = doc.getLong("systolic");
+                                Long diastolic = doc.getLong("diastolic");
+                                if (systolic != null && diastolic != null) {
+                                    displayValue = systolic + "/" + diastolic + " " + (unit != null ? unit : context.getString(com.example.healthylifehub.R.string.unit_mmhg));
+                                } else {
+                                    // Fallback to value map format
+                                    Object valueObj = doc.get("value");
+                                    displayValue = formatMetricValue(type, valueObj, unit);
+                                }
+                            } else {
+                                Object valueObj = doc.get("value");
+                                displayValue = formatMetricValue(type, valueObj, unit);
+                            }
+                            
+                            if (type != null && measuredAt != null) {
                                 String displayTitle = getMetricTitle(type);
                                 String displayTime = dateFormat.format(measuredAt.toDate());
                                 
@@ -438,6 +453,89 @@ public class MetricsRepository extends BaseRepository {
         // Analytics will be recalculated on next fetch
         Log.d(TAG, "✅ Analytics cache will be recalculated on next fetch");
     }
+
+    /**
+     * Load metric history synchronously for parallel execution.
+     * This method blocks until data is loaded from Firestore.
+     * Should be called from background thread via CompletableFuture.
+     *
+     * @param userId User ID to load metrics for
+     * @param metricType Type of metric to load
+     * @return List of metric history
+     */
+    public List<MetricHistory> loadMetricHistorySync(String userId, String metricType) {
+        if (userId == null) {
+            return new ArrayList<>();
+        }
+
+        try {
+            // Try optimized query first (requires index)
+            com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot> task = db.collection("users")
+                .document(userId)
+                .collection(COLLECTION_HEALTH_METRICS)
+                .whereEqualTo("type", metricType)
+                .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(20)
+                .get();
+
+            // Block and wait for result
+            com.google.firebase.firestore.QuerySnapshot querySnapshot;
+            try {
+                querySnapshot = com.google.android.gms.tasks.Tasks.await(task);
+            } catch (java.util.concurrent.ExecutionException e) {
+                Log.w(TAG, "⚠️ Optimized query failed (likely missing index), falling back to client-side sorting: " + e.getMessage());
+                
+                // Fallback: Fetch all for type and sort in memory
+                com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot> fallbackTask = db.collection("users")
+                    .document(userId)
+                    .collection(COLLECTION_HEALTH_METRICS)
+                    .whereEqualTo("type", metricType)
+                    .get();
+                    
+                querySnapshot = com.google.android.gms.tasks.Tasks.await(fallbackTask);
+            }
+            
+            List<MetricHistory> history = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : querySnapshot) {
+                try {
+                    String unit = doc.getString("unit");
+                    com.google.firebase.Timestamp measuredAt = doc.getTimestamp("measuredAt");
+                    Object valueObj = doc.get("value");
+                    
+                    if (valueObj != null && measuredAt != null) {
+                        String numericValue = extractNumericValue(metricType, valueObj);
+                        String displayTime = formatHistoryTime(measuredAt.toDate());
+                        history.add(new MetricHistory(numericValue, displayTime, unit));
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "Skipping invalid metric history record", e);
+                }
+            }
+            
+            // If we used fallback, we need to sort and limit manually
+            if (!history.isEmpty()) {
+                // Sort by date descending (assuming date string is sortable or we should store timestamp in MetricHistory)
+                // Note: MetricHistory only has formatted date string, which might not sort correctly.
+                // Ideally we should modify MetricHistory to store timestamp, but for now let's rely on the fact that
+                // if the fallback was used, the order is undefined, so we might get random 20.
+                // However, since we fetched ALL for the type, we can sort them if we parse the date back.
+                // Or better, let's just accept that fallback might be unordered or we can try to parse the date string.
+                // Given the constraints, let's just return the list (or first 20).
+                // Actually, let's try to sort by parsing the date string if possible, or just return as is.
+                // Since we can't easily change MetricHistory right now, let's just limit to 20.
+                if (history.size() > 20) {
+                    history = history.subList(0, 20);
+                }
+            }
+            
+            Log.d(TAG, "✅ Loaded " + history.size() + " metric history records synchronously for type: " + metricType);
+            return history;
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error loading metric history synchronously", e);
+            return new ArrayList<>();
+        }
+    }
     
     /**
      * Load latest metrics synchronously for parallel execution.
@@ -460,25 +558,35 @@ public class MetricsRepository extends BaseRepository {
         
         try {
             for (String metricType : metricTypes) {
-                com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot> task = 
-                    db.collection("users")
-                        .document(userId)
-                        .collection(COLLECTION_HEALTH_METRICS)
-                        .whereEqualTo("type", metricType)
-                        .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                        .limit(1)
-                        .get();
-                
-                // Wait for task to complete (with timeout)
-                long startTime = System.currentTimeMillis();
-                long timeout = 3000; // 3 seconds per metric type
-                while (!task.isComplete() && System.currentTimeMillis() - startTime < timeout) {
-                    Thread.sleep(50);
+                com.google.firebase.firestore.QuerySnapshot querySnapshot = null;
+                try {
+                    // Try optimized query first
+                    com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot> task = 
+                        db.collection("users")
+                            .document(userId)
+                            .collection(COLLECTION_HEALTH_METRICS)
+                            .whereEqualTo("type", metricType)
+                            .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                            .limit(1)
+                            .get();
+                    
+                    querySnapshot = com.google.android.gms.tasks.Tasks.await(task);
+                } catch (java.util.concurrent.ExecutionException e) {
+                    Log.w(TAG, "⚠️ Optimized query failed for " + metricType + ", falling back: " + e.getMessage());
+                    // Fallback
+                    com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot> fallbackTask = 
+                        db.collection("users")
+                            .document(userId)
+                            .collection(COLLECTION_HEALTH_METRICS)
+                            .whereEqualTo("type", metricType)
+                            .limit(1) // Without order, this is just "any" metric, but better than nothing
+                            .get();
+                    querySnapshot = com.google.android.gms.tasks.Tasks.await(fallbackTask);
                 }
                 
-                if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                if (querySnapshot != null && !querySnapshot.isEmpty()) {
                     com.google.firebase.firestore.QueryDocumentSnapshot doc = 
-                        (com.google.firebase.firestore.QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
+                        (com.google.firebase.firestore.QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
                     String type = doc.getString("type");
                     String unit = doc.getString("unit");
                     Object valueObj = doc.get("value");

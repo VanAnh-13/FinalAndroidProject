@@ -99,7 +99,7 @@ public class AnalyticsFragment extends BaseFragment<FragmentAnalyticsBinding> {
         viewModel.getAnalysisLoading().observe(getViewLifecycleOwner(), isLoading -> {
             // Show/hide analysis loading indicator
             if (isLoading) {
-                Toast.makeText(requireContext(), "Đang phân tích dữ liệu...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(com.example.healthylifehub.R.string.toast_analyzing_data), Toast.LENGTH_SHORT).show();
             }
         });
         
@@ -161,7 +161,7 @@ public class AnalyticsFragment extends BaseFragment<FragmentAnalyticsBinding> {
     private void setupRefreshButton() {
         getBinding().btnRefresh.setOnClickListener(v -> {
             viewModel.refreshAnalyticsData();
-            Toast.makeText(requireContext(), "Refreshing data...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(com.example.healthylifehub.R.string.toast_refreshing_data), Toast.LENGTH_SHORT).show();
         });
     }
     

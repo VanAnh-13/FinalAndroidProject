@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
+import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseFragment;
 import com.example.healthylifehub.base.BaseViewModel;
 import com.example.healthylifehub.databinding.FragmentProfileBinding;
@@ -273,7 +274,7 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding> {
         // DEBUG: Long press on avatar to force create profile
         getBinding().ivProfileAvatar.setOnLongClickListener(v -> {
             forceCreateProfileIfNeeded();
-            Toast.makeText(getContext(), "Đang tạo profile structure...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.toast_creating_profile), Toast.LENGTH_SHORT).show();
             return true;
         });
 

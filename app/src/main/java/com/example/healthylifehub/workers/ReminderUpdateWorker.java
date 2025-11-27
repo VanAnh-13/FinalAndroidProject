@@ -14,9 +14,9 @@ import com.example.healthylifehub.data.local.dao.ReminderDao;
 import com.example.healthylifehub.data.local.dao.ReminderHistoryDao;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.ReminderHistory;
-import com.example.healthylifehub.utils.ErrorHandler;
-import com.example.healthylifehub.utils.ReminderLogger;
-import com.example.healthylifehub.utils.RetryManager;
+import com.example.healthylifehub.utils.error.ErrorHandler;
+import com.example.healthylifehub.utils.reminder.ReminderLogger;
+import com.example.healthylifehub.utils.retry.RetryManager;
 
 import java.util.UUID;
 

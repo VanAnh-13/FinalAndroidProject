@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.healthylifehub.utils.NotificationHelper;
-import com.example.healthylifehub.utils.ReminderAlarmManager;
+import com.example.healthylifehub.utils.notification.NotificationHelper;
+import com.example.healthylifehub.utils.reminder.ReminderAlarmManager;
 import com.example.healthylifehub.data.repository.RemindersRepository;
 import com.example.healthylifehub.data.model.Reminder;
 
@@ -100,7 +100,7 @@ public class ReminderReceiver extends BroadcastReceiver {
                 // Show toast on main thread
                 android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
                 mainHandler.post(() -> 
-                    Toast.makeText(context, "✅ Đã hoàn thành nhắc nhở", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(com.example.healthylifehub.R.string.toast_reminder_completed), Toast.LENGTH_SHORT).show()
                 );
                 
             } catch (Exception e) {
@@ -144,7 +144,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         );
         
         // Show toast
-        Toast.makeText(context, "⏰ Sẽ nhắc lại sau 10 phút", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(com.example.healthylifehub.R.string.toast_snooze_10_min), Toast.LENGTH_SHORT).show();
         
         Log.d(TAG, "✅ Scheduled snooze for: " + new java.util.Date(snoozeTime));
     }

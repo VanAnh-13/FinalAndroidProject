@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import com.example.healthylifehub.utils.NetworkMonitor;
+import com.example.healthylifehub.utils.network.NetworkMonitor;
 import com.google.android.material.button.MaterialButton;
 
 /**

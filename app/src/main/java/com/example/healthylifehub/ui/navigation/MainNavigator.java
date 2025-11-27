@@ -138,7 +138,7 @@ public final class MainNavigator {
                 return Outcome.handled();
 
             case R.id.nav_drawer_help:
-                Toast.makeText(activity, "Help & Support feature coming soon", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, activity.getString(R.string.toast_help_support_coming_soon), Toast.LENGTH_SHORT).show();
                 return Outcome.handled();
 
             case R.id.nav_drawer_logout:

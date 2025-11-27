@@ -63,7 +63,7 @@ public class DatabaseMigrations {
     public static final Migration MIGRATION_10_11 = new Migration(10, 11) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // Create notification_history table
+            // Create notification_history table without indices and without default value for isRead
             database.execSQL("CREATE TABLE IF NOT EXISTS notification_history (" +
                     "notificationId TEXT PRIMARY KEY NOT NULL, " +
                     "userId TEXT, " +
@@ -72,13 +72,45 @@ public class DatabaseMigrations {
                     "type TEXT, " +
                     "relatedId TEXT, " +
                     "timestamp INTEGER NOT NULL, " +
-                    "isRead INTEGER NOT NULL DEFAULT 0, " +
+                    "isRead INTEGER NOT NULL, " +
                     "actionTaken TEXT)");
+        }
+    };
+    
+    /**
+     * Migration from version 11 to 12
+     * Fixes notification_history table schema - removes indices and default values
+     * to match the entity definition
+     */
+    public static final Migration MIGRATION_11_12 = new Migration(11, 12) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Drop existing table with indices and recreate without them
+            database.execSQL("DROP TABLE IF EXISTS notification_history");
             
-            // Create indices for better query performance
-            database.execSQL("CREATE INDEX IF NOT EXISTS index_notification_history_userId ON notification_history(userId)");
-            database.execSQL("CREATE INDEX IF NOT EXISTS index_notification_history_timestamp ON notification_history(timestamp)");
-            database.execSQL("CREATE INDEX IF NOT EXISTS index_notification_history_isRead ON notification_history(isRead)");
+            // Create notification_history table matching entity definition
+            database.execSQL("CREATE TABLE IF NOT EXISTS notification_history (" +
+                    "notificationId TEXT PRIMARY KEY NOT NULL, " +
+                    "userId TEXT, " +
+                    "title TEXT, " +
+                    "message TEXT, " +
+                    "type TEXT, " +
+                    "relatedId TEXT, " +
+                    "timestamp INTEGER NOT NULL, " +
+                    "isRead INTEGER NOT NULL, " +
+                    "actionTaken TEXT)");
+        }
+    };
+    
+    /**
+     * Migration from version 12 to 13
+     * Added 'unit' column to health_metrics table
+     */
+    static final Migration MIGRATION_12_13 = new Migration(12, 13) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Add unit column to health_metrics table
+            database.execSQL("ALTER TABLE health_metrics ADD COLUMN unit TEXT");
         }
     };
     
@@ -89,7 +121,9 @@ public class DatabaseMigrations {
         return new Migration[]{
             MIGRATION_8_9,
             MIGRATION_9_10,
-            MIGRATION_10_11
+            MIGRATION_10_11,
+            MIGRATION_11_12,
+            MIGRATION_12_13
         };
     }
 }

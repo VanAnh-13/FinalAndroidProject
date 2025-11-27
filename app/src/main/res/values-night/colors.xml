@@ -43,4 +43,9 @@
     
     <!-- Surface -->
     <color name="surface">#1E1E1E</color>
+    
+    <!-- Chart Colors for dark mode -->
+    <color name="chart_text">#E0E0E0</color>
+    <color name="chart_axis">#B0B0B0</color>
+    <color name="chart_grid">#3A3A3A</color>
 </resources>

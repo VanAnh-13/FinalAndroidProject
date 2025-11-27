@@ -87,7 +87,7 @@ public abstract class BaseActivity<VB extends ViewBinding> extends AppCompatActi
      */
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(com.example.healthylifehub.utils.LocaleHelper.applyLanguage(newBase));
+        super.attachBaseContext(com.example.healthylifehub.utils.locale.LocaleHelper.applyLanguage(newBase));
     }
 
     /**

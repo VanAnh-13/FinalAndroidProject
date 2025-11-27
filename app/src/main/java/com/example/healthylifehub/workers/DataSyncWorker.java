@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.example.healthylifehub.utils.AsyncErrorLogger;
-import com.example.healthylifehub.utils.AsyncPerformanceLogger;
+import com.example.healthylifehub.utils.error.AsyncErrorLogger;
+import com.example.healthylifehub.utils.performance.AsyncPerformanceLogger;
 
 import com.example.healthylifehub.data.local.AppDatabase;
 import com.example.healthylifehub.data.local.dao.HealthMetricDao;

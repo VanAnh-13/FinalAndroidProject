@@ -16,8 +16,8 @@ import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseActivity;
 import com.example.healthylifehub.databinding.ActivityNotificationSettingsBinding;
 import com.example.healthylifehub.data.model.NotificationSettings;
-import com.example.healthylifehub.utils.NotificationHelper;
-import com.example.healthylifehub.utils.PermissionManager;
+import com.example.healthylifehub.utils.notification.NotificationHelper;
+import com.example.healthylifehub.utils.security.PermissionManager;
 
 /**
  * NotificationSettingsActivity - Manage notification preferences
@@ -215,18 +215,18 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
             // All good
             getBinding().ivPermissionStatus.setImageResource(R.drawable.ic_notifications_active);
             getBinding().ivPermissionStatus.setColorFilter(getColor(R.color.success));
-            getBinding().tvPermissionTitle.setText("Thông báo đã bật");
-            getBinding().tvPermissionDesc.setText("Ứng dụng có thể gửi thông báo");
+            getBinding().tvPermissionTitle.setText(R.string.notification_enabled_title);
+            getBinding().tvPermissionDesc.setText(R.string.notification_enabled_desc);
             getBinding().btnPermissionAction.setVisibility(View.GONE);
             getBinding().cardPermissionStatus.setStrokeColor(getColor(R.color.success));
         } else {
             // Need permission or settings
             getBinding().ivPermissionStatus.setImageResource(R.drawable.ic_notifications_off);
             getBinding().ivPermissionStatus.setColorFilter(getColor(R.color.error));
-            getBinding().tvPermissionTitle.setText("Thông báo bị tắt");
-            getBinding().tvPermissionDesc.setText("Vui lòng bật thông báo để sử dụng đầy đủ tính năng");
+            getBinding().tvPermissionTitle.setText(R.string.notification_disabled_title);
+            getBinding().tvPermissionDesc.setText(R.string.notification_disabled_desc);
             getBinding().btnPermissionAction.setVisibility(View.VISIBLE);
-            getBinding().btnPermissionAction.setText("Bật ngay");
+            getBinding().btnPermissionAction.setText(R.string.notification_enable_action);
             getBinding().cardPermissionStatus.setStrokeColor(getColor(R.color.error));
         }
     }
@@ -393,17 +393,13 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
      */
     private void showPermissionRationaleDialog() {
         new androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Cần quyền thông báo")
-            .setMessage("Ứng dụng cần quyền gửi thông báo để:\n\n" +
-                       "• Nhắc nhở uống thuốc đúng giờ\n" +
-                       "• Cảnh báo chỉ số sức khỏe bất thường\n" +
-                       "• Gửi gợi ý cải thiện sức khỏe\n\n" +
-                       "Bạn có muốn cấp quyền không?")
-            .setPositiveButton("Đồng ý", (dialog, which) -> {
+            .setTitle(R.string.notification_permission_title)
+            .setMessage(getString(R.string.notification_permission_message) + getString(R.string.permission_dialog_message_bullets))
+            .setPositiveButton(R.string.btn_agree, (dialog, which) -> {
                 PermissionManager.requestNotificationPermission(this);
             })
-            .setNegativeButton("Không", (dialog, which) -> {
-                Toast.makeText(this, "Một số tính năng có thể không hoạt động đầy đủ", Toast.LENGTH_LONG).show();
+            .setNegativeButton(R.string.btn_no, (dialog, which) -> {
+                Toast.makeText(this, getString(R.string.some_features_may_not_work), Toast.LENGTH_LONG).show();
             })
             .setCancelable(false)
             .show();
@@ -422,14 +418,14 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
                 public void onPermissionGranted() {
                     updatePermissionStatus();
                     Toast.makeText(NotificationSettingsActivity.this, 
-                        "✅ Đã cấp quyền thông báo thành công!", Toast.LENGTH_SHORT).show();
+                        getString(R.string.permission_granted_success), Toast.LENGTH_SHORT).show();
                 }
                 
                 @Override
                 public void onPermissionDenied() {
                     updatePermissionStatus();
                     Toast.makeText(NotificationSettingsActivity.this, 
-                        "❌ Quyền thông báo bị từ chối. Một số tính năng có thể không hoạt động.", 
+                        getString(R.string.permission_denied_message), 
                         Toast.LENGTH_LONG).show();
                 }
             });
@@ -442,11 +438,11 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
         if (currentSettings == null) return;
         
         String[] soundOptions = {
-            "Mặc định hệ thống",
-            "Nhẹ nhàng",
-            "Tiêu chuẩn", 
-            "Mạnh mẽ",
-            "Tùy chỉnh..."
+            getString(R.string.sound_system_default),
+            getString(R.string.sound_gentle),
+            getString(R.string.sound_standard), 
+            getString(R.string.sound_strong),
+            getString(R.string.sound_custom)
         };
         
         String[] soundValues = {
@@ -470,20 +466,20 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
         }
         
         new androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Chọn âm thanh thông báo")
+            .setTitle(R.string.dialog_select_sound)
             .setSingleChoiceItems(soundOptions, currentSelection, (dialog, which) -> {
                 if (which == soundValues.length - 1) {
                     // Custom sound selection - would open system sound picker
-                    Toast.makeText(this, "Tính năng tùy chỉnh âm thanh sẽ được cập nhật trong phiên bản tiếp theo", 
+                    Toast.makeText(this, getString(R.string.custom_sound_coming_soon), 
                         Toast.LENGTH_SHORT).show();
                 } else {
                     currentSettings.setReminderSoundUri(soundValues[which]);
                     saveSettings();
-                    Toast.makeText(this, "Đã chọn: " + soundOptions[which], Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.selected_sound, soundOptions[which]), Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();
             })
-            .setNegativeButton("Hủy", null)
+            .setNegativeButton(R.string.btn_cancel, null)
             .show();
     }
     
@@ -494,11 +490,11 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
         if (currentSettings == null) return;
         
         String[] vibrationOptions = {
-            "Mặc định",
-            "Nhẹ nhàng (1 lần)",
-            "Tiêu chuẩn (2 lần)",
-            "Mạnh mẽ (3 lần)",
-            "Liên tục"
+            getString(R.string.vibration_default),
+            getString(R.string.vibration_gentle),
+            getString(R.string.vibration_standard),
+            getString(R.string.vibration_strong),
+            getString(R.string.vibration_continuous)
         };
         
         String[] vibrationValues = {
@@ -522,7 +518,7 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
         }
         
         new androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Chọn kiểu rung")
+            .setTitle(R.string.dialog_select_vibration)
             .setSingleChoiceItems(vibrationOptions, currentSelection, (dialog, which) -> {
                 currentSettings.setReminderVibrationPattern(vibrationValues[which]);
                 saveSettings();
@@ -530,10 +526,10 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
                 // Test vibration pattern
                 testVibrationPattern(vibrationValues[which]);
                 
-                Toast.makeText(this, "Đã chọn: " + vibrationOptions[which], Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.selected_vibration, vibrationOptions[which]), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             })
-            .setNegativeButton("Hủy", null)
+            .setNegativeButton(R.string.btn_cancel, null)
             .show();
     }
     
@@ -584,12 +580,12 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
      */
     private void showNotificationPreview() {
         if (currentSettings == null) {
-            Toast.makeText(this, "Đang tải cài đặt...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.loading_settings), Toast.LENGTH_SHORT).show();
             return;
         }
         
         if (!PermissionManager.isNotificationPermissionGranted(this)) {
-            Toast.makeText(this, "Vui lòng cấp quyền thông báo trước", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.grant_notification_permission_first), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -598,35 +594,35 @@ public class NotificationSettingsActivity extends BaseActivity<ActivityNotificat
             NotificationHelper.showReminderNotification(
                 this,
                 "preview_reminder",
-                "🔔 Thông báo nhắc nhở mẫu",
-                "Đây là ví dụ về thông báo nhắc nhở với cài đặt hiện tại",
+                getString(R.string.preview_reminder_title),
+                getString(R.string.preview_reminder_message),
                 999999 // Unique preview ID
             );
-            Toast.makeText(this, "Đã gửi thông báo nhắc nhở mẫu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.sent_sample_reminder), Toast.LENGTH_SHORT).show();
         } else if (currentSettings.isHealthAlertsEnabled()) {
             NotificationHelper.showHealthAlertNotification(
                 this,
-                "⚠️ Cảnh báo sức khỏe mẫu",
-                "Đây là ví dụ về thông báo cảnh báo sức khỏe",
+                getString(R.string.preview_health_alert_title),
+                getString(R.string.preview_health_alert_message),
                 999998
             );
-            Toast.makeText(this, "Đã gửi cảnh báo sức khỏe mẫu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.sent_sample_health_alert), Toast.LENGTH_SHORT).show();
         } else if (currentSettings.isSuggestionsEnabled()) {
             NotificationHelper.showSuggestionNotification(
                 this,
-                "💡 Gợi ý thông minh mẫu",
-                "Đây là ví dụ về thông báo gợi ý cải thiện sức khỏe",
+                getString(R.string.preview_suggestion_title),
+                getString(R.string.preview_suggestion_message),
                 999997
             );
-            Toast.makeText(this, "Đã gửi gợi ý thông minh mẫu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.sent_sample_smart_suggestion), Toast.LENGTH_SHORT).show();
         } else {
             NotificationHelper.showGeneralNotification(
                 this,
-                "📱 Thông báo chung mẫu",
-                "Đây là ví dụ về thông báo chung của ứng dụng",
+                getString(R.string.preview_general_title),
+                getString(R.string.preview_general_message),
                 999996
             );
-            Toast.makeText(this, "Đã gửi thông báo chung mẫu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.sent_sample_general_notification), Toast.LENGTH_SHORT).show();
         }
     }
     

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.healthylifehub.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -69,6 +70,11 @@ public final class ChartConfigurator {
 		chart.setScaleEnabled(false);
 		chart.setPinchZoom(false);
 		chart.setDrawGridBackground(false);
+		
+		// Add extra offsets for axis labels
+		chart.setExtraLeftOffset(8f);
+		chart.setExtraRightOffset(8f);
+		chart.setExtraBottomOffset(8f);
 
 		XAxis xAxis = chart.getXAxis();
 		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -76,6 +82,7 @@ public final class ChartConfigurator {
 		xAxis.setGranularity(1f);
 		xAxis.setGranularityEnabled(true);
 		xAxis.setAvoidFirstLastClipping(true); // Tránh cắt nhãn đầu và cuối
+		xAxis.setTextColor(ContextCompat.getColor(context, R.color.chart_text)); // Theme-aware text color
 		
 		// ✅ FIX: Set proper X-axis range and label count
 		xAxis.setAxisMinimum(-0.5f); // Mở rộng phần trái để tránh cắt điểm đầu
@@ -104,7 +111,9 @@ public final class ChartConfigurator {
 
 		YAxis leftAxis = chart.getAxisLeft();
 		leftAxis.setDrawGridLines(true);
-		leftAxis.setGridColor(ContextCompat.getColor(context, gridColorRes));
+		leftAxis.setGridColor(ContextCompat.getColor(context, R.color.chart_grid)); // Theme-aware grid color
+		leftAxis.setTextColor(ContextCompat.getColor(context, R.color.chart_text)); // Theme-aware text color
+		leftAxis.setAxisLineColor(ContextCompat.getColor(context, R.color.chart_axis)); // Theme-aware axis color
 		
 		// Set Y-axis range if provided
 		if (yAxisMax > 0) {
@@ -193,7 +202,7 @@ public final class ChartConfigurator {
 		com.github.mikephil.charting.components.Legend legend = chart.getLegend();
 		legend.setEnabled(true);
 		legend.setTextSize(12f);
-		legend.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+		legend.setTextColor(ContextCompat.getColor(context, R.color.chart_text)); // Theme-aware text color
 		legend.setForm(com.github.mikephil.charting.components.Legend.LegendForm.LINE);
 		legend.setFormLineWidth(3f);
 
@@ -202,6 +211,11 @@ public final class ChartConfigurator {
 		chart.setScaleEnabled(false);
 		chart.setPinchZoom(false);
 		chart.setDrawGridBackground(false);
+		
+		// Add extra offsets for axis labels
+		chart.setExtraLeftOffset(8f);
+		chart.setExtraRightOffset(8f);
+		chart.setExtraBottomOffset(12f);  // Extra space for legend
 
 		XAxis xAxis = chart.getXAxis();
 		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -209,6 +223,7 @@ public final class ChartConfigurator {
 		xAxis.setGranularity(1f);
 		xAxis.setGranularityEnabled(true);
 		xAxis.setAvoidFirstLastClipping(true); // Tránh cắt nhãn đầu và cuối
+		xAxis.setTextColor(ContextCompat.getColor(context, R.color.chart_text)); // Theme-aware text color
 		
 		// ✅ FIX: Set proper X-axis range for dual chart
 		int dataSize = Math.max(systolicEntries.size(), diastolicEntries.size());
@@ -230,7 +245,9 @@ public final class ChartConfigurator {
 
 		YAxis leftAxis = chart.getAxisLeft();
 		leftAxis.setDrawGridLines(true);
-		leftAxis.setGridColor(ContextCompat.getColor(context, gridColorRes));
+		leftAxis.setGridColor(ContextCompat.getColor(context, R.color.chart_grid)); // Theme-aware grid color
+		leftAxis.setTextColor(ContextCompat.getColor(context, R.color.chart_text)); // Theme-aware text color
+		leftAxis.setAxisLineColor(ContextCompat.getColor(context, R.color.chart_axis)); // Theme-aware axis color
 		leftAxis.setAxisMinimum(40f);
 		leftAxis.setAxisMaximum(200f);
 		leftAxis.setValueFormatter(new YAxisUnitFormatter("mmHg"));

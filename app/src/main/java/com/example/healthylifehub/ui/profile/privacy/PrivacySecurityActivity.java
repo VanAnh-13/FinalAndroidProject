@@ -90,7 +90,7 @@ public class PrivacySecurityActivity extends BaseActivity<ActivityPrivacySecurit
         getBinding().actionChangePassword.setOnClickListener(v -> showChangePasswordDialog());
         
         getBinding().actionTwoFactor.setOnClickListener(v -> {
-            Toast.makeText(this, "Two-Factor Authentication coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_2fa_coming_soon), Toast.LENGTH_SHORT).show();
         });
         
         getBinding().actionLoginHistory.setOnClickListener(v -> {
@@ -99,7 +99,7 @@ public class PrivacySecurityActivity extends BaseActivity<ActivityPrivacySecurit
         });
         
         getBinding().actionConnectedApps.setOnClickListener(v -> {
-            Toast.makeText(this, "Connected Apps management coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_connected_apps_coming_soon), Toast.LENGTH_SHORT).show();
         });
         
         // Data Management

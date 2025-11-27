@@ -12,9 +12,9 @@ import androidx.work.WorkerParameters;
 import com.example.healthylifehub.data.local.AppDatabase;
 import com.example.healthylifehub.data.local.dao.ReminderDao;
 import com.example.healthylifehub.data.model.Reminder;
-import com.example.healthylifehub.utils.NotificationScheduler;
-import com.example.healthylifehub.utils.ProgressCalculator;
-import com.example.healthylifehub.utils.DeadlineWarningNotificationManager;
+import com.example.healthylifehub.utils.notification.NotificationScheduler;
+import com.example.healthylifehub.utils.app.ProgressCalculator;
+import com.example.healthylifehub.utils.reminder.DeadlineWarningNotificationManager;
 
 /**
  * Background worker for extending reminder deadlines

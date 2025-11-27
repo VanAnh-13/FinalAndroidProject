@@ -107,15 +107,15 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
             } else if (state.getStatus() == DataState.Status.SUCCESS) {
                 showLoading(false);
                 String email = getBinding().etEmail.getText().toString().trim();
-                com.example.healthylifehub.utils.SecurityUtils.resetLoginAttempts(this, email);
+                com.example.healthylifehub.utils.security.SecurityUtils.resetLoginAttempts(this, email);
                 saveCredentials();
                 navigateToDashboard();
             } else if (state.getStatus() == DataState.Status.ERROR) {
                 showLoading(false);
                 String email = getBinding().etEmail.getText().toString().trim();
-                com.example.healthylifehub.utils.SecurityUtils.recordFailedLoginAttempt(this, email);
+                com.example.healthylifehub.utils.security.SecurityUtils.recordFailedLoginAttempt(this, email);
                 
-                int remainingAttempts = com.example.healthylifehub.utils.SecurityUtils.getRemainingAttempts(this, email);
+                int remainingAttempts = com.example.healthylifehub.utils.security.SecurityUtils.getRemainingAttempts(this, email);
                 String errorMessage = state.getMessage();
                 if (remainingAttempts > 0 && remainingAttempts <= 3) {
                     errorMessage += "\nCòn " + remainingAttempts + " lần thử";
@@ -140,11 +140,11 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
         String password = getBinding().etPassword.getText().toString().trim();
         
         // Sanitize email input
-        email = com.example.healthylifehub.utils.SecurityUtils.sanitizeEmail(email);
+        email = com.example.healthylifehub.utils.security.SecurityUtils.sanitizeEmail(email);
         
         // Check if account is locked
-        if (com.example.healthylifehub.utils.SecurityUtils.isAccountLocked(this, email)) {
-            int remainingMinutes = com.example.healthylifehub.utils.SecurityUtils.getRemainingLockoutMinutes(this, email);
+        if (com.example.healthylifehub.utils.security.SecurityUtils.isAccountLocked(this, email)) {
+            int remainingMinutes = com.example.healthylifehub.utils.security.SecurityUtils.getRemainingLockoutMinutes(this, email);
             String message = getString(R.string.account_locked, remainingMinutes);
             showError(message);
             return;

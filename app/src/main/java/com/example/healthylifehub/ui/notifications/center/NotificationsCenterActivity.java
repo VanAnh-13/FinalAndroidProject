@@ -34,7 +34,7 @@ public class NotificationsCenterActivity extends BaseActivity<ActivityNotificati
     public void initData() {
         notificationsRepository = new NotificationsRepository();
         adapter = new NotificationsAdapter(notification -> {
-            Toast.makeText(this, "Clicked: " + notification.getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_clicked, notification.getTitle()), Toast.LENGTH_SHORT).show();
         });
         
         // Set delete listener
@@ -44,15 +44,15 @@ public class NotificationsCenterActivity extends BaseActivity<ActivityNotificati
                 notificationsRepository.deleteNotification(notification.getId())
                     .thenAccept(success -> {
                         if (success) {
-                            Toast.makeText(NotificationsCenterActivity.this, "✅ Đã xóa thông báo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NotificationsCenterActivity.this, getString(R.string.toast_notification_deleted), Toast.LENGTH_SHORT).show();
                             allNotifications.remove(position);
                             adapter.notifyItemRemoved(position);
                         } else {
-                            Toast.makeText(NotificationsCenterActivity.this, "❌ Lỗi khi xóa", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NotificationsCenterActivity.this, getString(R.string.delete_error), Toast.LENGTH_SHORT).show();
                         }
                     });
             } else {
-                Toast.makeText(NotificationsCenterActivity.this, "❌ Không thể xóa", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NotificationsCenterActivity.this, getString(R.string.toast_cannot_delete), Toast.LENGTH_SHORT).show();
             }
         });
     }

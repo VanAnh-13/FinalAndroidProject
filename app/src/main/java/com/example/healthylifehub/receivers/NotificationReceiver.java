@@ -7,8 +7,8 @@ import android.util.Log;
 
 import com.example.healthylifehub.data.local.AppDatabase;
 import com.example.healthylifehub.data.model.Reminder;
-import com.example.healthylifehub.utils.NotificationScheduler;
-import com.example.healthylifehub.utils.SmartNotificationManager;
+import com.example.healthylifehub.utils.notification.NotificationScheduler;
+import com.example.healthylifehub.utils.notification.SmartNotificationManager;
 
 /**
  * BroadcastReceiver for handling scheduled reminder notifications

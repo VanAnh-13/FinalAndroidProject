@@ -150,7 +150,7 @@ public class EditProfileActivity extends BaseActivity<ActivityEditProfileBinding
                     Toast.makeText(this, R.string.profile_updated_successfully, Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(this, "Lưu thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.toast_save_failed_retry), Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -13,7 +13,7 @@ import com.example.healthylifehub.base.BaseRepository;
 import com.example.healthylifehub.base.DataState;
 import com.example.healthylifehub.data.model.User;
 import com.example.healthylifehub.data.model.UserProfile;
-import com.example.healthylifehub.utils.AsyncErrorLogger;
+import com.example.healthylifehub.utils.error.AsyncErrorLogger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;

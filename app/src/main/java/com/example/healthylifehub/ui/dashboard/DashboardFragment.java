@@ -17,11 +17,11 @@ import com.example.healthylifehub.ui.notifications.center.NotificationsCenterAct
 import com.example.healthylifehub.ui.metrics.detail.MetricDetailActivity;
 import com.example.healthylifehub.utils.chart.ChartConfigurator;
 import com.example.healthylifehub.utils.chart.ChartDataProcessor;
-import com.example.healthylifehub.utils.AccessibilityUtils;
-import com.example.healthylifehub.utils.ResponsiveDesignUtils;
-import com.example.healthylifehub.utils.AnimationUtils;
-import com.example.healthylifehub.utils.ButtonAnimationHelper;
-import com.example.healthylifehub.utils.LoadingAnimationManager;
+import com.example.healthylifehub.utils.app.AccessibilityUtils;
+import com.example.healthylifehub.utils.app.ResponsiveDesignUtils;
+import com.example.healthylifehub.utils.animation.AnimationUtils;
+import com.example.healthylifehub.utils.animation.ButtonAnimationHelper;
+import com.example.healthylifehub.utils.animation.LoadingAnimationManager;
 import com.example.healthylifehub.data.model.MetricHistory;
 import com.example.healthylifehub.R;
 import java.util.ArrayList;
@@ -257,14 +257,14 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
      * Setup blood pressure chart on dashboard
      */
     private void setupBloodPressureChart() {
-        // TODO: Re-enable when lineChartBloodPressure view is added to layout
-        /*// Use only actual data from ViewModel - no hardcoded sample data
+        // Use only actual data from ViewModel - no hardcoded sample data
         List<MetricHistory> actualData = viewModel.getBloodPressureHistory().getValue();
         
         if (actualData == null || actualData.isEmpty()) {
             // Show proper empty state
             getBinding().lineChartBloodPressure.clear();
             getBinding().lineChartBloodPressure.setNoDataText("Chưa có dữ liệu huyết áp\nThêm chỉ số đầu tiên để xem biểu đồ");
+            getBinding().lineChartBloodPressure.setNoDataTextColor(getResources().getColor(R.color.text_secondary, null));
             getBinding().lineChartBloodPressure.invalidate();
             Log.d("DashboardFragment", "No blood pressure data available - showing empty state");
             return;
@@ -276,6 +276,7 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
         if (bpData.isEmpty()) {
             getBinding().lineChartBloodPressure.clear();
             getBinding().lineChartBloodPressure.setNoDataText("Chưa có dữ liệu huyết áp hợp lệ\nKiểm tra định dạng dữ liệu");
+            getBinding().lineChartBloodPressure.setNoDataTextColor(getResources().getColor(R.color.text_secondary, null));
             getBinding().lineChartBloodPressure.invalidate();
             Log.d("DashboardFragment", "Invalid blood pressure data format - showing error state");
             return;
@@ -293,7 +294,7 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
         );
         
         Log.d("DashboardFragment", "Blood pressure chart setup completed with " + 
-              bpData.systolicEntries.size() + " actual data points");*/
+              bpData.systolicEntries.size() + " actual data points");
     }
 
     /**

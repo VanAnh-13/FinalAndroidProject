@@ -55,66 +55,62 @@
                 <RadioGroup
                     android:id="@+id/rgTimeRange"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <com.google.android.material.card.MaterialCardView
+                    <RadioButton
+                        android:id="@+id/rbLast7Days"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_medium"
-                        app:cardCornerRadius="@dimen/corner_radius"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/primary"
-                        app:strokeWidth="@dimen/stroke_width">
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:background="@drawable/selector_radio_button_bg"
+                        android:button="@null"
+                        android:checked="true"
+                        android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+                        android:drawablePadding="@dimen/padding_small"
+                        android:padding="@dimen/padding_normal"
+                        android:text="@string/last_7_days"
+                        android:textSize="@dimen/text_size_normal" />
 
-                        <RadioButton
-                            android:id="@+id/rbLast7Days"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:padding="@dimen/padding_normal"
-                            android:text="@string/last_7_days"
-                            android:textSize="@dimen/text_size_normal" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
+                    <RadioButton
+                        android:id="@+id/rbLast30Days"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_medium"
-                        app:cardCornerRadius="@dimen/corner_radius"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/border_color"
-                        app:strokeWidth="@dimen/stroke_width">
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:background="@drawable/selector_radio_button_bg"
+                        android:button="@null"
+                        android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+                        android:drawablePadding="@dimen/padding_small"
+                        android:padding="@dimen/padding_normal"
+                        android:text="@string/last_30_days"
+                        android:textSize="@dimen/text_size_normal" />
 
-                        <RadioButton
-                            android:id="@+id/rbLast30Days"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/padding_normal"
-                            android:text="@string/last_30_days"
-                            android:textSize="@dimen/text_size_normal" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
+                    <RadioButton
+                        android:id="@+id/rbCustom"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/corner_radius"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/border_color"
-                        app:strokeWidth="@dimen/stroke_width">
-
-                        <RadioButton
-                            android:id="@+id/rbCustom"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/padding_normal"
-                            android:text="@string/custom"
-                            android:textSize="@dimen/text_size_normal" />
-
-                    </com.google.android.material.card.MaterialCardView>
+                        android:background="@drawable/selector_radio_button_bg"
+                        android:button="@null"
+                        android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+                        android:drawablePadding="@dimen/padding_small"
+                        android:padding="@dimen/padding_normal"
+                        android:text="@string/custom"
+                        android:textSize="@dimen/text_size_normal" />
 
                 </RadioGroup>
+
+                <!-- Date Picker Button - shown when Custom is selected -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSelectDateRange"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:text="@string/select_date_range"
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_calendar"
+                    app:iconGravity="start" />
 
             </LinearLayout>
 

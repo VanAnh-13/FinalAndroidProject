@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.healthylifehub.data.model.AnalyticsData;
 import com.example.healthylifehub.data.model.HealthMetric;
-import com.example.healthylifehub.utils.CacheManager;
+import com.example.healthylifehub.utils.performance.CacheManager;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;

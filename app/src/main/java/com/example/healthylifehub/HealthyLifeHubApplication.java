@@ -6,9 +6,9 @@ import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.example.healthylifehub.utils.ApplicationContextProvider;
-import com.example.healthylifehub.utils.NotificationHelper;
-import com.example.healthylifehub.utils.WorkManagerInitializer;
+import com.example.healthylifehub.utils.app.ApplicationContextProvider;
+import com.example.healthylifehub.utils.notification.NotificationHelper;
+import com.example.healthylifehub.utils.workmanager.WorkManagerInitializer;
 
 /**
  * Application class for HealthyLife Hub
@@ -53,7 +53,7 @@ public class HealthyLifeHubApplication extends Application {
      * Apply the saved language or default to system language
      */
     private void applyLanguageSettings() {
-        com.example.healthylifehub.utils.LocaleHelper.applyLanguage(this);
+        com.example.healthylifehub.utils.locale.LocaleHelper.applyLanguage(this);
     }
     
     /**
@@ -77,13 +77,13 @@ public class HealthyLifeHubApplication extends Application {
      * Save language preference
      */
     public static void setLanguage(Context context, String languageCode) {
-        com.example.healthylifehub.utils.LocaleHelper.setLanguage(context, languageCode);
+        com.example.healthylifehub.utils.locale.LocaleHelper.setLanguage(context, languageCode);
     }
     
     /**
      * Get current language
      */
     public static String getLanguage(Context context) {
-        return com.example.healthylifehub.utils.LocaleHelper.getLanguage(context);
+        return com.example.healthylifehub.utils.locale.LocaleHelper.getLanguage(context);
     }
 }

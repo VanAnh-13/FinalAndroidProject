@@ -25,6 +25,22 @@ public class RecordsViewModel extends BaseViewModel {
     public RecordsViewModel(@NonNull Application application) {
         super(application);
         this.repository = new MedicalRecordsRepository(application.getApplicationContext());
+        
+        // Sync from Firestore first, then load records
+        syncAndLoadRecords();
+    }
+    
+    /**
+     * Sync from Firestore and load records
+     */
+    private void syncAndLoadRecords() {
+        repository.syncFromFirestore()
+            .thenAccept(success -> {
+                android.util.Log.d("RecordsViewModel", "Sync from Firestore: " + (success ? "✅ Success" : "⚠️ Failed"));
+                // Load records after sync (will also work if sync fails - uses local cache)
+            });
+        
+        // Load local records immediately (will update when sync completes)
         loadAndSortRecords();
     }
     

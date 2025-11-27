@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.healthylifehub.R;
@@ -156,24 +157,24 @@ public class EnhancedAnalyticsFragment extends BaseFragment<FragmentEnhancedAnal
         chart.setScaleEnabled(true);
         chart.setPinchZoom(true);
         chart.setDrawGridBackground(false);
-        chart.setBackgroundColor(Color.WHITE);
+        chart.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.surface)); // Theme-aware background
         
         // X-Axis styling
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
-        xAxis.setGridColor(Color.LTGRAY);
+        xAxis.setGridColor(ContextCompat.getColor(requireContext(), R.color.chart_grid)); // Theme-aware grid
         xAxis.setGridLineWidth(1f);
-        xAxis.setTextColor(Color.DKGRAY);
+        xAxis.setTextColor(ContextCompat.getColor(requireContext(), R.color.chart_text)); // Theme-aware text
         xAxis.setTextSize(12f);
         xAxis.setAvoidFirstLastClipping(true);
         
         // Y-Axis styling
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setDrawGridLines(true);
-        leftAxis.setGridColor(Color.LTGRAY);
+        leftAxis.setGridColor(ContextCompat.getColor(requireContext(), R.color.chart_grid)); // Theme-aware grid
         leftAxis.setGridLineWidth(1f);
-        leftAxis.setTextColor(Color.DKGRAY);
+        leftAxis.setTextColor(ContextCompat.getColor(requireContext(), R.color.chart_text)); // Theme-aware text
         leftAxis.setTextSize(12f);
         leftAxis.setSpaceTop(10f);
         leftAxis.setSpaceBottom(10f);
@@ -185,7 +186,7 @@ public class EnhancedAnalyticsFragment extends BaseFragment<FragmentEnhancedAnal
         Legend legend = chart.getLegend();
         legend.setForm(Legend.LegendForm.LINE);
         legend.setTextSize(14f);
-        legend.setTextColor(Color.DKGRAY);
+        legend.setTextColor(ContextCompat.getColor(requireContext(), R.color.chart_text)); // Theme-aware text
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);

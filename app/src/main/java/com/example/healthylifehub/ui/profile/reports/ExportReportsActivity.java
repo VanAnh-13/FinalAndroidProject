@@ -11,23 +11,24 @@ import com.example.healthylifehub.base.BaseActivity;
 import com.example.healthylifehub.data.model.GeneratedReport;
 import com.example.healthylifehub.databinding.ActivityExportReportsBinding;
 import com.example.healthylifehub.ui.profile.reports.adapter.GeneratedReportsAdapter;
-import com.example.healthylifehub.utils.ReportGenerator;
+import com.example.healthylifehub.utils.report.ReportGenerator;
 import com.example.healthylifehub.utils.report.ReportManager;
 import com.example.healthylifehub.utils.report.ReportDataFetcher;
-import com.example.healthylifehub.data.repository.HealthMetricRepository;
-import com.example.healthylifehub.data.repository.RemindersRepository;
-import com.example.healthylifehub.data.model.HealthMetric;
-import com.example.healthylifehub.data.model.Reminder;
+
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.app.DatePickerDialog;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * ExportReportsActivity implements UC-HLH-07: Export Health Reports
@@ -44,9 +45,12 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
     private ReportGenerator reportGenerator;
     private ReportManager reportManager;
     private ReportDataFetcher dataFetcher;
-    private HealthMetricRepository healthMetricRepository;
-    private RemindersRepository remindersRepository;
     private ProgressDialog progressDialog;
+    
+    // Custom date range
+    private Date customStartDate;
+    private Date customEndDate;
+    private SimpleDateFormat dateFormat;
 
     public ExportReportsActivity() {
         super(ActivityExportReportsBinding::inflate);
@@ -58,8 +62,9 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         reportGenerator = new ReportGenerator(this);
         reportManager = new ReportManager(this);
         dataFetcher = new ReportDataFetcher(this);
-        healthMetricRepository = new HealthMetricRepository(this);
-        remindersRepository = new RemindersRepository();
+        
+        // Initialize date format
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         
         // Initialize adapter
         adapter = new GeneratedReportsAdapter(new GeneratedReportsAdapter.OnReportClickListener() {
@@ -67,22 +72,22 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
             public void onReportClick(GeneratedReport report) {
                 // TODO: Open report with Intent
                 Toast.makeText(ExportReportsActivity.this, 
-                    "Mở: " + report.getTitle(), Toast.LENGTH_SHORT).show();
+                    getString(R.string.toast_clicked, report.getTitle()), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onMoreClick(GeneratedReport report) {
                 // TODO: Show bottom sheet with options (Share, Delete, etc.)
                 Toast.makeText(ExportReportsActivity.this, 
-                    "Tùy chọn: " + report.getTitle(), Toast.LENGTH_SHORT).show();
+                    getString(R.string.toast_more_options), Toast.LENGTH_SHORT).show();
             }
         });
         
         // Initialize progress dialog
         // Requirements: 7.6 - Display ProgressBar with percentage and stage messages
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Đang tạo báo cáo");
-        progressDialog.setMessage("Vui lòng đợi...");
+        progressDialog.setTitle(getString(R.string.creating_report_title));
+        progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMax(100);
         progressDialog.setCancelable(false);
@@ -118,30 +123,69 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         // Time range radio buttons
         getBinding().rgTimeRange.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbCustom) {
-                // TODO: Show date range picker dialog
-                Toast.makeText(this, "Chọn khoảng thời gian tùy chỉnh", Toast.LENGTH_SHORT).show();
+                // Show date picker button when Custom is selected
+                getBinding().btnSelectDateRange.setVisibility(View.VISIBLE);
+            } else {
+                // Hide date picker button for other options
+                getBinding().btnSelectDateRange.setVisibility(View.GONE);
             }
         });
+        
+        // Date range picker button
+        getBinding().btnSelectDateRange.setOnClickListener(v -> showDateRangePicker());
+    }
+    
+    /**
+     * Show date range picker dialog
+     * First pick start date, then end date
+     */
+    private void showDateRangePicker() {
+        Calendar calendar = Calendar.getInstance();
+        
+        // Show start date picker first
+        DatePickerDialog startDatePicker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            Calendar startCal = Calendar.getInstance();
+            startCal.set(year, month, dayOfMonth, 0, 0, 0);
+            customStartDate = startCal.getTime();
+            
+            // Then show end date picker
+            showEndDatePicker();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        
+        startDatePicker.setTitle(getString(R.string.select_start_date));
+        startDatePicker.show();
+    }
+    
+    /**
+     * Show end date picker after start date is selected
+     */
+    private void showEndDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        
+        DatePickerDialog endDatePicker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            Calendar endCal = Calendar.getInstance();
+            endCal.set(year, month, dayOfMonth, 23, 59, 59);
+            customEndDate = endCal.getTime();
+            
+            // Validate date range
+            if (customEndDate.before(customStartDate)) {
+                Toast.makeText(this, getString(R.string.error_end_date_before_start), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            // Update button text to show selected range
+            String dateRangeText = dateFormat.format(customStartDate) + " - " + dateFormat.format(customEndDate);
+            getBinding().btnSelectDateRange.setText(dateRangeText);
+            
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        
+        endDatePicker.setTitle(getString(R.string.select_end_date));
+        endDatePicker.show();
     }
 
     private void loadGeneratedReports() {
         // TODO: Load from Firestore
         List<GeneratedReport> reports = new ArrayList<>();
-        
-        // Sample data
-        reports.add(new GeneratedReport(
-            "Báo cáo Sức khỏe - 30/05/2024",
-            "PDF - 2.1 MB",
-            "30/05/2024",
-            GeneratedReport.ReportType.PDF
-        ));
-        
-        reports.add(new GeneratedReport(
-            "Dữ liệu chỉ số - 25/05/2024",
-            "Excel - 500 KB",
-            "25/05/2024",
-            GeneratedReport.ReportType.EXCEL
-        ));
 
         if (reports.isEmpty()) {
             getBinding().emptyState.setVisibility(View.VISIBLE);
@@ -168,13 +212,20 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         // Validate user is logged in
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_please_login), Toast.LENGTH_SHORT).show();
             return;
         }
         
         // Get selected time range
-        Date endDate = new Date();
         Date startDate = calculateStartDate();
+        Date endDate = calculateEndDate();
+        
+        // Validate custom date range if selected
+        int selectedTimeRange = getBinding().rgTimeRange.getCheckedRadioButtonId();
+        if (selectedTimeRange == R.id.rbCustom && (customStartDate == null || customEndDate == null)) {
+            Toast.makeText(this, getString(R.string.toast_select_custom_time), Toast.LENGTH_SHORT).show();
+            return;
+        }
         
         // Get selected file format
         int selectedFormat = getBinding().rgFileFormat.getCheckedRadioButtonId();
@@ -182,7 +233,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         
         // Validate selected content
         if (!validateSelectedContent()) {
-            Toast.makeText(this, "Vui lòng chọn ít nhất một nội dung báo cáo", 
+            Toast.makeText(this, getString(R.string.toast_select_report_content), 
                 Toast.LENGTH_SHORT).show();
             return;
         }
@@ -210,7 +261,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                             // Completed - Requirements: 7.6 - Enable share button when complete
                             progressDialog.dismiss();
                             Toast.makeText(ExportReportsActivity.this, 
-                                "Báo cáo đã được tạo thành công!", Toast.LENGTH_SHORT).show();
+                                getString(R.string.report_generated_success), Toast.LENGTH_SHORT).show();
                             
                             // Refresh reports list
                             loadGeneratedReports();
@@ -230,7 +281,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
             runOnUiThread(() -> {
                 progressDialog.dismiss();
                 Toast.makeText(ExportReportsActivity.this, 
-                    "Lỗi: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                    getString(R.string.error, throwable.getMessage()), Toast.LENGTH_LONG).show();
             });
             return null;
         });
@@ -247,13 +298,28 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
             calendar.add(Calendar.DAY_OF_MONTH, -7);
         } else if (selectedTimeRange == R.id.rbLast30Days) {
             calendar.add(Calendar.DAY_OF_MONTH, -30);
+        } else if (selectedTimeRange == R.id.rbCustom && customStartDate != null) {
+            // Use custom start date
+            return customStartDate;
         } else {
-            // Custom - default to 30 days for now
-            // TODO: Implement custom date picker
+            // Default to 30 days if custom not set
             calendar.add(Calendar.DAY_OF_MONTH, -30);
         }
         
         return calendar.getTime();
+    }
+    
+    /**
+     * Calculate end date based on selected time range
+     */
+    private Date calculateEndDate() {
+        int selectedTimeRange = getBinding().rgTimeRange.getCheckedRadioButtonId();
+        
+        if (selectedTimeRange == R.id.rbCustom && customEndDate != null) {
+            return customEndDate;
+        }
+        
+        return new Date(); // Default to now
     }
     
     /**
@@ -275,13 +341,20 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         // Validate user
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_please_login), Toast.LENGTH_SHORT).show();
             return;
         }
         
         // Get selected time range
-        Date endDate = new Date();
         Date startDate = calculateStartDate();
+        Date endDate = calculateEndDate();
+        
+        // Validate custom date range if selected
+        int selectedTimeRange = getBinding().rgTimeRange.getCheckedRadioButtonId();
+        if (selectedTimeRange == R.id.rbCustom && (customStartDate == null || customEndDate == null)) {
+            Toast.makeText(this, getString(R.string.toast_select_custom_time), Toast.LENGTH_SHORT).show();
+            return;
+        }
         
         // Get selected file format
         int selectedFormat = getBinding().rgFileFormat.getCheckedRadioButtonId();
@@ -289,20 +362,20 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
         
         // Validate selected content
         if (!validateSelectedContent()) {
-            Toast.makeText(this, "Vui lòng chọn ít nhất một nội dung báo cáo", 
+            Toast.makeText(this, getString(R.string.toast_select_report_content), 
                 Toast.LENGTH_SHORT).show();
             return;
         }
         
         // Show progress
-        progressDialog.setMessage("Đang tải dữ liệu...");
+        progressDialog.setMessage(getString(R.string.loading_data));
         progressDialog.show();
         
         // Fetch data and generate report
         CompletableFuture<Void> reportFuture = dataFetcher.fetchHealthMetrics(currentUser.getUid(), startDate, endDate)
             .thenAccept(metrics -> {
                 runOnUiThread(() -> {
-                    progressDialog.setMessage("Đang tạo báo cáo...");
+                    progressDialog.setMessage(getString(R.string.creating_report_message));
                 });
                 
                 // Generate report based on format
@@ -313,7 +386,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                             runOnUiThread(() -> {
                                 progressDialog.dismiss();
                                 Toast.makeText(ExportReportsActivity.this, 
-                                    "Báo cáo đã được tạo thành công!", Toast.LENGTH_SHORT).show();
+                                    getString(R.string.report_generated_success), Toast.LENGTH_SHORT).show();
                                 
                                 // Ask user to open or share
                                 showReportOptions(file);
@@ -328,7 +401,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                             runOnUiThread(() -> {
                                 progressDialog.dismiss();
                                 Toast.makeText(ExportReportsActivity.this, 
-                                    "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    getString(R.string.error, e.getMessage()), Toast.LENGTH_LONG).show();
                             });
                         }
                     });
@@ -339,7 +412,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                             runOnUiThread(() -> {
                                 progressDialog.dismiss();
                                 Toast.makeText(ExportReportsActivity.this, 
-                                    "Báo cáo đã được tạo thành công!", Toast.LENGTH_SHORT).show();
+                                    getString(R.string.report_generated_success), Toast.LENGTH_SHORT).show();
                                 
                                 // Ask user to open or share
                                 showReportOptions(file);
@@ -354,7 +427,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                             runOnUiThread(() -> {
                                 progressDialog.dismiss();
                                 Toast.makeText(ExportReportsActivity.this, 
-                                    "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    getString(R.string.error, e.getMessage()), Toast.LENGTH_LONG).show();
                             });
                         }
                     });
@@ -364,7 +437,7 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
                 runOnUiThread(() -> {
                     progressDialog.dismiss();
                     Toast.makeText(ExportReportsActivity.this, 
-                        "Lỗi khi tải dữ liệu: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                        getString(R.string.error_loading_data, throwable.getMessage()), Toast.LENGTH_LONG).show();
                 });
                 return null;
             });
@@ -375,15 +448,15 @@ public class ExportReportsActivity extends BaseActivity<ActivityExportReportsBin
      */
     private void showReportOptions(File file) {
         new android.app.AlertDialog.Builder(this)
-            .setTitle("Báo cáo đã sẵn sàng")
-            .setMessage("Bạn muốn làm gì với báo cáo?")
-            .setPositiveButton("Mở", (dialog, which) -> {
+            .setTitle(R.string.report_ready_title)
+            .setMessage(R.string.report_ready_message)
+            .setPositiveButton(R.string.open, (dialog, which) -> {
                 reportManager.openReport(file);
             })
-            .setNegativeButton("Chia sẻ", (dialog, which) -> {
+            .setNegativeButton(R.string.share, (dialog, which) -> {
                 reportManager.shareReport(file);
             })
-            .setNeutralButton("Đóng", null)
+            .setNeutralButton(R.string.close, null)
             .show();
     }
     

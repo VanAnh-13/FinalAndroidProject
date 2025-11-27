@@ -9,7 +9,7 @@ import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseActivity;
 import com.example.healthylifehub.base.DataState;
 import com.example.healthylifehub.databinding.ActivityForgotPasswordBinding;
-import com.example.healthylifehub.utils.SecurityUtils;
+import com.example.healthylifehub.utils.security.SecurityUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 

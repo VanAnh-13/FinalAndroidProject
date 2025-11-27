@@ -8,11 +8,11 @@ import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseActivity;
-import com.example.healthylifehub.utils.SimpleNetworkManager;
-import com.example.healthylifehub.utils.ErrorHandler;
-import com.example.healthylifehub.utils.CrashPreventionHandler;
-import com.example.healthylifehub.utils.InputValidationHandler;
-import com.example.healthylifehub.utils.NetworkErrorHandler;
+import com.example.healthylifehub.utils.network.SimpleNetworkManager;
+import com.example.healthylifehub.utils.error.ErrorHandler;
+import com.example.healthylifehub.utils.error.CrashPreventionHandler;
+import com.example.healthylifehub.utils.validation.InputValidationHandler;
+import com.example.healthylifehub.utils.network.NetworkErrorHandler;
 import com.example.healthylifehub.utils.ui.UserFeedbackManager;
 import com.example.healthylifehub.utils.ui.ErrorStateManager;
 import com.example.healthylifehub.databinding.ActivityAddEditMetricBinding;
@@ -90,7 +90,7 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
         // Observe save success
         viewModel.getSaveSuccess().observe(this, success -> {
             if (success != null && success) {
-                Toast.makeText(this, "✅ Đã lưu chỉ số thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_metric_saved), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

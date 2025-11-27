@@ -25,11 +25,13 @@ import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.model.ReminderHistory;
 import com.example.healthylifehub.data.repository.RemindersRepository;
 import com.example.healthylifehub.ui.reminders.add_edit.AddEditReminderActivity;
-import com.example.healthylifehub.utils.ProgressCalculator;
-import com.example.healthylifehub.utils.ReminderAlarmManager;
-import com.example.healthylifehub.utils.ReminderStatisticsCalculator;
+import com.example.healthylifehub.utils.app.ProgressCalculator;
+import com.example.healthylifehub.utils.reminder.ReminderAlarmManager;
+import com.example.healthylifehub.utils.reminder.ReminderStatisticsCalculator;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,7 +63,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
     private ReminderStatisticsCalculator.ReminderStatistics currentStatistics;
     
     // Performance optimization components
-    private com.example.healthylifehub.utils.PerformanceUtils performanceUtils;
+    private com.example.healthylifehub.utils.performance.PerformanceUtils performanceUtils;
 
     private String reminderId;
     private Reminder currentReminder;
@@ -115,7 +117,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
         setupHistoryRecyclerView();
         
         // Initialize performance optimization components
-        performanceUtils = com.example.healthylifehub.utils.PerformanceUtils.getInstance(this);
+        performanceUtils = com.example.healthylifehub.utils.performance.PerformanceUtils.getInstance(this);
         
         remindersRepository = new RemindersRepository();
         database = AppDatabase.getInstance(this);
@@ -129,6 +131,10 @@ public class ReminderDetailActivity extends AppCompatActivity {
      * Requirements: 4.3, 4.4
      */
     private void setupHistoryRecyclerView() {
+        // Check if rv_history exists in layout (optional feature)
+        if (rvHistory == null) {
+            return;
+        }
         historyAdapter = new ReminderHistoryAdapter(this);
         rvHistory.setLayoutManager(new LinearLayoutManager(this));
         rvHistory.setAdapter(historyAdapter);
@@ -203,7 +209,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
                             displayReminderData(reminder);
                             loadReminderHistory(reminderId);
                         } else {
-                            Toast.makeText(this, "Không tìm thấy nhắc nhở", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.toast_reminder_not_found), Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     });
@@ -229,13 +235,50 @@ public class ReminderDetailActivity extends AppCompatActivity {
         String frequency = getFrequencyText(reminder.getFrequency());
         tvRepeatValue.setText(frequency);
         
+        // Load medicine name from database instead of showing ID
         if (reminder.getMedicineId() != null && !reminder.getMedicineId().isEmpty()) {
-            tvMedicationValue.setText(reminder.getMedicineId());
+            loadMedicineName(reminder.getMedicineId());
         } else {
             tvMedicationValue.setText("Không có");
         }
         
         tvNotes.setText(reminder.getDescription() != null ? reminder.getDescription() : "Không có ghi chú");
+    }
+    
+    /**
+     * Load medicine name from Firestore by ID
+     */
+    private void loadMedicineName(String medicineId) {
+        tvMedicationValue.setText("Đang tải...");
+        
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null 
+            ? FirebaseAuth.getInstance().getCurrentUser().getUid() 
+            : null;
+            
+        if (userId == null) {
+            tvMedicationValue.setText(medicineId);
+            return;
+        }
+        
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .collection("medicines")
+            .document(medicineId)
+            .get()
+            .addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String name = documentSnapshot.getString("name");
+                    if (name != null && !name.isEmpty()) {
+                        tvMedicationValue.setText(name);
+                    } else {
+                        tvMedicationValue.setText(medicineId);
+                    }
+                } else {
+                    tvMedicationValue.setText(medicineId);
+                }
+            })
+            .addOnFailureListener(e -> tvMedicationValue.setText(medicineId));
     }
     
     private String getFrequencyText(String frequency) {
@@ -296,7 +339,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
     
     private void markReminderAsTaken() {
         if (currentReminder == null) {
-            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_reminder_data), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -307,10 +350,10 @@ public class ReminderDetailActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (success) {
                             ReminderAlarmManager.cancelReminder(this, currentReminder.getReminderId());
-                            Toast.makeText(this, "✅ Đã đánh dấu hoàn thành", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.marked_complete), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                         }
                     });
                 });
@@ -336,10 +379,10 @@ public class ReminderDetailActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (success) {
                             ReminderAlarmManager.scheduleReminder(this, currentReminder);
-                            Toast.makeText(this, "✅ Đã đánh dấu hoàn thành. Lịch nhắc tiếp theo đã được đặt", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.marked_complete_next_scheduled), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                         }
                     });
                 });
@@ -348,7 +391,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
     
     private void skipReminder() {
         if (currentReminder == null) {
-            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_reminder_data), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -376,10 +419,10 @@ public class ReminderDetailActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (success) {
                         ReminderAlarmManager.scheduleReminder(this, currentReminder);
-                        Toast.makeText(this, "⏭️ Đã bỏ qua. Lịch nhắc tiếp theo đã được đặt", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.skipped_next_scheduled), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                     }
                 });
             });
@@ -387,7 +430,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
     
     private void showRescheduleDialog() {
         if (currentReminder == null) {
-            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_reminder_data), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -413,10 +456,10 @@ public class ReminderDetailActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             if (success) {
                                 ReminderAlarmManager.scheduleReminder(this, currentReminder);
-                                Toast.makeText(this, "🔔 Đã đặt lại lịch nhắc", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.reschedule_set), Toast.LENGTH_SHORT).show();
                                 displayReminderData(currentReminder);
                             } else {
-                                Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                             }
                         });
                     });
@@ -446,7 +489,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
 
     private void showDeleteConfirmation() {
         if (currentReminder == null) {
-            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_reminder_data), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -459,10 +502,10 @@ public class ReminderDetailActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             if (success) {
                                 ReminderAlarmManager.cancelReminder(this, currentReminder.getReminderId());
-                                Toast.makeText(this, "🗑️ Đã xóa nhắc nhở", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.reminder_deleted), Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
-                                Toast.makeText(this, "❌ Lỗi khi xóa", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.delete_error), Toast.LENGTH_SHORT).show();
                             }
                         });
                     });
@@ -593,7 +636,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
      */
     private void showManualProgressAdjustment() {
         if (currentReminder == null) {
-            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_reminder_data), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -683,7 +726,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
      */
     private void shareProgress() {
         if (currentReminder == null) {
-            Toast.makeText(this, "Không có dữ liệu nhắc nhở", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_reminder_data), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -715,7 +758,7 @@ public class ReminderDetailActivity extends AppCompatActivity {
         if (shareIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(chooser);
         } else {
-            Toast.makeText(this, "Không tìm thấy ứng dụng để chia sẻ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_app_to_share), Toast.LENGTH_SHORT).show();
         }
     }
 }

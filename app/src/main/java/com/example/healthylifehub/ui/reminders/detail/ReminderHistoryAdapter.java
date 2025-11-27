@@ -32,7 +32,7 @@ public class ReminderHistoryAdapter extends RecyclerView.Adapter<ReminderHistory
     private List<ReminderHistory> historyList;
     private final SimpleDateFormat dateTimeFormat;
     private final SimpleDateFormat timeFormat;
-    private final com.example.healthylifehub.utils.PerformanceUtils performanceUtils;
+    private final com.example.healthylifehub.utils.performance.PerformanceUtils performanceUtils;
     
     // Lazy loading support
     private OnLoadMoreListener loadMoreListener;
@@ -48,7 +48,7 @@ public class ReminderHistoryAdapter extends RecyclerView.Adapter<ReminderHistory
         this.historyList = new ArrayList<>();
         this.dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         this.timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        this.performanceUtils = com.example.healthylifehub.utils.PerformanceUtils.getInstance(context);
+        this.performanceUtils = com.example.healthylifehub.utils.performance.PerformanceUtils.getInstance(context);
     }
     
     @NonNull

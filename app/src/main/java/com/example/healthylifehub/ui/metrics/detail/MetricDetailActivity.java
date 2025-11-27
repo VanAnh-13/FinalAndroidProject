@@ -53,21 +53,21 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
 
         // Setup RecyclerView
         historyAdapter = new MetricHistoryAdapter(history -> {
-            Toast.makeText(this, "Clicked: " + history.getDisplayValue(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_clicked, history.getDisplayValue()), Toast.LENGTH_SHORT).show();
         });
         
         // Set action listener for menu items
         historyAdapter.setActionListener(new MetricHistoryAdapter.OnHistoryActionListener() {
             @Override
             public void onViewDetail(MetricHistory history) {
-                Toast.makeText(MetricDetailActivity.this, "Chi tiết: " + history.getDisplayValue(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MetricDetailActivity.this, getString(R.string.toast_detail, history.getDisplayValue()), Toast.LENGTH_SHORT).show();
                 // TODO: Show detail dialog or activity
             }
 
             @Override
             public void onDelete(MetricHistory history) {
                 // TODO: Delete from Firestore and Room
-                Toast.makeText(MetricDetailActivity.this, "Xóa: " + history.getDisplayValue(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MetricDetailActivity.this, getString(R.string.toast_delete, history.getDisplayValue()), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -98,11 +98,11 @@ public class MetricDetailActivity extends BaseActivity<ActivityMetricDetailBindi
         getBinding().ivBack.setOnClickListener(v -> finish());
 
         getBinding().ivMore.setOnClickListener(v -> {
-            Toast.makeText(this, "More options", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_more_options), Toast.LENGTH_SHORT).show();
         });
 
         getBinding().fabAdd.setOnClickListener(v -> {
-            Toast.makeText(this, "Add new metric", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_add_new_metric), Toast.LENGTH_SHORT).show();
         });
 
         // Period selectors - single selection

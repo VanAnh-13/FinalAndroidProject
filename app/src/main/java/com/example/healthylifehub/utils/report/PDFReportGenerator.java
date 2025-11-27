@@ -210,9 +210,13 @@ public class PDFReportGenerator {
     
     private static String getMetricValue(HealthMetric metric) {
         if ("blood_pressure".equals(metric.getType())) {
-            return metric.getSystolic() + "/" + metric.getDiastolic();
+            return (int) metric.getSystolic() + "/" + (int) metric.getDiastolic();
         }
-        return String.valueOf(metric.getValue());
+        double val = metric.getValue();
+        if (val == Math.floor(val)) {
+            return String.valueOf((int) val);
+        }
+        return String.valueOf(val);
     }
     
     private static String getMetricUnit(String type) {

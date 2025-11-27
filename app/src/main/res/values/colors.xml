@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     
     <color name="primary">#ec1313</color>
+    <color name="primary_light">#fde8e8</color>
     <color name="primary_red">#ec1313</color>
     <color name="primary_red_dark">#d10f0f</color>
     <color name="primary_red_light">#ff4444</color>
@@ -66,4 +67,9 @@
     
     <!-- Loading Overlay -->
     <color name="loading_overlay">#80000000</color>
+    
+    <!-- Chart Colors -->
+    <color name="chart_text">#212121</color>
+    <color name="chart_axis">#757575</color>
+    <color name="chart_grid">#E0E0E0</color>
 </resources>

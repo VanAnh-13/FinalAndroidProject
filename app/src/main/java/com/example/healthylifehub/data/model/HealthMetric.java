@@ -87,4 +87,29 @@ public class HealthMetric {
                 return value > 0 ? value : defaultValue;
         }
     }
+    
+    /**
+     * Get display value for UI
+     */
+    @Ignore
+    public String getDisplayValue() {
+        if ("blood_pressure".equals(type)) {
+            return (int) systolic + "/" + (int) diastolic + " " + (unit != null ? unit : "mmHg");
+        } else {
+            if (value == Math.floor(value)) {
+                return (int) value + " " + (unit != null ? unit : "");
+            }
+            return value + " " + (unit != null ? unit : "");
+        }
+    }
+    
+    private String unit;
+    
+    public String getUnit() {
+        return unit;
+    }
+    
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 }

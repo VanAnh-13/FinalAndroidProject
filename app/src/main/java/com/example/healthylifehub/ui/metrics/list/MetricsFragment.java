@@ -198,7 +198,7 @@ public class MetricsFragment extends BaseFragment<FragmentMetricsBinding> {
             searchQuery = dialogBinding.etSearch.getText().toString().trim();
             applyFiltersAndSort();
             dialog.dismiss();
-            Toast.makeText(requireContext(), "Tìm thấy " + filteredMetrics.size() + " kết quả", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.toast_found_results, filteredMetrics.size()), Toast.LENGTH_SHORT).show();
         });
         
         dialogBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -317,7 +317,7 @@ public class MetricsFragment extends BaseFragment<FragmentMetricsBinding> {
                 getBinding().btnFilter.setText("Bộ lọc");
             }
             
-            Toast.makeText(requireContext(), "Đã lọc: " + filteredMetrics.size() + " chỉ số", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.toast_filtered_metrics, filteredMetrics.size()), Toast.LENGTH_SHORT).show();
         });
         
         // Reset button
@@ -330,10 +330,10 @@ public class MetricsFragment extends BaseFragment<FragmentMetricsBinding> {
             dialogBinding.etDateTo.setText("");
             dialogBinding.etValueFrom.setText("");
             dialogBinding.etValueTo.setText("");
-            getBinding().btnFilter.setText("Bộ lọc");
+            getBinding().btnFilter.setText(getString(R.string.filter));
             applyFiltersAndSort();
             dialog.dismiss();
-            Toast.makeText(requireContext(), "Đã xóa bộ lọc", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.toast_filter_cleared), Toast.LENGTH_SHORT).show();
         });
         
         dialog.show();

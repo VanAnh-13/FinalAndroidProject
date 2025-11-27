@@ -390,12 +390,13 @@
                         android:drawablePadding="@dimen/spacing_tiny"/>
                 </LinearLayout>
 
-                <View
-                    android:id="@+id/chart_placeholder"
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/line_chart_blood_pressure"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/chart_height"
                     android:layout_marginTop="@dimen/margin_normal"
-                    android:background="@color/background_light"/>
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -473,8 +474,10 @@
                         android:id="@+id/iv_add_metric_icon"
                         android:layout_width="@dimen/icon_size_medium"
                         android:layout_height="@dimen/icon_size_medium"
+                        android:src="@drawable/ic_add"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="@dimen/padding_medium"/>
+                        android:padding="@dimen/padding_medium"
+                        app:tint="@color/white"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -500,8 +503,10 @@
                         android:id="@+id/iv_analysis_icon"
                         android:layout_width="@dimen/icon_size_medium"
                         android:layout_height="@dimen/icon_size_medium"
+                        android:src="@drawable/ic_chart"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="@dimen/padding_medium"/>
+                        android:padding="@dimen/padding_medium"
+                        app:tint="@color/white"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -527,8 +532,10 @@
                         android:id="@+id/iv_reminder_icon"
                         android:layout_width="@dimen/icon_size_medium"
                         android:layout_height="@dimen/icon_size_medium"
+                        android:src="@drawable/ic_reminder"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="@dimen/padding_medium"/>
+                        android:padding="@dimen/padding_medium"
+                        app:tint="@color/white"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -554,8 +561,10 @@
                         android:id="@+id/iv_reports_icon"
                         android:layout_width="@dimen/icon_size_medium"
                         android:layout_height="@dimen/icon_size_medium"
+                        android:src="@drawable/ic_report"
                         android:background="@drawable/bg_button_primary"
-                        android:padding="@dimen/padding_medium"/>
+                        android:padding="@dimen/padding_medium"
+                        app:tint="@color/white"/>
 
                     <TextView
                         android:layout_width="wrap_content"

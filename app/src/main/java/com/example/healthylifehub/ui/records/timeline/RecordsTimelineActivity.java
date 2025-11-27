@@ -43,12 +43,12 @@ public class RecordsTimelineActivity extends BaseActivity<ActivityRecordsTimelin
         getBinding().ivBack.setOnClickListener(v -> finish());
 
         getBinding().fabAdd.setOnClickListener(v -> {
-            Toast.makeText(this, "Thêm hồ sơ mới", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_add_new_record), Toast.LENGTH_SHORT).show();
             // TODO: Open add record screen
         });
 
         getBinding().btnAddFirstRecord.setOnClickListener(v -> {
-            Toast.makeText(this, "Thêm hồ sơ đầu tiên", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_add_first_record), Toast.LENGTH_SHORT).show();
             // TODO: Open add record screen
         });
     }

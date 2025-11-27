@@ -14,7 +14,7 @@ import com.example.healthylifehub.data.model.NotificationSettings;
 import com.example.healthylifehub.data.repository.RemindersRepository;
 import com.example.healthylifehub.data.repository.NotificationSettingsRepository;
 import com.example.healthylifehub.services.SmartReminderAI;
-import com.example.healthylifehub.utils.NotificationHelper;
+import com.example.healthylifehub.utils.notification.NotificationHelper;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

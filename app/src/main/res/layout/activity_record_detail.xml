@@ -23,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:paddingStart="@dimen/padding_normal"
                 android:paddingEnd="@dimen/padding_normal"
-                android:background="@color/white"
+                android:background="@color/surface"
                 android:elevation="@dimen/elevation_card">
 
                 <ImageView
@@ -310,7 +310,7 @@
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:padding="@dimen/padding_normal"
-        android:background="@color/white"
+        android:background="@color/surface"
         android:elevation="@dimen/elevation_card">
 
         <com.google.android.material.button.MaterialButton

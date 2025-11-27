@@ -66,7 +66,7 @@ public class MedicineOCRActivity extends BaseActivity<ActivityMedicineOcrBinding
             if (isGranted) {
                 launchCamera();
             } else {
-                Toast.makeText(this, "Cần quyền camera để chụp ảnh", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_camera_permission_required), Toast.LENGTH_SHORT).show();
             }
         });
     
@@ -150,7 +150,7 @@ public class MedicineOCRActivity extends BaseActivity<ActivityMedicineOcrBinding
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             cameraLauncher.launch(takePictureIntent);
         } else {
-            Toast.makeText(this, "Không tìm thấy ứng dụng camera", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_camera_app_not_found), Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -195,7 +195,7 @@ public class MedicineOCRActivity extends BaseActivity<ActivityMedicineOcrBinding
                     
                     if (medicines.isEmpty()) {
                         Toast.makeText(this, 
-                            "Không tìm thấy thông tin thuốc. Vui lòng thử lại hoặc nhập thủ công.", 
+                            getString(com.example.healthylifehub.R.string.toast_ocr_no_text_found), 
                             Toast.LENGTH_LONG).show();
                     } else {
                         // Show extracted medicines card
@@ -203,7 +203,7 @@ public class MedicineOCRActivity extends BaseActivity<ActivityMedicineOcrBinding
                         medicinesAdapter.notifyDataSetChanged();
                         
                         Toast.makeText(this, 
-                            "Đã trích xuất " + medicines.size() + " loại thuốc", 
+                            getString(com.example.healthylifehub.R.string.toast_ocr_found_medicines, medicines.size()), 
                             Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -258,7 +258,7 @@ public class MedicineOCRActivity extends BaseActivity<ActivityMedicineOcrBinding
      */
     private void saveMedicines() {
         if (extractedMedicines.isEmpty()) {
-            Toast.makeText(this, "Không có thuốc nào để lưu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_no_medicine_to_save), Toast.LENGTH_SHORT).show();
             return;
         }
         

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@color/surface">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:paddingStart="@dimen/padding_normal"
                 android:paddingEnd="@dimen/padding_normal"
-                android:background="@color/white"
+                android:background="@color/surface"
                 android:elevation="@dimen/elevation_card">
 
                 <TextView

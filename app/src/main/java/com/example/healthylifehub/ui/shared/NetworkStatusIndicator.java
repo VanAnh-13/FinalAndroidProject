@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import com.example.healthylifehub.R;
-import com.example.healthylifehub.utils.NetworkMonitor;
+import com.example.healthylifehub.utils.network.NetworkMonitor;
 import com.google.android.material.card.MaterialCardView;
 
 /**

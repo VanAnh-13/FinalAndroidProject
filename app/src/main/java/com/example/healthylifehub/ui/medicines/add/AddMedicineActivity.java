@@ -127,26 +127,23 @@ public class AddMedicineActivity extends BaseActivity<ActivityAddMedicineBinding
 
     private void captureImage() {
         // TODO: Implement camera capture
-        Toast.makeText(this, "Chụp ảnh", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_capture_photo), Toast.LENGTH_SHORT).show();
         showProcessing();
     }
 
     private void openGallery() {
         // TODO: Implement gallery picker
-        Toast.makeText(this, "Mở thư viện", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_open_gallery), Toast.LENGTH_SHORT).show();
     }
 
     private void toggleFlash() {
         // TODO: Implement flash toggle
-        Toast.makeText(this, "Bật/tắt đèn flash", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_toggle_flash), Toast.LENGTH_SHORT).show();
     }
 
     private void fillOcrResults() {
-        // Fill form with OCR extracted data
-        getBinding().etMedicineName.setText("Panadol Extra");
-        getBinding().etDosage.setText("2 viên, 3 lần/ngày");
-        getBinding().etInstructions.setText("Uống sau bữa ăn no");
-        getBinding().etStartDate.setText("24/05/2024");
+        // TODO: Fill form with actual OCR extracted data
+        // This will be populated by MedicineOCRProcessor results
     }
 
     private void showDatePicker() {
@@ -190,7 +187,7 @@ public class AddMedicineActivity extends BaseActivity<ActivityAddMedicineBinding
 
         // TODO: Save to database
 
-        Toast.makeText(this, "Đã lưu thuốc", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_medicine_saved), Toast.LENGTH_SHORT).show();
         finish();
     }
 }

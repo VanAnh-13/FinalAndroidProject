@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.databinding.ItemReminderBinding;
-import com.example.healthylifehub.utils.ProgressCalculator;
+import com.example.healthylifehub.utils.app.ProgressCalculator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +21,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
     private List<Reminder> reminders = new ArrayList<>();
     private OnReminderActionListener listener;
-    private com.example.healthylifehub.utils.PerformanceUtils performanceUtils;
+    private com.example.healthylifehub.utils.performance.PerformanceUtils performanceUtils;
 
     public interface OnReminderActionListener {
         void onSnoozeClicked(Reminder reminder);
@@ -101,7 +101,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         
         // Initialize performance utils if not already done
         if (performanceUtils == null) {
-            performanceUtils = com.example.healthylifehub.utils.PerformanceUtils.getInstance(parent.getContext());
+            performanceUtils = com.example.healthylifehub.utils.performance.PerformanceUtils.getInstance(parent.getContext());
         }
         
         return new ReminderViewHolder(binding);

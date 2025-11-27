@@ -63,19 +63,19 @@ public class AnomalyAlertActivity extends BaseActivity<ActivityAnomalyAlertBindi
         getBinding().ivClose.setOnClickListener(v -> finish());
 
         getBinding().llActionRest.setOnClickListener(v -> {
-            Toast.makeText(this, "Opening rest and monitor guide", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_rest_monitor_guide), Toast.LENGTH_SHORT).show();
         });
 
         getBinding().llActionContact.setOnClickListener(v -> {
-            Toast.makeText(this, "Opening healthcare contact", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_healthcare_contact), Toast.LENGTH_SHORT).show();
         });
 
         getBinding().btnContactDoctor.setOnClickListener(v -> {
-            Toast.makeText(this, "Contacting doctor", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_contacting_doctor), Toast.LENGTH_SHORT).show();
         });
 
         getBinding().btnLearnMore.setOnClickListener(v -> {
-            Toast.makeText(this, "Opening health information", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_health_info), Toast.LENGTH_SHORT).show();
         });
 
         getBinding().btnDismiss.setOnClickListener(v -> {

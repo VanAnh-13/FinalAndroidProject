@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 
 import androidx.core.content.ContextCompat;
 import com.example.healthylifehub.base.BaseRepository;
-import com.example.healthylifehub.utils.NotificationHelper;
+import com.example.healthylifehub.utils.notification.NotificationHelper;
 import com.example.healthylifehub.sync.SyncManager;
 
 /**

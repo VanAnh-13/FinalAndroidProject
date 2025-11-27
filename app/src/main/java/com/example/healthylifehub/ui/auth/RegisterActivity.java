@@ -161,7 +161,7 @@ public class RegisterActivity extends BaseActivity<ActivityRegisterBinding> {
     }
 
     private void handleTermsClick() {
-        Toast.makeText(this, "Điều khoản dịch vụ - Coming soon", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_terms_coming_soon), Toast.LENGTH_SHORT).show();
     }
 
     private void updateRegisterButtonState() {

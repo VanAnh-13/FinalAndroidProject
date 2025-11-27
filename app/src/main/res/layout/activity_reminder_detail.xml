@@ -360,8 +360,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="bottom"
-        android:background="@color/background_light"
-        android:padding="@dimen/padding_normal">
+        android:background="@color/surface"
+        android:padding="@dimen/padding_normal"
+        android:paddingBottom="32dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_edit_reminder"

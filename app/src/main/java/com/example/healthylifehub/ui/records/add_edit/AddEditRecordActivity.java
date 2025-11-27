@@ -44,12 +44,12 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
         // Update title based on mode
         if (isEditMode) {
             getBinding().tvPageTitle.setText(R.string.edit_medical_record);
-            getBinding().btnSaveRecord.setText("Cập nhật hồ sơ");
+            getBinding().btnSaveRecord.setText(R.string.btn_update_record);
             // Show delete button in edit mode
             getBinding().tvDelete.setVisibility(android.view.View.VISIBLE);
         } else {
             getBinding().tvPageTitle.setText(R.string.add_medical_record);
-            getBinding().btnSaveRecord.setText("Lưu hồ sơ");
+            getBinding().btnSaveRecord.setText(R.string.btn_save_record);
             // Hide delete button in add mode
             getBinding().tvDelete.setVisibility(android.view.View.GONE);
         }
@@ -80,10 +80,10 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
     
     private void showDeleteConfirmation() {
         new android.app.AlertDialog.Builder(this)
-            .setTitle("Xóa hồ sơ")
-            .setMessage("Bạn có chắc chắn muốn xóa hồ sơ này không?")
-            .setPositiveButton("Xóa", (dialog, which) -> deleteRecord())
-            .setNegativeButton("Hủy", null)
+            .setTitle(R.string.dialog_delete_record_title)
+            .setMessage(R.string.dialog_delete_record_message)
+            .setPositiveButton(R.string.btn_delete, (dialog, which) -> deleteRecord())
+            .setNegativeButton(R.string.btn_cancel, null)
             .show();
     }
     
@@ -91,23 +91,23 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
         if (currentRecord == null) return;
         
         getBinding().btnSaveRecord.setEnabled(false);
-        getBinding().btnSaveRecord.setText("Đang xóa...");
+        getBinding().btnSaveRecord.setText(R.string.btn_deleting);
         
         repository.deleteRecord(currentRecord)
             .thenAccept(success -> {
                 runOnUiThread(() -> {
                     if (success) {
-                        Toast.makeText(AddEditRecordActivity.this, "✅ Đã xóa hồ sơ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditRecordActivity.this, getString(R.string.toast_record_deleted), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(AddEditRecordActivity.this, "❌ Lỗi khi xóa", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditRecordActivity.this, getString(R.string.delete_error), Toast.LENGTH_SHORT).show();
                         resetButton();
                     }
                 });
             })
             .exceptionally(throwable -> {
                 runOnUiThread(() -> {
-                    Toast.makeText(AddEditRecordActivity.this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddEditRecordActivity.this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                     resetButton();
                 });
                 return null;
@@ -155,7 +155,7 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
                 currentRecord = record;
                 fillFormWithRecordData(record);
             } else {
-                Toast.makeText(this, "Không tìm thấy hồ sơ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_record_not_found), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -181,12 +181,12 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
 
         // Simple validation - required fields
         if (title.isEmpty()) {
-            Toast.makeText(this, "❌ Tiêu đề không được để trống", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_title_required), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (date.isEmpty()) {
-            Toast.makeText(this, "❌ Ngày khám không được để trống", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_date_required), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -196,7 +196,7 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
 
         // Disable button during save
         getBinding().btnSaveRecord.setEnabled(false);
-        getBinding().btnSaveRecord.setText(isEditMode ? "Đang cập nhật..." : "Đang lưu...");
+        getBinding().btnSaveRecord.setText(isEditMode ? R.string.btn_updating : R.string.btn_saving);
 
         // Create or update record
         if (isEditMode) {
@@ -212,17 +212,17 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
                 .thenAccept(success -> {
                     runOnUiThread(() -> {
                         if (success) {
-                            Toast.makeText(AddEditRecordActivity.this, "✅ Đã cập nhật hồ sơ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddEditRecordActivity.this, getString(R.string.toast_record_updated), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(AddEditRecordActivity.this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddEditRecordActivity.this, getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                             resetButton();
                         }
                     });
                 })
                 .exceptionally(throwable -> {
                     runOnUiThread(() -> {
-                        Toast.makeText(AddEditRecordActivity.this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditRecordActivity.this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                         resetButton();
                     });
                     return null;
@@ -243,17 +243,17 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
                 .thenAccept(recordId -> {
                     runOnUiThread(() -> {
                         if (recordId != null) {
-                            Toast.makeText(AddEditRecordActivity.this, "✅ Đã lưu hồ sơ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddEditRecordActivity.this, getString(R.string.toast_record_saved), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(AddEditRecordActivity.this, "❌ Lỗi khi lưu", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddEditRecordActivity.this, getString(R.string.toast_save_error), Toast.LENGTH_SHORT).show();
                             resetButton();
                         }
                     });
                 })
                 .exceptionally(throwable -> {
                     runOnUiThread(() -> {
-                        Toast.makeText(AddEditRecordActivity.this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditRecordActivity.this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                         resetButton();
                     });
                     return null;
@@ -263,6 +263,6 @@ public class AddEditRecordActivity extends BaseActivity<ActivityAddEditRecordBin
     
     private void resetButton() {
         getBinding().btnSaveRecord.setEnabled(true);
-        getBinding().btnSaveRecord.setText(isEditMode ? "Cập nhật hồ sơ" : "Lưu hồ sơ");
+        getBinding().btnSaveRecord.setText(isEditMode ? R.string.btn_update_record : R.string.btn_save_record);
     }
 }

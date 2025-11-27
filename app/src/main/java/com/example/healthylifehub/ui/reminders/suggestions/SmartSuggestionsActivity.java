@@ -189,8 +189,8 @@ public class SmartSuggestionsActivity extends AppCompatActivity {
             message,
             Snackbar.LENGTH_SHORT
         );
-        snackbar.setAction("Hoàn tác", v -> {
-            Toast.makeText(this, "Đã hoàn tác", Toast.LENGTH_SHORT).show();
+        snackbar.setAction(getString(R.string.action_undone), v -> {
+            Toast.makeText(this, getString(R.string.action_undone), Toast.LENGTH_SHORT).show();
         });
         snackbar.show();
     }

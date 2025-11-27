@@ -2,15 +2,15 @@ package com.example.healthylifehub.base;
 
 import androidx.core.content.ContextCompat;
 
-import com.example.healthylifehub.utils.ApplicationContextProvider;
-import com.example.healthylifehub.utils.AsyncErrorLogger;
-import com.example.healthylifehub.utils.AsyncPerformanceLogger;
+import com.example.healthylifehub.utils.app.ApplicationContextProvider;
+import com.example.healthylifehub.utils.error.AsyncErrorLogger;
+import com.example.healthylifehub.utils.performance.AsyncPerformanceLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import android.content.Context;
-import com.example.healthylifehub.utils.NetworkMonitor;
+import com.example.healthylifehub.utils.network.NetworkMonitor;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;

@@ -7,7 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.viewbinding.ViewBinding;
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.ui.shared.NetworkStatusIndicator;
-import com.example.healthylifehub.utils.NetworkMonitor;
+import com.example.healthylifehub.utils.network.NetworkMonitor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -212,7 +212,7 @@ public abstract class NetworkAwareActivity<VB extends ViewBinding> extends BaseA
      * Show network error message
      */
     protected void showNetworkError(String message) {
-        String errorMessage = message != null ? message : "Không có kết nối mạng";
+        String errorMessage = message != null ? message : getString(R.string.error_network);
         Toast.makeText(this, "⚠️ " + errorMessage, Toast.LENGTH_LONG).show();
     }
     
@@ -220,7 +220,7 @@ public abstract class NetworkAwareActivity<VB extends ViewBinding> extends BaseA
      * Show network restored message
      */
     protected void showNetworkRestored() {
-        Toast.makeText(this, "✅ Đã kết nối mạng", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_network_connected), Toast.LENGTH_SHORT).show();
     }
     
     // ==================== NETWORK CALLBACK METHODS ====================

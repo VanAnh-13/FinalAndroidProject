@@ -279,34 +279,40 @@ public class MedicalRecordsRepository extends FirebaseRepository {
         
         String userId = getCurrentUserId();
         if (userId == null) {
+            Log.e(TAG, "❌ User not logged in, cannot sync");
             future.complete(false);
             return future;
         }
+        
+        Log.d(TAG, "🔄 Starting sync from Firestore for user: " + userId);
         
         db.collection(COLLECTION_USERS)
             .document(userId)
             .collection(SUBCOLLECTION_RECORDS)
             .get()
             .addOnSuccessListener(querySnapshot -> {
+                Log.d(TAG, "📥 Received " + querySnapshot.size() + " documents from Firestore");
+                
                 List<MedicalRecord> records = new ArrayList<>();
-                querySnapshot.getDocuments().forEach(doc -> {
+                for (com.google.firebase.firestore.QueryDocumentSnapshot doc : querySnapshot) {
                     try {
-                        MedicalRecord record = doc.toObject(MedicalRecord.class);
+                        MedicalRecord record = parseMedicalRecord(doc);
                         if (record != null) {
-                            record.setId(doc.getId());
                             records.add(record);
+                            Log.d(TAG, "✅ Parsed record: " + record.getTitle());
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "❌ Failed to parse medical record: " + doc.getId(), e);
-                        // Skip invalid records instead of crashing
                     }
-                });
+                }
                 
-                // Save all to Room (upsert to handle duplicates)
+                // Save all to Room
                 executorService.execute(() -> {
                     try {
-                        dao.upsertAll(records);
-                        Log.d(TAG, "✅ Synced " + records.size() + " medical records from Firestore");
+                        if (!records.isEmpty()) {
+                            dao.upsertAll(records);
+                            Log.d(TAG, "✅ Saved " + records.size() + " medical records to local database");
+                        }
                         future.complete(true);
                     } catch (Exception e) {
                         Log.e(TAG, "❌ Error saving synced records", e);
@@ -320,5 +326,37 @@ public class MedicalRecordsRepository extends FirebaseRepository {
             });
         
         return future;
+    }
+    
+    /**
+     * Parse Firestore document to MedicalRecord
+     */
+    private MedicalRecord parseMedicalRecord(com.google.firebase.firestore.DocumentSnapshot doc) {
+        try {
+            MedicalRecord record = new MedicalRecord();
+            record.setId(doc.getId());
+            record.setTitle(doc.getString("title"));
+            record.setDate(doc.getString("date"));
+            record.setHospital(doc.getString("hospital"));
+            record.setDoctor(doc.getString("doctor"));
+            record.setDiagnosis(doc.getString("diagnosis"));
+            record.setDescription(doc.getString("description"));
+            record.setAttachment(doc.getString("attachment"));
+            
+            // Parse type enum
+            String typeStr = doc.getString("type");
+            if (typeStr != null) {
+                try {
+                    record.setType(MedicalRecord.RecordType.valueOf(typeStr));
+                } catch (IllegalArgumentException e) {
+                    record.setType(MedicalRecord.RecordType.OTHER);
+                }
+            }
+            
+            return record;
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing medical record", e);
+            return null;
+        }
     }
 }

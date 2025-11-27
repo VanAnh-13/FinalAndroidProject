@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
+        android:background="@color/surface"
         android:elevation="4dp"
         app:title="@string/medical_history"
         app:titleTextColor="@color/text_primary"

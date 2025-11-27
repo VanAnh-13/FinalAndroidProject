@@ -8,7 +8,7 @@ import com.example.healthylifehub.base.BaseViewModel;
 import com.example.healthylifehub.base.DataState;
 import com.example.healthylifehub.data.model.HealthMetric;
 import com.example.healthylifehub.data.repository.HealthMetricRepository;
-import com.example.healthylifehub.utils.ExceptionHandler;
+import com.example.healthylifehub.utils.error.ExceptionHandler;
 
 import java.util.Date;
 
@@ -232,7 +232,7 @@ public class AddEditMetricViewModel extends BaseViewModel {
                 }
                 
                 // Log the technical details for debugging
-                ExceptionHandler.logException("AddEditMetricViewModel", "Error saving metric", error);
+                android.util.Log.e("AddEditMetricViewModel", "Error saving metric", error);
             },
             "Không có kết nối mạng. Dữ liệu sẽ được lưu cục bộ và đồng bộ khi có mạng.",
             false // Don't show loading here since we have our own isSaving state

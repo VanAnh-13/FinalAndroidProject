@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.ui.shared.NetworkStatusIndicator;
-import com.example.healthylifehub.utils.NetworkMonitor;
+import com.example.healthylifehub.utils.network.NetworkMonitor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,7 +208,7 @@ public abstract class NetworkAwareFragment extends Fragment {
      */
     protected void showNetworkError(String message) {
         if (getContext() != null) {
-            String errorMessage = message != null ? message : "Không có kết nối mạng";
+            String errorMessage = message != null ? message : getString(R.string.error_network);
             Toast.makeText(getContext(), "⚠️ " + errorMessage, Toast.LENGTH_LONG).show();
         }
     }
@@ -218,7 +218,7 @@ public abstract class NetworkAwareFragment extends Fragment {
      */
     protected void showNetworkRestored() {
         if (getContext() != null) {
-            Toast.makeText(getContext(), "✅ Đã kết nối mạng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.toast_network_connected), Toast.LENGTH_SHORT).show();
         }
     }
     

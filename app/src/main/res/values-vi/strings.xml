@@ -130,16 +130,12 @@
     
     <!-- Metrics -->
     <string name="blood_pressure">Huyết áp</string>
-    <string name="blood_pressure_value">120/80</string>
     <string name="blood_pressure_unit">mmHg</string>
     <string name="blood_sugar">Đường huyết</string>
-    <string name="blood_sugar_value">95</string>
     <string name="blood_sugar_unit">mg/dL</string>
     <string name="heart_rate">Nhịp tim</string>
-    <string name="heart_rate_value">72</string>
     <string name="heart_rate_unit">BPM</string>
     <string name="bmi">BMI</string>
-    <string name="bmi_value">22.5</string>
     <string name="bmi_unit"></string>
     
     <!-- Chart -->
@@ -372,15 +368,6 @@
     <string name="allergy_test">Xét nghiệm dị ứng</string>
     <string name="flu_vaccination">Tiêm phòng cúm</string>
     
-    <!-- Sample Records -->
-    <string name="record_date_1">15 Tháng 8 2024</string>
-    <string name="record_desc_1">BS. Jane Doe, Bệnh viện Đa khoa Thành phố. Chẩn đoán: Tiếng thổi tim lành tính.</string>
-    <string name="record_date_2">22 Tháng 5 2024</string>
-    <string name="record_desc_2">BS. John Smith, Phòng khám Sức khỏe. Tất cả chỉ số bình thường.</string>
-    <string name="record_date_3">10 Tháng 2 2024</string>
-    <string name="record_desc_3">Trung tâm Chẩn đoán. Kết quả đính kèm.</string>
-    <string name="record_date_4">05 Tháng 10 2023</string>
-    <string name="record_desc_4">Nhà thuốc Cộng đồng. Tiêm bởi Y tá Davis.</string>
 
     <!-- Add/Edit Record -->
     <string name="add_medical_record">Thêm hồ sơ bệnh án</string>
@@ -466,6 +453,10 @@
     <string name="reports_will_appear_here">Các báo cáo bạn tạo sẽ xuất hiện ở đây.</string>
     <string name="health_report">Báo cáo sức khỏe</string>
     <string name="metrics_data">Dữ liệu chỉ số</string>
+    <string name="select_date_range">Chọn khoảng ngày</string>
+    <string name="select_start_date">Chọn ngày bắt đầu</string>
+    <string name="select_end_date">Chọn ngày kết thúc</string>
+    <string name="error_end_date_before_start">Ngày kết thúc phải sau ngày bắt đầu</string>
 
     <!-- Forgot Password Screen -->
     <string name="forgot_password_title">Quên mật khẩu</string>
@@ -1032,4 +1023,174 @@
     <string name="pdf_generation_error">Lỗi khi tạo PDF</string>
     <string name="excel_export_error">Lỗi khi xuất Excel</string>
     <string name="email_error">Lỗi email</string>
+    
+    <!-- Additional Toast Messages -->
+    <string name="toast_network_connected">✅ Đã kết nối mạng</string>
+    <string name="toast_reminder_completed">✅ Đã hoàn thành nhắc nhở</string>
+    <string name="toast_snooze_10_min">⏰ Sẽ nhắc lại sau 10 phút</string>
+    <string name="toast_analyzing_data">Đang phân tích dữ liệu...</string>
+    <string name="toast_refreshing_data">Đang làm mới dữ liệu...</string>
+    <string name="toast_terms_coming_soon">Điều khoản dịch vụ - Sắp ra mắt</string>
+    <string name="toast_capture_photo">Chụp ảnh</string>
+    <string name="toast_open_gallery">Mở thư viện</string>
+    <string name="toast_toggle_flash">Bật/tắt đèn flash</string>
+    <string name="toast_medicine_saved">Đã lưu thuốc</string>
+    <string name="toast_camera_permission_required">Cần quyền camera để chụp ảnh</string>
+    <string name="toast_camera_app_not_found">Không tìm thấy ứng dụng camera</string>
+    <string name="toast_no_medicine_to_save">Không có thuốc nào để lưu</string>
+    <string name="toast_ocr_found_medicines">Tìm thấy %d thuốc từ đơn thuốc</string>
+    <string name="toast_ocr_no_text_found">Không tìm thấy văn bản trong ảnh</string>
+    <string name="toast_metric_saved">✅ Đã lưu chỉ số thành công</string>
+    <string name="toast_rest_monitor_guide">Đang mở hướng dẫn nghỉ ngơi và theo dõi</string>
+    <string name="toast_healthcare_contact">Đang mở liên hệ y tế</string>
+    <string name="toast_contacting_doctor">Đang liên hệ bác sĩ</string>
+    <string name="toast_health_info">Đang mở thông tin sức khỏe</string>
+    <string name="toast_clicked">Đã nhấn: %s</string>
+    <string name="toast_detail">Chi tiết: %s</string>
+    <string name="toast_delete">Xóa: %s</string>
+    <string name="toast_more_options">Tùy chọn khác</string>
+    <string name="toast_add_new_metric">Thêm chỉ số mới</string>
+    <string name="toast_found_results">Tìm thấy %d kết quả</string>
+    <string name="toast_filtered_metrics">Đã lọc: %d chỉ số</string>
+    <string name="toast_filter_cleared">Đã xóa bộ lọc</string>
+    <string name="toast_help_support_coming_soon">Tính năng Trợ giúp &amp; Hỗ trợ sắp ra mắt</string>
+    <string name="toast_notification_deleted">✅ Đã xóa thông báo</string>
+    <string name="toast_cannot_delete">❌ Không thể xóa</string>
+    <string name="toast_save_failed_retry">Lưu thất bại. Vui lòng thử lại.</string>
+    <string name="toast_creating_profile">Đang tạo cấu trúc hồ sơ...</string>
+    <string name="toast_faq_coming_soon">FAQ sắp ra mắt</string>
+    <string name="toast_getting_started_coming_soon">Hướng dẫn bắt đầu sắp ra mắt</string>
+    <string name="toast_tutorials_coming_soon">Hướng dẫn sắp ra mắt</string>
+    <string name="toast_troubleshooting_coming_soon">Hướng dẫn khắc phục sự cố sắp ra mắt</string>
+    <string name="toast_chat_developing">Tính năng chat đang phát triển</string>
+    <string name="toast_email_app_not_found">Không tìm thấy ứng dụng email</string>
+    <string name="toast_cannot_make_call">Không thể thực hiện cuộc gọi</string>
+    <string name="toast_cannot_open_zalo">Không thể mở Zalo. Vui lòng thêm số 0123456789</string>
+    <string name="toast_cannot_open_community">Không thể mở liên kết cộng đồng</string>
+    <string name="toast_cannot_open_youtube">Không thể mở YouTube</string>
+    <string name="toast_medical_history_saved">✅ Đã lưu tiền sử bệnh án</string>
+    <string name="toast_2fa_coming_soon">Xác thực hai yếu tố sắp ra mắt</string>
+    <string name="toast_connected_apps_coming_soon">Quản lý ứng dụng kết nối sắp ra mắt</string>
+    <string name="toast_select_custom_time">Chọn khoảng thời gian tùy chỉnh</string>
+    <string name="toast_please_login">Vui lòng đăng nhập</string>
+    <string name="toast_select_report_content">Vui lòng chọn ít nhất một nội dung báo cáo</string>
+    <string name="toast_record_deleted">Đã xóa hồ sơ</string>
+    <string name="toast_record_saved">✅ Đã lưu hồ sơ</string>
+    <string name="toast_record_updated">✅ Đã cập nhật hồ sơ</string>
+    <string name="toast_record_not_found">Không tìm thấy hồ sơ</string>
+    <string name="toast_title_required">❌ Tiêu đề không được để trống</string>
+    <string name="toast_date_required">❌ Ngày khám không được để trống</string>
+    <string name="toast_save_error">❌ Lỗi khi lưu</string>
+    <string name="toast_menu">Menu</string>
+    <string name="toast_add_new_record">Thêm hồ sơ mới</string>
+    <string name="toast_add_first_record">Thêm hồ sơ đầu tiên</string>
+    <string name="toast_reminder_not_found">Không tìm thấy nhắc nhở</string>
+    <string name="toast_reminder_updated">✅ Đã cập nhật nhắc nhở!</string>
+    <string name="toast_reminder_created">✅ Đã tạo nhắc nhở thành công!</string>
+    <string name="toast_create_reminder_error">❌ Lỗi khi tạo nhắc nhở</string>
+    <string name="toast_notification_permission_granted">✅ Đã cấp quyền thông báo</string>
+    <string name="toast_notification_permission_required">⚠️ Cần cấp quyền thông báo để nhắc nhở hoạt động</string>
+    <string name="toast_updated_schedule_error">⚠️ Đã cập nhật nhưng có lỗi lên lịch thông báo</string>
+
+    <!-- Medical Record Buttons -->
+    <string name="btn_save_record">Lưu hồ sơ</string>
+    <string name="btn_update_record">Cập nhật hồ sơ</string>
+    <string name="btn_saving">Đang lưu…</string>
+    <string name="btn_updating">Đang cập nhật…</string>
+    <string name="btn_deleting">Đang xóa…</string>
+    <string name="btn_delete">Xóa</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="dialog_delete_record_title">Xóa hồ sơ</string>
+    <string name="dialog_delete_record_message">Bạn có chắc chắn muốn xóa hồ sơ này không?</string>
+
+    <!-- Report Strings -->
+    <string name="report_creating_title">Đang tạo báo cáo</string>
+    <string name="report_creating_message">Vui lòng đợi...</string>
+    <string name="report_custom_range_format">Tùy chỉnh: %s</string>
+    <string name="report_range_selected_format">Đã chọn: %s</string>
+    <string name="login_required">Vui lòng đăng nhập</string>
+    <string name="report_select_custom_range">Vui lòng chọn khoảng thời gian tùy chỉnh</string>
+    <string name="report_select_content_required">Vui lòng chọn ít nhất một nội dung báo cáo</string>
+    <string name="data_loading_message">Đang tải dữ liệu...</string>
+    <string name="report_generating_message">Đang tạo báo cáo...</string>
+    <string name="report_ready_title">Báo cáo đã sẵn sàng</string>
+    <string name="report_ready_message">Bạn muốn làm gì với báo cáo?</string>
+
+    <!-- Validation Strings -->
+    <string name="error_invalid_number">Vui lòng nhập số hợp lệ</string>
+    <string name="error_systolic_greater">Huyết áp tâm thu phải lớn hơn tâm trương</string>
+    <string name="error_description_length">Mô tả không được quá 500 ký tự</string>
+
+    <!-- Chart Strings -->
+    <string name="chart_heart_rate">Nhịp tim (BPM)</string>
+    <string name="chart_weight">Cân nặng (kg)</string>
+    <string name="chart_temperature">Nhiệt độ (°C)</string>
+
+    <!-- Record Detail Strings -->
+    <string name="record_delete_title">Xóa hồ sơ bệnh án</string>
+    <string name="record_delete_message">Bạn có chắc chắn muốn xóa hồ sơ này? Hành động này không thể hoàn tác.</string>
+
+    <!-- Validation Field Names -->
+    <string name="field_systolic">Huyết áp tâm thu</string>
+    <string name="field_diastolic">Huyết áp tâm trương</string>
+    <string name="field_heart_rate">Nhịp tim</string>
+    <string name="field_blood_sugar">Đường huyết</string>
+    <string name="field_weight">Cân nặng</string>
+    <string name="field_height">Chiều cao</string>
+    <string name="field_temperature">Nhiệt độ</string>
+    <string name="field_title">Tiêu đề</string>
+
+    <!-- Validation Error Templates -->
+    <string name="error_required_field">%s là bắt buộc</string>
+    <string name="error_range_field">%1$s phải từ %2$s đến %3$s</string>
+    <string name="error_positive_field">%s phải lớn hơn 0</string>
+    <string name="error_min_length_field">%1$s phải có ít nhất %2$d ký tự</string>
+    <string name="error_max_length_field">%1$s không được quá %2$d ký tự</string>
+    <string name="error_invalid_field">%s không hợp lệ</string>
+    <string name="network_error_format">❌ %s</string>
+    <string name="network_success_format">✅ %s</string>
+
+    <!-- Permission Dialog -->
+    <string name="permission_dialog_message_bullets">• Nhắc nhở uống thuốc đúng giờ\n• Cảnh báo chỉ số sức khỏe bất thường\n• Gửi gợi ý cải thiện sức khỏe\n\nBạn có muốn cấp quyền không?</string>
+    <string name="btn_agree">Đồng ý</string>
+    <string name="btn_no">Không</string>
+    <string name="permission_granted_success">✅ Đã cấp quyền thông báo thành công!</string>
+    <string name="permission_denied_message">❌ Quyền thông báo bị từ chối. Một số tính năng có thể không hoạt động.</string>
+
+    <!-- Sound Selection Dialog -->
+    <string name="dialog_select_sound">Chọn âm thanh thông báo</string>
+    <string name="sound_system_default">Mặc định hệ thống</string>
+    <string name="sound_gentle">Nhẹ nhàng</string>
+    <string name="sound_standard">Tiêu chuẩn</string>
+    <string name="sound_strong">Mạnh mẽ</string>
+    <string name="sound_custom">Tùy chỉnh...</string>
+
+    <!-- Vibration Selection Dialog -->
+    <string name="dialog_select_vibration">Chọn kiểu rung</string>
+    <string name="vibration_default">Mặc định</string>
+    <string name="vibration_gentle">Nhẹ nhàng (1 lần)</string>
+    <string name="vibration_standard">Tiêu chuẩn (2 lần)</string>
+    <string name="vibration_strong">Mạnh mẽ (3 lần)</string>
+    <string name="vibration_continuous">Liên tục</string>
+
+    <!-- Preview Notifications -->
+    <string name="preview_reminder_title">🔔 Thông báo nhắc nhở mẫu</string>
+    <string name="preview_reminder_message">Đây là ví dụ về thông báo nhắc nhở với cài đặt hiện tại</string>
+    <string name="preview_health_alert_title">⚠️ Cảnh báo sức khỏe mẫu</string>
+    <string name="preview_health_alert_message">Đây là ví dụ về thông báo cảnh báo sức khỏe</string>
+    <string name="preview_suggestion_title">💡 Gợi ý thông minh mẫu</string>
+    <string name="preview_suggestion_message">Đây là ví dụ về thông báo gợi ý cải thiện sức khỏe</string>
+    <string name="preview_general_title">📱 Thông báo chung mẫu</string>
+    <string name="preview_general_message">Đây là ví dụ về thông báo chung của ứng dụng</string>
+
+    <!-- Date Picker -->
+    <string name="date_picker_select_range">Chọn khoảng thời gian</string>
+
+    <!-- Report Dialog Buttons -->
+    <string name="btn_open">Mở</string>
+    <string name="btn_share">Chia sẻ</string>
+    <string name="btn_close">Đóng</string>
+    <string name="report_created_success">Báo cáo đã được tạo thành công!</string>
+    <string name="error_format">Lỗi: %s</string>
+    <string name="error_loading_data_format">Lỗi khi tải dữ liệu: %s</string>
 </resources>

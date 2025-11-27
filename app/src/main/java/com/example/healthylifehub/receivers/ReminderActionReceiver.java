@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.healthylifehub.utils.ErrorHandler;
-import com.example.healthylifehub.utils.ReminderLogger;
-import com.example.healthylifehub.utils.RetryManager;
-import com.example.healthylifehub.utils.SmartNotificationManager;
-import com.example.healthylifehub.utils.WorkManagerConfig;
+import com.example.healthylifehub.utils.error.ErrorHandler;
+import com.example.healthylifehub.utils.reminder.ReminderLogger;
+import com.example.healthylifehub.utils.retry.RetryManager;
+import com.example.healthylifehub.utils.notification.SmartNotificationManager;
+import com.example.healthylifehub.utils.workmanager.WorkManagerConfig;
 
 /**
  * BroadcastReceiver for handling smart notification actions

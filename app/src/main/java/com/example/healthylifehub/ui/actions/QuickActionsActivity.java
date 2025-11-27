@@ -47,11 +47,15 @@ public class QuickActionsActivity extends BaseActivity<ActivityQuickActionsBindi
         });
 
         getBinding().cardStartActivity.setOnClickListener(v -> {
-            Toast.makeText(this, "Bắt đầu hoạt động - Sắp ra mắt", Toast.LENGTH_SHORT).show();
+            // Navigate to Enhanced Analytics for activity tracking
+            Intent intent = new Intent(this, com.example.healthylifehub.ui.analytics.enhanced.EnhancedAnalyticsActivity.class);
+            startActivity(intent);
         });
 
         getBinding().cardScanFood.setOnClickListener(v -> {
-            Toast.makeText(this, "Quét thực phẩm - Sắp ra mắt", Toast.LENGTH_SHORT).show();
+            // Navigate to OCR scanning (can be used for food labels)
+            Intent intent = new Intent(this, com.example.healthylifehub.ui.medicines.ocr.MedicineOCRActivity.class);
+            startActivity(intent);
         });
     }
 }

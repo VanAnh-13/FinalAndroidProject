@@ -75,7 +75,7 @@ public class MedicalHistoryActivity extends BaseActivity<ActivityMedicalHistoryB
                     getBinding().btnSaveHistory.setText("Lưu");
                     
                     if (success) {
-                        Toast.makeText(this, "✅ Đã lưu tiền sử bệnh án", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_medical_history_saved), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         showErrorDialog("Lỗi khi lưu tiền sử bệnh án. Vui lòng thử lại.");

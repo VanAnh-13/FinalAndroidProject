@@ -98,25 +98,32 @@ public class DashboardViewModel extends BaseViewModel {
             CompletableFuture.supplyAsync(() ->
                 notificationsRepository.getUnreadCountSync(userId), executor);
 
+        CompletableFuture<List<MetricHistory>> bloodPressureFuture =
+            CompletableFuture.supplyAsync(() ->
+                metricsRepository.loadMetricHistorySync(userId, "blood_pressure"), executor);
+
         // Wait for all futures to complete and post results to LiveData on main thread
-        CompletableFuture.allOf(remindersFuture, metricsFuture, notificationsFuture)
+        CompletableFuture.allOf(remindersFuture, metricsFuture, notificationsFuture, bloodPressureFuture)
             .thenAcceptAsync(v -> {
                 try {
                     // Get results from completed futures
                     List<Reminder> remindersResult = remindersFuture.get();
                     Map<String, String> metricsResult = metricsFuture.get();
                     Integer notificationsResult = notificationsFuture.get();
+                    List<MetricHistory> bloodPressureResult = bloodPressureFuture.get();
 
                     // Post results to LiveData on main thread
                     reminders.postValue(remindersResult);
                     latestMetrics.postValue(metricsResult);
                     notificationCount.postValue(notificationsResult);
+                    bloodPressureHistory.postValue(bloodPressureResult);
 
                     long duration = System.currentTimeMillis() - startTime;
                     Log.d(TAG, "✅ Dashboard data loaded in " + duration + "ms");
                     Log.d(TAG, "   - Reminders: " + remindersResult.size());
                     Log.d(TAG, "   - Metrics: " + metricsResult.size());
                     Log.d(TAG, "   - Notifications: " + notificationsResult);
+                    Log.d(TAG, "   - Blood Pressure History: " + bloodPressureResult.size());
 
                 } catch (Exception e) {
                     Log.e(TAG, "❌ Error getting results from CompletableFuture", e);
@@ -124,6 +131,7 @@ public class DashboardViewModel extends BaseViewModel {
                     reminders.postValue(new java.util.ArrayList<>());
                     latestMetrics.postValue(new java.util.HashMap<>());
                     notificationCount.postValue(0);
+                    bloodPressureHistory.postValue(new java.util.ArrayList<>());
                 }
             }, mainExecutor)
             .exceptionally(throwable -> {
@@ -132,6 +140,7 @@ public class DashboardViewModel extends BaseViewModel {
                 reminders.postValue(new java.util.ArrayList<>());
                 latestMetrics.postValue(new java.util.HashMap<>());
                 notificationCount.postValue(0);
+                bloodPressureHistory.postValue(new java.util.ArrayList<>());
                 return null;
             });
     }
@@ -190,7 +199,7 @@ public class DashboardViewModel extends BaseViewModel {
 
     private void updateGreeting() {
         // Get locale-aware context
-        android.content.Context localizedContext = com.example.healthylifehub.utils.LocaleHelper.applyLanguage(getApplication());
+        android.content.Context localizedContext = com.example.healthylifehub.utils.locale.LocaleHelper.applyLanguage(getApplication());
         
         int hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
         if (hour < 12) {

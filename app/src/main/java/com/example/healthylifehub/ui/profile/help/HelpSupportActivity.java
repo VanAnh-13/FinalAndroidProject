@@ -40,22 +40,22 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
         
         // FAQ
         getBinding().actionFaq.setOnClickListener(v -> {
-            Toast.makeText(this, "FAQ coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_faq_coming_soon), Toast.LENGTH_SHORT).show();
         });
         
         // Getting Started Guide
         getBinding().actionGettingStarted.setOnClickListener(v -> {
-            Toast.makeText(this, "Getting Started Guide coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_getting_started_coming_soon), Toast.LENGTH_SHORT).show();
         });
         
         // Feature Tutorials
         getBinding().actionTutorials.setOnClickListener(v -> {
-            Toast.makeText(this, "Tutorials coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_tutorials_coming_soon), Toast.LENGTH_SHORT).show();
         });
         
         // Troubleshooting
         getBinding().actionTroubleshooting.setOnClickListener(v -> {
-            Toast.makeText(this, "Troubleshooting Guide coming soon", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_troubleshooting_coming_soon), Toast.LENGTH_SHORT).show();
         });
         
         // Contact Support
@@ -105,7 +105,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
                     sendSupportEmail();
                     break;
                 case 1: // Chat
-                    Toast.makeText(this, "Tính năng chat đang phát triển", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_chat_developing), Toast.LENGTH_SHORT).show();
                     break;
                 case 2: // Phone
                     callSupport();
@@ -140,7 +140,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
         try {
             startActivity(Intent.createChooser(emailIntent, "Gửi email hỗ trợ"));
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Không tìm thấy ứng dụng email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_email_app_not_found), Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -164,7 +164,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
         try {
             startActivity(Intent.createChooser(emailIntent, "Gửi góp ý"));
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Không tìm thấy ứng dụng email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_email_app_not_found), Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -195,7 +195,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
         try {
             startActivity(Intent.createChooser(emailIntent, "Báo lỗi"));
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Không tìm thấy ứng dụng email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_email_app_not_found), Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -206,7 +206,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
         try {
             startActivity(callIntent);
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Không thể thực hiện cuộc gọi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_cannot_make_call), Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -216,7 +216,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
             Intent zaloIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://zalo.me/0123456789"));
             startActivity(zaloIntent);
         } catch (Exception e) {
-            Toast.makeText(this, "Không thể mở Zalo. Vui lòng thêm số 0123456789", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_cannot_open_zalo), Toast.LENGTH_LONG).show();
         }
     }
     
@@ -241,7 +241,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
         try {
             startActivity(communityIntent);
         } catch (android.content.ActivityNotFoundException e) {
-            Toast.makeText(this, "Không thể mở liên kết cộng đồng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_cannot_open_community), Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -253,7 +253,7 @@ public class HelpSupportActivity extends BaseActivity<ActivityHelpSupportBinding
         try {
             startActivity(youtubeIntent);
         } catch (android.content.ActivityNotFoundException e) {
-            Toast.makeText(this, "Không thể mở YouTube", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.example.healthylifehub.R.string.toast_cannot_open_youtube), Toast.LENGTH_SHORT).show();
         }
     }
     

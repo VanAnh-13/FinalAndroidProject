@@ -19,11 +19,11 @@ import androidx.core.content.ContextCompat;
 import com.example.healthylifehub.R;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.data.repository.RemindersRepository;
-import com.example.healthylifehub.utils.ErrorHandler;
-import com.example.healthylifehub.utils.ProgressCalculator;
-import com.example.healthylifehub.utils.ReminderAlarmManager;
-import com.example.healthylifehub.utils.ReminderLogger;
-import com.example.healthylifehub.utils.ReminderValidator;
+import com.example.healthylifehub.utils.error.ErrorHandler;
+import com.example.healthylifehub.utils.app.ProgressCalculator;
+import com.example.healthylifehub.utils.reminder.ReminderAlarmManager;
+import com.example.healthylifehub.utils.reminder.ReminderLogger;
+import com.example.healthylifehub.utils.reminder.ReminderValidator;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
@@ -111,14 +111,14 @@ public class AddEditReminderActivity extends AppCompatActivity {
                         currentReminder = reminder;
                         fillFormWithReminderData(reminder);
                     } else {
-                        Toast.makeText(this, "Không tìm thấy nhắc nhở", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_reminder_not_found), Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });
             })
             .exceptionally(throwable -> {
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                     finish();
                 });
                 return null;
@@ -411,10 +411,10 @@ public class AddEditReminderActivity extends AppCompatActivity {
                             ReminderAlarmManager.cancelReminder(this, reminder.getReminderId());
                             ReminderAlarmManager.scheduleReminder(this, reminder);
                             
-                            Toast.makeText(this, "✅ Đã cập nhật nhắc nhở!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.toast_reminder_updated), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                             btnSaveReminder.setEnabled(true);
                             btnSaveReminder.setText("Cập nhật nhắc nhở");
                         }
@@ -422,9 +422,9 @@ public class AddEditReminderActivity extends AppCompatActivity {
                 })
                 .exceptionally(throwable -> {
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                         btnSaveReminder.setEnabled(true);
-                        btnSaveReminder.setText("Cập nhật nhắc nhở");
+                        btnSaveReminder.setText(getString(R.string.edit_reminder));
                     });
                     return null;
                 });
@@ -437,20 +437,20 @@ public class AddEditReminderActivity extends AppCompatActivity {
                             
                             ReminderAlarmManager.scheduleReminder(this, reminder);
                             
-                            Toast.makeText(this, "✅ Đã tạo nhắc nhở thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.toast_reminder_created), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(this, "❌ Lỗi khi tạo nhắc nhở", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.toast_create_reminder_error), Toast.LENGTH_SHORT).show();
                             btnSaveReminder.setEnabled(true);
-                            btnSaveReminder.setText("Lưu nhắc nhở");
+                            btnSaveReminder.setText(getString(R.string.save_reminder));
                         }
                     });
                 })
                 .exceptionally(throwable -> {
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                         btnSaveReminder.setEnabled(true);
-                        btnSaveReminder.setText("Lưu nhắc nhở");
+                        btnSaveReminder.setText(getString(R.string.save_reminder));
                     });
                     return null;
                 });
@@ -505,11 +505,11 @@ public class AddEditReminderActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 // Permission granted, proceed with saving
-                Toast.makeText(this, "✅ Đã cấp quyền thông báo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_notification_permission_granted), Toast.LENGTH_SHORT).show();
                 saveReminderAfterPermission();
             } else {
                 // Permission denied
-                Toast.makeText(this, "⚠️ Cần cấp quyền thông báo để nhắc nhở hoạt động", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.toast_notification_permission_required), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -599,7 +599,7 @@ public class AddEditReminderActivity extends AppCompatActivity {
                                 ReminderLogger.logNotificationEvent("scheduled", reminder.getReminderId(), 
                                     "Reminder scheduled after permission grant and update");
                                 
-                                Toast.makeText(this, "✅ Đã cập nhật nhắc nhở!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.toast_reminder_updated), Toast.LENGTH_SHORT).show();
                                 finish();
                             } catch (Exception e) {
                                 // Handle scheduling error
@@ -607,7 +607,7 @@ public class AddEditReminderActivity extends AppCompatActivity {
                                     ErrorHandler.ERROR_NOTIFICATION_SEND_FAILED, e, 
                                     reminder.getReminderId(), true);
                                 
-                                Toast.makeText(this, "⚠️ Đã cập nhật nhưng có lỗi lên lịch thông báo", 
+                                Toast.makeText(this, getString(R.string.toast_updated_schedule_error), 
                                     Toast.LENGTH_LONG).show();
                                 finish();
                             }
@@ -621,9 +621,9 @@ public class AddEditReminderActivity extends AppCompatActivity {
                                 ErrorHandler.ERROR_DATABASE_OPERATION_FAILED, null, 
                                 "UPDATE", reminder.getReminderId());
                             
-                            Toast.makeText(this, "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                             btnSaveReminder.setEnabled(true);
-                            btnSaveReminder.setText("Cập nhật nhắc nhở");
+                            btnSaveReminder.setText(getString(R.string.edit_reminder));
                         }
                     });
                 })
@@ -639,9 +639,9 @@ public class AddEditReminderActivity extends AppCompatActivity {
                             ErrorHandler.ERROR_DATABASE_OPERATION_FAILED, throwable, 
                             "UPDATE", reminder.getReminderId());
                         
-                        Toast.makeText(this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                         btnSaveReminder.setEnabled(true);
-                        btnSaveReminder.setText("Cập nhật nhắc nhở");
+                        btnSaveReminder.setText(getString(R.string.edit_reminder));
                     });
                     return null;
                 });
@@ -654,20 +654,20 @@ public class AddEditReminderActivity extends AppCompatActivity {
                             
                             ReminderAlarmManager.scheduleReminder(this, reminder);
                             
-                            Toast.makeText(this, "✅ Đã tạo nhắc nhở thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.toast_reminder_created), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(this, "❌ Lỗi khi tạo nhắc nhở", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.toast_create_reminder_error), Toast.LENGTH_SHORT).show();
                             btnSaveReminder.setEnabled(true);
-                            btnSaveReminder.setText("Lưu nhắc nhở");
+                            btnSaveReminder.setText(getString(R.string.save_reminder));
                         }
                     });
                 })
                 .exceptionally(throwable -> {
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "❌ Lỗi: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.error, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                         btnSaveReminder.setEnabled(true);
-                        btnSaveReminder.setText("Lưu nhắc nhở");
+                        btnSaveReminder.setText(getString(R.string.save_reminder));
                     });
                     return null;
                 });

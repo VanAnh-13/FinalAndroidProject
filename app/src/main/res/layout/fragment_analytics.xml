@@ -115,7 +115,9 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_blood_pressure"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/chart_height_large" />
+                    android:layout_height="@dimen/chart_height_large"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp" />
                 
                 <TextView
                     android:id="@+id/tv_blood_pressure_stats"
@@ -147,7 +149,9 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_blood_sugar"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/chart_height_large" />
+                    android:layout_height="@dimen/chart_height_large"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp" />
                 
                 <TextView
                     android:id="@+id/tv_blood_sugar_stats"
@@ -179,7 +183,9 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_weight"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/chart_height_large" />
+                    android:layout_height="@dimen/chart_height_large"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp" />
                 
                 <TextView
                     android:id="@+id/tv_weight_stats"
@@ -211,7 +217,9 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_heart_rate"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/chart_height_large" />
+                    android:layout_height="@dimen/chart_height_large"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp" />
                 
                 <TextView
                     android:id="@+id/tv_heart_rate_stats"

@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseFragment;
 import com.example.healthylifehub.base.BaseViewModel;
 import com.example.healthylifehub.databinding.FragmentRemindersBinding;
@@ -68,10 +70,10 @@ public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
                 .thenAccept(success -> {
                     requireActivity().runOnUiThread(() -> {
                         if (success) {
-                            String message = isActive ? "✅ Đã bật nhắc nhở" : "⏸️ Đã tắt nhắc nhở";
+                            String message = isActive ? getString(R.string.marked_complete) : getString(R.string.skipped_next_scheduled);
                             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(requireContext(), "❌ Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), getString(R.string.update_error), Toast.LENGTH_SHORT).show();
                         }
                     });
                 });
@@ -83,20 +85,20 @@ public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
             public void onReminderCompleted(com.example.healthylifehub.data.model.Reminder reminder) {
                 // Dùng shared ViewModel để cập nhật tất cả observers
                 appSharedViewModel.completeReminder(reminder);
-                Toast.makeText(requireContext(), "✅ Đã hoàn thành nhắc nhở", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.toast_reminder_completed), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onReminderSkipped(com.example.healthylifehub.data.model.Reminder reminder) {
                 // Bỏ qua nhắc nhở
-                Toast.makeText(requireContext(), "⏭️ Đã bỏ qua nhắc nhở", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.skipped_next_scheduled), Toast.LENGTH_SHORT).show();
             }
             
             @Override
             public void onReminderDeleted(com.example.healthylifehub.data.model.Reminder reminder) {
                 // Xóa nhắc nhở - dùng shared ViewModel để sync
                 appSharedViewModel.deleteReminder(reminder);
-                Toast.makeText(requireContext(), "🗑️ Đã xóa nhắc nhở", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.reminder_deleted), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -156,7 +158,7 @@ public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
         
         getBinding().btnSuggestionLater.setOnClickListener(v -> {
             hideSuggestion();
-            Toast.makeText(requireContext(), "Đã ẩn gợi ý", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.later), Toast.LENGTH_SHORT).show();
         });
     }
 }

@@ -91,30 +91,19 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
     private void setupChart() {
         // Check if this is blood pressure metric and handle accordingly
         if (isBloodPressureMetric()) {
-            // Load blood pressure data and setup dual-line chart
-            List<MetricHistory> sampleData = createSampleBloodPressureData();
-            setupBloodPressureChart(sampleData);
+            // TODO: Load actual blood pressure data from repository
+            setupBloodPressureChart(new ArrayList<>());
             return;
         }
         
-        // Default chart setup for other metrics
+        // TODO: Load actual data from repository
+        // Chart will be populated when data is loaded
         List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0, 70));
-        entries.add(new Entry(1, 75));
-        entries.add(new Entry(2, 82));
-        entries.add(new Entry(3, 78));
-        entries.add(new Entry(4, 85));
-        entries.add(new Entry(5, 88));
-        entries.add(new Entry(6, 83));
-        entries.add(new Entry(7, 90));
-        entries.add(new Entry(8, 85));
-        entries.add(new Entry(9, 87));
-
         ChartConfigurator.configureLineChart(
             getBinding().lineChart,
             this,
             entries,
-            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"),
+            new ArrayList<>(),
             R.color.primary_blue,
             R.color.divider
         );
@@ -131,9 +120,7 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
     private void loadStatistics() {
         if (isBloodPressureMetric()) {
             // TODO: Load actual blood pressure data from repository
-            // For now, create sample data for testing
-            List<MetricHistory> sampleData = createSampleBloodPressureData();
-            calculateAndDisplayBloodPressureStats(sampleData);
+            calculateAndDisplayBloodPressureStats(new ArrayList<>());
         } else {
             // Load from Firebase (placeholder for now)
             getBinding().tvTrendValue.setText(getString(R.string.loading_data_ellipsis));
@@ -251,82 +238,11 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
         // Reload chart and statistics when period changes
         if (isBloodPressureMetric()) {
             // TODO: Load actual blood pressure data from repository
-            // For now, create sample data for testing
-            List<MetricHistory> sampleData = createSampleBloodPressureData();
-            setupBloodPressureChart(sampleData);
-            calculateAndDisplayBloodPressureStats(sampleData);
+            setupBloodPressureChart(new ArrayList<>());
+            calculateAndDisplayBloodPressureStats(new ArrayList<>());
         } else {
-            setupChart(); // Use existing method for other metrics
+            setupChart();
             loadStatistics();
         }
     }
-
-    /**
-     * Create sample blood pressure data for testing
-     * TODO: Replace with actual data loading from repository
-     */
-    private List<MetricHistory> createSampleBloodPressureData() {
-        List<MetricHistory> sampleData = new ArrayList<>();
-        
-        // Sample blood pressure readings in format "systolic/diastolic"
-        String[] readings = {"120/80", "125/82", "118/78", "130/85", "122/79", "128/83", "115/75", "135/90", "110/70", "140/95"};
-        
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault());
-        
-        // Create data for different periods based on currentPeriod
-        int dataPoints = 0;
-        int dayOffset = 0;
-        
-        switch (currentPeriod) {
-            case "day":
-                dataPoints = 5; // 5 readings today
-                dayOffset = 0;
-                break;
-            case "week":
-                dataPoints = 7; // 7 days
-                dayOffset = 1;
-                break;
-            case "month":
-                dataPoints = 10; // 10 data points over 30 days
-                dayOffset = 3;
-                break;
-            case "year":
-                dataPoints = 12; // 12 months
-                dayOffset = 30;
-                break;
-            default:
-                dataPoints = 7;
-                dayOffset = 1;
-        }
-        
-        for (int i = 0; i < Math.min(dataPoints, readings.length); i++) {
-            MetricHistory history = new MetricHistory();
-            history.setValue(readings[i]);
-            history.setUnit("mmHg");
-            
-            // Set dates based on period
-            cal = java.util.Calendar.getInstance();
-            if (currentPeriod.equals("day")) {
-                // For day view, create readings throughout today
-                cal.add(java.util.Calendar.HOUR_OF_DAY, -(dataPoints - 1 - i) * 2);
-            } else {
-                // For other periods, spread data over time
-                cal.add(java.util.Calendar.DAY_OF_YEAR, -(dataPoints - 1 - i) * dayOffset);
-            }
-            
-            history.setDate(sdf.format(cal.getTime()));
-            sampleData.add(history);
-            
-            // Debug logging
-            android.util.Log.d("BloodPressure", "Created sample data: " + history.getValue() + 
-                " at " + history.getDate() + " (systolic: " + history.getSystolic() + 
-                ", diastolic: " + history.getDiastolic() + ")");
-        }
-        
-        android.util.Log.d("BloodPressure", "Created " + sampleData.size() + " sample records for period: " + currentPeriod);
-        return sampleData;
-    }
-
-    
 }

@@ -15,7 +15,7 @@ import androidx.work.WorkerParameters;
 
 import com.example.healthylifehub.MainActivity;
 import com.example.healthylifehub.R;
-import com.example.healthylifehub.utils.NotificationHistoryManager;
+import com.example.healthylifehub.utils.notification.NotificationHistoryManager;
 
 import java.util.Random;
 
