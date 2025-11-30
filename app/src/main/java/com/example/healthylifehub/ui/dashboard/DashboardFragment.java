@@ -10,11 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.healthylifehub.data.model.Reminder;
 import com.example.healthylifehub.base.BaseFragment;
 import com.example.healthylifehub.base.BaseViewModel;
+import com.example.healthylifehub.utils.navigation.DrawerController;
 import com.example.healthylifehub.databinding.FragmentDashboardBinding;
-import com.example.healthylifehub.ui.actions.QuickActionsActivity;
 import com.example.healthylifehub.ui.dashboard.adapter.RemindersAdapter;
 import com.example.healthylifehub.ui.notifications.center.NotificationsCenterActivity;
 import com.example.healthylifehub.ui.metrics.detail.MetricDetailActivity;
+import com.example.healthylifehub.ui.metrics.add_edit.AddEditMetricActivity;
+import com.example.healthylifehub.ui.metrics.analysis.MetricAnalysisActivity;
+import com.example.healthylifehub.ui.reminders.add_edit.AddEditReminderActivity;
+import com.example.healthylifehub.ui.profile.reports.ExportReportsActivity;
+import com.example.healthylifehub.ui.analytics.enhanced.EnhancedAnalyticsActivity;
+import com.example.healthylifehub.ui.medicines.ocr.MedicineOCRActivity;
 import com.example.healthylifehub.utils.chart.ChartConfigurator;
 import com.example.healthylifehub.utils.chart.ChartDataProcessor;
 import com.example.healthylifehub.utils.app.AccessibilityUtils;
@@ -132,51 +138,7 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
                 getBinding().tvNotificationBadge.setVisibility(android.view.View.GONE);
             }
         });
-        
-        // Observe latest metrics for dashboard display with loading state
-        // Requirements: 6.1, 6.4 - Update UI when each CompletableFuture completes
-        // TODO: Re-enable when layout views are added
-        /*viewModel.getLatestMetrics().observe(getViewLifecycleOwner(), metrics -> {
-            if (metrics != null) {
-                // Update blood pressure with fallback for partial failures
-                if (metrics.containsKey("blood_pressure")) {
-                    getBinding().tvBloodPressureValue.setText(metrics.get("blood_pressure"));
-                } else {
-                    getBinding().tvBloodPressureValue.setText("--/--");
-                }
-                
-                // Update blood sugar with fallback for partial failures
-                if (metrics.containsKey("blood_sugar")) {
-                    getBinding().tvBloodSugarValue.setText(metrics.get("blood_sugar"));
-                } else {
-                    getBinding().tvBloodSugarValue.setText("--");
-                }
-                
-                // Update heart rate with fallback for partial failures
-                if (metrics.containsKey("heart_rate")) {
-                    getBinding().tvHeartRateValue.setText(metrics.get("heart_rate"));
-                } else {
-                    getBinding().tvHeartRateValue.setText("--");
-                }
-                
-                // Update weight (BMI) with fallback for partial failures
-                if (metrics.containsKey("weight")) {
-                    getBinding().tvBmiValue.setText(metrics.get("weight"));
-                } else {
-                    getBinding().tvBmiValue.setText("--");
-                }
-                
-                Log.d("DashboardFragment", "Metrics updated: " + metrics.size() + " metrics loaded");
-            } else {
-                // Handle complete failure - show placeholder values
-                getBinding().tvBloodPressureValue.setText("--/--");
-                getBinding().tvBloodSugarValue.setText("--");
-                getBinding().tvHeartRateValue.setText("--");
-                getBinding().tvBmiValue.setText("--");
-                Log.w("DashboardFragment", "Failed to load metrics");
-            }
-        });*/
-        
+
         // Observe blood pressure history for chart updates
         viewModel.getBloodPressureHistory().observe(getViewLifecycleOwner(), bloodPressureData -> {
             // When blood pressure data changes, refresh the chart
@@ -212,8 +174,8 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
 
     private void setupHeaderClicks() {
         getBinding().ivMenu.setOnClickListener(v -> {
-            if (getActivity() instanceof com.example.healthylifehub.utils.navigation.DrawerController) {
-                ((com.example.healthylifehub.utils.navigation.DrawerController) getActivity()).openDrawer();
+            if (getActivity() instanceof DrawerController) {
+                ((DrawerController) getActivity()).openDrawer();
             }
         });
 
@@ -228,11 +190,30 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
     }
 
     private void setupQuickActionClicks() {
-        android.view.View.OnClickListener quickActions = v -> openQuickActions();
-        getBinding().actionAddMetric.setOnClickListener(quickActions);
-        getBinding().actionAnalysis.setOnClickListener(quickActions);
-        getBinding().actionReminder.setOnClickListener(quickActions);
-        getBinding().actionReports.setOnClickListener(quickActions);
+        getBinding().actionAddMetric.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AddEditMetricActivity.class);
+            startActivity(intent);
+        });
+        getBinding().actionAnalysis.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), MetricAnalysisActivity.class);
+            startActivity(intent);
+        });
+        getBinding().actionReminder.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AddEditReminderActivity.class);
+            startActivity(intent);
+        });
+        getBinding().actionReports.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ExportReportsActivity.class);
+            startActivity(intent);
+        });
+        getBinding().actionStartActivity.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), EnhancedAnalyticsActivity.class);
+            startActivity(intent);
+        });
+        getBinding().actionScanFood.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), MedicineOCRActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setupMetricCardsClicks() {
@@ -245,11 +226,6 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
     private void openMetricDetail(String metricType) {
         Intent intent = new Intent(getContext(), MetricDetailActivity.class);
         intent.putExtra(MetricDetailActivity.EXTRA_METRIC_TYPE, metricType);
-        startActivity(intent);
-    }
-
-    private void openQuickActions() {
-        Intent intent = new Intent(getContext(), QuickActionsActivity.class);
         startActivity(intent);
     }
 

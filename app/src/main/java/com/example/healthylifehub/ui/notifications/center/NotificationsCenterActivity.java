@@ -59,7 +59,7 @@ public class NotificationsCenterActivity extends BaseActivity<ActivityNotificati
 
     @Override
     public void bindData() {
-        getBinding().tvTitle.setText("Thông báo");
+        getBinding().tvTitle.setText(getString(R.string.notifications));
         getBinding().rvNotifications.setLayoutManager(new LinearLayoutManager(this));
         getBinding().rvNotifications.setAdapter(adapter);
         

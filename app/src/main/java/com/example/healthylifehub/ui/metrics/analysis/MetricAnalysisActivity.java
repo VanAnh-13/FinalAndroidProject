@@ -8,6 +8,7 @@ import com.example.healthylifehub.R;
 import com.example.healthylifehub.base.BaseActivity;
 import com.example.healthylifehub.databinding.ActivityMetricAnalysisBinding;
 import com.example.healthylifehub.ui.profile.reports.ExportReportsActivity;
+import com.example.healthylifehub.data.repository.MetricsRepository;
 import com.github.mikephil.charting.data.Entry;
 import com.example.healthylifehub.utils.chart.ChartConfigurator;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
     private String currentPeriod = "month";
     private AlertsAdapter alertsAdapter;
     private RecommendationsAdapter recommendationsAdapter;
+    private MetricsRepository metricsRepository;
+    private List<MetricHistory> currentMetricData = new ArrayList<>();
 
     public MetricAnalysisActivity() {
         super(ActivityMetricAnalysisBinding::inflate);
@@ -41,6 +44,8 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
             metricType = "heart_rate";
         }
 
+        metricsRepository = new MetricsRepository(this);
+
         alertsAdapter = new AlertsAdapter(alert -> {
             Toast.makeText(this, getString(R.string.alert_clicked), Toast.LENGTH_SHORT).show();
         });
@@ -52,24 +57,73 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
 
     @Override
     public void bindData() {
-        getBinding().tvTitle.setText(getString(R.string.heart_rate_analysis));
-        
-        setupChart();
+        updateTitle();
         setupRecyclerViews();
-        loadStatistics();
+        loadMetricData();
         loadAlerts();
         loadRecommendations();
         // Default selection via toggle group
         getBinding().periodGroup.check(R.id.btn_month);
     }
 
+    private void updateTitle() {
+        String title;
+        switch (metricType) {
+            case "blood_pressure":
+                title = getString(R.string.blood_pressure_analysis);
+                break;
+            case "blood_sugar":
+                title = getString(R.string.blood_sugar_analysis);
+                break;
+            case "weight":
+            case "bmi":
+                title = getString(R.string.weight_analysis);
+                break;
+            case "heart_rate":
+            default:
+                title = getString(R.string.heart_rate_analysis);
+                break;
+        }
+        getBinding().tvTitle.setText(title);
+    }
+
+    private void loadMetricData() {
+        // Calculate date range based on current period
+        long endDate = System.currentTimeMillis();
+        long startDate;
+        
+        switch (currentPeriod) {
+            case "week":
+                startDate = endDate - (7L * 24 * 60 * 60 * 1000); // 7 days
+                break;
+            case "year":
+                startDate = endDate - (365L * 24 * 60 * 60 * 1000); // 365 days
+                break;
+            case "month":
+            default:
+                startDate = endDate - (30L * 24 * 60 * 60 * 1000); // 30 days
+                break;
+        }
+        
+        // Use one-time fetch instead of snapshot listener to avoid multiple observers
+        metricsRepository.fetchMetricHistoryByDateRange(metricType, startDate, endDate, data -> {
+            runOnUiThread(() -> {
+                if (data != null) {
+                    currentMetricData = data;
+                } else {
+                    currentMetricData = new ArrayList<>();
+                }
+                setupChart();
+                loadStatistics();
+            });
+        });
+    }
+
     @Override
     public void setOnClick() {
         getBinding().ivBack.setOnClickListener(v -> finish());
 
-        getBinding().ivFilter.setOnClickListener(v -> {
-            Toast.makeText(this, getString(R.string.filter_options), Toast.LENGTH_SHORT).show();
-        });
+        getBinding().ivFilter.setOnClickListener(v -> showFilterDialog());
 
         getBinding().periodGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (!isChecked) return;
@@ -89,21 +143,46 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
     }
 
     private void setupChart() {
-        // Check if this is blood pressure metric and handle accordingly
         if (isBloodPressureMetric()) {
-            // TODO: Load actual blood pressure data from repository
-            setupBloodPressureChart(new ArrayList<>());
+            setupBloodPressureChart(currentMetricData);
             return;
         }
         
-        // TODO: Load actual data from repository
-        // Chart will be populated when data is loaded
+        if (currentMetricData == null || currentMetricData.isEmpty()) {
+            getBinding().lineChart.clear();
+            getBinding().lineChart.setNoDataText(getString(R.string.no_data_available));
+            getBinding().lineChart.invalidate();
+            return;
+        }
+
         List<Entry> entries = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+        
+        for (int i = 0; i < currentMetricData.size(); i++) {
+            MetricHistory item = currentMetricData.get(i);
+            try {
+                float value = Float.parseFloat(item.getValue().replaceAll("[^0-9.]", ""));
+                entries.add(new Entry(i, value));
+                // Format date shorter for chart display
+                String shortDate = formatShortDate(item.getDate());
+                labels.add(shortDate);
+            } catch (NumberFormatException e) {
+                // Skip invalid values
+            }
+        }
+
+        if (entries.isEmpty()) {
+            getBinding().lineChart.clear();
+            getBinding().lineChart.setNoDataText(getString(R.string.no_data_available));
+            getBinding().lineChart.invalidate();
+            return;
+        }
+
         ChartConfigurator.configureLineChart(
             getBinding().lineChart,
             this,
             entries,
-            new ArrayList<>(),
+            labels,
             R.color.primary_blue,
             R.color.divider
         );
@@ -119,16 +198,62 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
 
     private void loadStatistics() {
         if (isBloodPressureMetric()) {
-            // TODO: Load actual blood pressure data from repository
-            calculateAndDisplayBloodPressureStats(new ArrayList<>());
+            calculateAndDisplayBloodPressureStats(currentMetricData);
         } else {
-            // Load from Firebase (placeholder for now)
-            getBinding().tvTrendValue.setText(getString(R.string.loading_data_ellipsis));
-            getBinding().tvTrendChange.setText(getString(R.string.dash));
-            getBinding().tvStatAverage.setText(getString(R.string.loading_data_ellipsis));
-            getBinding().tvStatHighest.setText(getString(R.string.loading_data_ellipsis));
-            getBinding().tvStatLowest.setText(getString(R.string.loading_data_ellipsis));
+            calculateAndDisplayStats(currentMetricData);
         }
+    }
+
+    private void calculateAndDisplayStats(List<MetricHistory> data) {
+        if (data == null || data.isEmpty()) {
+            getBinding().tvTrendValue.setText(getString(R.string.not_available));
+            getBinding().tvTrendChange.setText(getString(R.string.dash));
+            getBinding().tvStatAverage.setText(getString(R.string.not_available));
+            getBinding().tvStatHighest.setText(getString(R.string.not_available));
+            getBinding().tvStatLowest.setText(getString(R.string.not_available));
+            return;
+        }
+
+        List<Float> values = new ArrayList<>();
+        String unit = "";
+        
+        for (MetricHistory item : data) {
+            try {
+                String valueStr = item.getValue();
+                float value = Float.parseFloat(valueStr.replaceAll("[^0-9.]", ""));
+                values.add(value);
+                if (unit.isEmpty() && item.getUnit() != null) {
+                    unit = item.getUnit();
+                }
+            } catch (NumberFormatException e) {
+                // Skip invalid values
+            }
+        }
+
+        if (values.isEmpty()) {
+            getBinding().tvTrendValue.setText(getString(R.string.not_available));
+            getBinding().tvTrendChange.setText(getString(R.string.dash));
+            getBinding().tvStatAverage.setText(getString(R.string.not_available));
+            getBinding().tvStatHighest.setText(getString(R.string.not_available));
+            getBinding().tvStatLowest.setText(getString(R.string.not_available));
+            return;
+        }
+
+        float sum = 0, min = Float.MAX_VALUE, max = Float.MIN_VALUE;
+        for (float v : values) {
+            sum += v;
+            if (v < min) min = v;
+            if (v > max) max = v;
+        }
+        float avg = sum / values.size();
+
+        String finalUnit = unit.isEmpty() ? "" : " " + unit;
+        getBinding().tvTrendValue.setText(String.format("%.1f%s", avg, finalUnit));
+        // Hide trend change since we don't have historical comparison yet
+        getBinding().tvTrendChange.setVisibility(android.view.View.GONE);
+        getBinding().tvStatAverage.setText(String.format("%.1f%s", avg, finalUnit));
+        getBinding().tvStatHighest.setText(String.format("%.1f%s", max, finalUnit));
+        getBinding().tvStatLowest.setText(String.format("%.1f%s", min, finalUnit));
     }
 
     private void loadAlerts() {
@@ -220,8 +345,73 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
             stats.minSystolic, stats.minDiastolic));
     }
 
+    /**
+     * Format date string to shorter format for chart labels
+     * Input: "dd/MM/yyyy HH:mm" -> Output: "dd/MM"
+     */
+    private String formatShortDate(String fullDate) {
+        if (fullDate == null || fullDate.isEmpty()) return "";
+        try {
+            // Extract just dd/MM from the full date
+            String[] parts = fullDate.split(" ");
+            if (parts.length > 0) {
+                String datePart = parts[0]; // "dd/MM/yyyy"
+                String[] dateParts = datePart.split("/");
+                if (dateParts.length >= 2) {
+                    return dateParts[0] + "/" + dateParts[1]; // "dd/MM"
+                }
+            }
+            return fullDate;
+        } catch (Exception e) {
+            return fullDate;
+        }
+    }
+
+    private void showFilterDialog() {
+        String[] metricTypes = {
+            getString(R.string.heart_rate),
+            getString(R.string.blood_pressure),
+            getString(R.string.blood_sugar),
+            getString(R.string.weight)
+        };
+        String[] metricValues = {"heart_rate", "blood_pressure", "blood_sugar", "weight"};
+        
+        int currentIndex = 0;
+        for (int i = 0; i < metricValues.length; i++) {
+            if (metricValues[i].equals(metricType)) {
+                currentIndex = i;
+                break;
+            }
+        }
+        
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(getString(R.string.select_metric_type))
+            .setSingleChoiceItems(metricTypes, currentIndex, (dialog, which) -> {
+                metricType = metricValues[which];
+                updateTitle();
+                loadMetricData();
+                dialog.dismiss();
+            })
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show();
+    }
+
     private void updatePeriodSelection(String period) {
         currentPeriod = period;
+
+        // Update period label text
+        switch (period) {
+            case "week":
+                getBinding().tvPeriodLabel.setText(getString(R.string.this_week));
+                break;
+            case "year":
+                getBinding().tvPeriodLabel.setText(getString(R.string.this_year));
+                break;
+            case "month":
+            default:
+                getBinding().tvPeriodLabel.setText(getString(R.string.this_month));
+                break;
+        }
 
         getBinding().btnWeek.setBackgroundTintList(ContextCompat.getColorStateList(this, 
             period.equals("week") ? R.color.primary_blue : android.R.color.transparent));
@@ -235,14 +425,7 @@ public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisB
             period.equals("year") ? R.color.primary_blue : android.R.color.transparent));
         getBinding().btnYear.setTextColor(period.equals("year") ? ContextCompat.getColor(this, R.color.white) : ContextCompat.getColor(this, R.color.text_secondary));
         
-        // Reload chart and statistics when period changes
-        if (isBloodPressureMetric()) {
-            // TODO: Load actual blood pressure data from repository
-            setupBloodPressureChart(new ArrayList<>());
-            calculateAndDisplayBloodPressureStats(new ArrayList<>());
-        } else {
-            setupChart();
-            loadStatistics();
-        }
+        // Reload data with new period
+        loadMetricData();
     }
 }

@@ -28,6 +28,7 @@
                 android:padding="@dimen/padding_medium"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/close"
+                android:visibility="gone"
                 app:tint="@color/text_primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

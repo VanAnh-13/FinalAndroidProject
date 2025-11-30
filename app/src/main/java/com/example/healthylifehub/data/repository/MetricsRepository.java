@@ -147,25 +147,21 @@ public class MetricsRepository extends BaseRepository {
             return historyLiveData;
         }
         
-        // Pass IO executor to addSnapshotListener for background processing
+        // Use simple query without orderBy to avoid composite index requirement
+        // Sort client-side instead
         db.collection("users")
             .document(userId)
             .collection(COLLECTION_HEALTH_METRICS)
             .whereEqualTo("type", metricType)
-            .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .limit(20)
             .addSnapshotListener(getIoExecutor(), (value, error) -> {
-                // This callback now runs on background thread (IO executor)
                 if (error != null) {
                     Log.e(TAG, "Error loading metric history for type: " + metricType, error);
-                    // Post empty list to LiveData on main thread
                     historyLiveData.postValue(new ArrayList<>());
                     return;
                 }
                 
                 if (value != null) {
-                    // Process snapshots on background thread
-                    List<MetricHistory> history = new ArrayList<>();
+                    List<MetricHistoryWithTimestamp> tempList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : value) {
                         try {
                             String unit = doc.getString("unit");
@@ -173,27 +169,45 @@ public class MetricsRepository extends BaseRepository {
                             Object valueObj = doc.get("value");
                             
                             if (valueObj != null && measuredAt != null) {
-                                // Extract only the numeric value (without unit)
                                 String numericValue = extractNumericValue(metricType, valueObj);
                                 String displayTime = formatHistoryTime(measuredAt.toDate());
-                                
-                                // Store numeric value + unit separately for calculations
-                                history.add(new MetricHistory(numericValue, displayTime, unit));
+                                tempList.add(new MetricHistoryWithTimestamp(
+                                    new MetricHistory(numericValue, displayTime, unit),
+                                    measuredAt.toDate().getTime()
+                                ));
                             }
                         } catch (Exception e) {
                             Log.w(TAG, "Skipping invalid metric history record", e);
-                            // Skip invalid records
                         }
                     }
                     
-                    Log.d(TAG, "✅ Processed " + history.size() + " metric history records for type: " + metricType + " on background thread");
+                    // Sort by timestamp descending (client-side)
+                    tempList.sort((a, b) -> Long.compare(b.timestamp, a.timestamp));
                     
-                    // Post results to LiveData on main thread
+                    // Limit to 20 and extract MetricHistory
+                    List<MetricHistory> history = new ArrayList<>();
+                    int limit = Math.min(tempList.size(), 20);
+                    for (int i = 0; i < limit; i++) {
+                        history.add(tempList.get(i).metricHistory);
+                    }
+                    
+                    Log.d(TAG, "✅ Processed " + history.size() + " metric history records for type: " + metricType);
                     historyLiveData.postValue(history);
                 }
             });
         
         return historyLiveData;
+    }
+    
+    // Helper class for sorting
+    private static class MetricHistoryWithTimestamp {
+        MetricHistory metricHistory;
+        long timestamp;
+        
+        MetricHistoryWithTimestamp(MetricHistory metricHistory, long timestamp) {
+            this.metricHistory = metricHistory;
+            this.timestamp = timestamp;
+        }
     }
 
     /**
@@ -213,29 +227,21 @@ public class MetricsRepository extends BaseRepository {
             return historyLiveData;
         }
         
-        Date start = new Date(startDate);
-        Date end = new Date(endDate);
-        
-        // Pass IO executor to addSnapshotListener for background processing
+        // Use simple query without orderBy to avoid composite index requirement
+        // Filter by date range client-side
         db.collection("users")
             .document(userId)
             .collection(COLLECTION_HEALTH_METRICS)
             .whereEqualTo("type", metricType)
-            .whereGreaterThanOrEqualTo("measuredAt", start)
-            .whereLessThanOrEqualTo("measuredAt", end)
-            .orderBy("measuredAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .addSnapshotListener(getIoExecutor(), (value, error) -> {
-                // This callback now runs on background thread (IO executor)
                 if (error != null) {
                     Log.e(TAG, "Error loading metric history for type: " + metricType, error);
-                    // Post empty list to LiveData on main thread
                     historyLiveData.postValue(new ArrayList<>());
                     return;
                 }
                 
                 if (value != null) {
-                    // Process snapshots on background thread
-                    List<MetricHistory> history = new ArrayList<>();
+                    List<MetricHistoryWithTimestamp> tempList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : value) {
                         try {
                             String unit = doc.getString("unit");
@@ -243,27 +249,100 @@ public class MetricsRepository extends BaseRepository {
                             Object valueObj = doc.get("value");
                             
                             if (valueObj != null && measuredAt != null) {
-                                // Extract only the numeric value (without unit)
-                                String numericValue = extractNumericValue(metricType, valueObj);
-                                String displayTime = formatHistoryTime(measuredAt.toDate());
-                                
-                                // Store numeric value + unit separately for calculations
-                                history.add(new MetricHistory(numericValue, displayTime, unit));
+                                long timestamp = measuredAt.toDate().getTime();
+                                // Filter by date range client-side
+                                if (timestamp >= startDate && timestamp <= endDate) {
+                                    String numericValue = extractNumericValue(metricType, valueObj);
+                                    String displayTime = formatHistoryTime(measuredAt.toDate());
+                                    tempList.add(new MetricHistoryWithTimestamp(
+                                        new MetricHistory(numericValue, displayTime, unit),
+                                        timestamp
+                                    ));
+                                }
                             }
                         } catch (Exception e) {
                             Log.w(TAG, "Skipping invalid metric history record", e);
-                            // Skip invalid records
                         }
                     }
                     
-                    Log.d(TAG, "✅ Processed " + history.size() + " metric history records for type: " + metricType + " in range");
+                    // Sort by timestamp descending (client-side)
+                    tempList.sort((a, b) -> Long.compare(b.timestamp, a.timestamp));
                     
-                    // Post results to LiveData on main thread
+                    // Extract MetricHistory list
+                    List<MetricHistory> history = new ArrayList<>();
+                    for (MetricHistoryWithTimestamp item : tempList) {
+                        history.add(item.metricHistory);
+                    }
+                    
+                    Log.d(TAG, "✅ Processed " + history.size() + " metric history records for type: " + metricType + " in range");
                     historyLiveData.postValue(history);
                 }
             });
         
         return historyLiveData;
+    }
+
+    /**
+     * Callback interface for one-time data fetch
+     */
+    public interface MetricHistoryCallback {
+        void onDataLoaded(List<MetricHistory> data);
+    }
+
+    /**
+     * Fetch metric history by date range (one-time, no listener)
+     * Use this when you need to reload data without creating multiple observers
+     */
+    public void fetchMetricHistoryByDateRange(String metricType, long startDate, long endDate, MetricHistoryCallback callback) {
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            callback.onDataLoaded(new ArrayList<>());
+            return;
+        }
+        
+        db.collection("users")
+            .document(userId)
+            .collection(COLLECTION_HEALTH_METRICS)
+            .whereEqualTo("type", metricType)
+            .get()
+            .addOnSuccessListener(getIoExecutor(), querySnapshot -> {
+                List<MetricHistoryWithTimestamp> tempList = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+                    try {
+                        String unit = doc.getString("unit");
+                        com.google.firebase.Timestamp measuredAt = doc.getTimestamp("measuredAt");
+                        Object valueObj = doc.get("value");
+                        
+                        if (valueObj != null && measuredAt != null) {
+                            long timestamp = measuredAt.toDate().getTime();
+                            if (timestamp >= startDate && timestamp <= endDate) {
+                                String numericValue = extractNumericValue(metricType, valueObj);
+                                String displayTime = formatHistoryTime(measuredAt.toDate());
+                                tempList.add(new MetricHistoryWithTimestamp(
+                                    new MetricHistory(numericValue, displayTime, unit),
+                                    timestamp
+                                ));
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Skipping invalid metric history record", e);
+                    }
+                }
+                
+                tempList.sort((a, b) -> Long.compare(b.timestamp, a.timestamp));
+                
+                List<MetricHistory> history = new ArrayList<>();
+                for (MetricHistoryWithTimestamp item : tempList) {
+                    history.add(item.metricHistory);
+                }
+                
+                Log.d(TAG, "✅ Fetched " + history.size() + " metric history records for " + metricType);
+                callback.onDataLoaded(history);
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "Error fetching metric history", e);
+                callback.onDataLoaded(new ArrayList<>());
+            });
     }
     
     /**

@@ -175,6 +175,7 @@
                         android:layout_marginTop="@dimen/spacing_tiny">
 
                         <TextView
+                            android:id="@+id/tv_period_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/this_month"

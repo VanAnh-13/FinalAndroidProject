@@ -86,13 +86,11 @@ public class NotificationsAdapter extends BaseAdapter<NotificationItem, ItemNoti
         });
         
         // Delete button
-        if (binding.btnDelete != null) {
-            binding.btnDelete.setOnClickListener(v -> {
-                if (deleteListener != null) {
-                    deleteListener.onNotificationDelete(notification, position);
-                }
-            });
-        }
+        binding.btnDelete.setOnClickListener(v -> {
+            if (deleteListener != null) {
+                deleteListener.onNotificationDelete(notification, position);
+            }
+        });
     }
 
     private int getIconForType(NotificationItem.NotificationType type) {

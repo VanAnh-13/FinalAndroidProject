@@ -457,8 +457,8 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="4"
-                android:rowCount="1">
+                android:columnCount="3"
+                android:rowCount="2">
 
                 <!-- Add Metric -->
                 <LinearLayout
@@ -570,6 +570,64 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reports"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <!-- Start Activity -->
+                <LinearLayout
+                    android:id="@+id/action_start_activity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_small">
+
+                    <ImageView
+                        android:id="@+id/iv_start_activity_icon"
+                        android:layout_width="@dimen/icon_size_medium"
+                        android:layout_height="@dimen/icon_size_medium"
+                        android:src="@drawable/ic_fitness"
+                        android:background="@drawable/bg_button_primary"
+                        android:padding="@dimen/padding_medium"
+                        app:tint="@color/white"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/start_activity"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <!-- Scan Food -->
+                <LinearLayout
+                    android:id="@+id/action_scan_food"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_small">
+
+                    <ImageView
+                        android:id="@+id/iv_scan_food_icon"
+                        android:layout_width="@dimen/icon_size_medium"
+                        android:layout_height="@dimen/icon_size_medium"
+                        android:src="@drawable/ic_camera"
+                        android:background="@drawable/bg_button_primary"
+                        android:padding="@dimen/padding_medium"
+                        app:tint="@color/white"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/scan_food"
                         android:textColor="@color/text_primary"
                         android:textSize="@dimen/text_size_small"
                         android:layout_marginTop="@dimen/margin_small"

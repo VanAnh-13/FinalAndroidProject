@@ -190,8 +190,8 @@
     <string name="generate_report_desc">Tạo tóm tắt hàng tuần</string>
     <string name="start_activity">Bắt đầu hoạt động</string>
     <string name="start_activity_desc">Theo dõi bài tập mới</string>
-    <string name="scan_food">Quét thực phẩm</string>
-    <string name="scan_food_desc">Ghi lại bữa ăn nhanh chóng</string>
+    <string name="scan_food">Quét thuốc</string>
+    <string name="scan_food_desc">Quét nhãn đơn thuốc</string>
 
     <!-- Profile Screen -->
     <string name="edit_profile">Chỉnh sửa hồ sơ</string>
@@ -282,8 +282,13 @@
 
     <!-- Metric Analysis -->
     <string name="heart_rate_analysis">Phân tích Nhịp tim</string>
+    <string name="blood_pressure_analysis">Phân tích Huyết áp</string>
+    <string name="blood_sugar_analysis">Phân tích Đường huyết</string>
+    <string name="weight_analysis">Phân tích Cân nặng</string>
     <string name="heart_rate_trend">Xu hướng nhịp tim</string>
     <string name="this_month">Tháng này</string>
+    <string name="this_week">Tuần này</string>
+    <string name="this_year">Năm nay</string>
     <string name="key_statistics">Thống kê chính</string>
     <string name="alerts">Cảnh báo</string>
     <string name="recommendations">Khuyến nghị</string>
@@ -695,7 +700,7 @@
     
     <!-- Common UI Strings -->
     <string name="loading">Đang tải...</string>
-    <string name="loading_data_ellipsis">Loading...</string>
+    <string name="loading_data_ellipsis">Đang tải...</string>
     <string name="not_available">N/A</string>
     <string name="dash">--</string>
     <string name="today">Hôm nay</string>
@@ -709,6 +714,7 @@
     <string name="alert_clicked">Đã nhấn cảnh báo</string>
     <string name="recommendation_clicked">Đã nhấn khuyến nghị</string>
     <string name="filter_options">Tùy chọn bộ lọc</string>
+    <string name="select_metric_type">Chọn loại chỉ số</string>
     <string name="reminder_snoozed">Đã báo lại nhắc nhở</string>
     <string name="reminder_completed">Đã hoàn thành</string>
     <string name="settings_saved"> Đã lưu cài đặt</string>

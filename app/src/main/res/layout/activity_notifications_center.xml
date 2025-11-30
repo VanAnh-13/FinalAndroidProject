@@ -80,10 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/all"
-                android:checked="true"
-                app:chipIcon="@drawable/ic_check"
-                app:chipBackgroundColor="@color/primary_blue"
-                app:chipStrokeWidth="0dp"/>
+                android:checked="true"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_medication"

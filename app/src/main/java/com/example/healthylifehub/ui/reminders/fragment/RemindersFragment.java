@@ -137,6 +137,8 @@ public class RemindersFragment extends BaseFragment<FragmentRemindersBinding> {
 
     @Override
     public void setOnClick() {
+        // Back button is hidden for bottom navigation fragments
+        
         getBinding().ivAdd.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), AddEditReminderActivity.class);
             startActivity(intent);
