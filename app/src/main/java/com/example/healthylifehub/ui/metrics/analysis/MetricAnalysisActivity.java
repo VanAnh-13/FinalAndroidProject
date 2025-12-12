@@ -23,7 +23,6 @@ import com.example.healthylifehub.utils.chart.ChartDataProcessor;
 import com.example.healthylifehub.data.model.MetricHistory;
 
 public class MetricAnalysisActivity extends BaseActivity<ActivityMetricAnalysisBinding> {
-
     public static final String EXTRA_METRIC_TYPE = "metric_type";
     private String metricType;
     private String currentPeriod = "month";

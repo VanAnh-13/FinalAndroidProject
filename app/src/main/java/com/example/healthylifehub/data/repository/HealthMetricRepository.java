@@ -405,27 +405,43 @@ public class HealthMetricRepository extends BaseRepository {
             return new MutableLiveData<>(new ArrayList<>());
         }
         
-        Query query = db.collection(COLLECTION_USERS)
-            .document(userId)
-            .collection(SUBCOLLECTION_METRICS)
-            .orderBy("measuredAt", Query.Direction.DESCENDING);
-
-        return new com.example.healthylifehub.data.livedata.FirestoreQueryLiveData<List<HealthMetric>>(query) {
-            @Override
-            protected List<HealthMetric> parseSnapshot(com.google.firebase.firestore.QuerySnapshot snapshot) {
-                List<HealthMetric> metrics = new ArrayList<>();
-                if (snapshot != null) {
-                    for (QueryDocumentSnapshot doc : snapshot) {
+        // Start background sync from Firestore to Room
+        syncFromFirestore(userId);
+        
+        // Return LiveData from Room (instant, works offline)
+        return dao.getMetricsForUser(userId);
+    }
+    
+    /**
+     * Sync all metrics from Firestore to Room
+     */
+    private void syncFromFirestore(String userId) {
+        executorService.execute(() -> {
+            db.collection(COLLECTION_USERS)
+                .document(userId)
+                .collection(SUBCOLLECTION_METRICS)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<HealthMetric> metrics = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
                         HealthMetric metric = parseFirestoreDocument(doc, userId);
                         if (metric != null) {
                             metrics.add(metric);
                         }
                     }
-                }
-                Log.d(TAG, "📊 Loaded " + metrics.size() + " metrics from Firestore (offline cache if no network)");
-                return metrics;
-            }
-        };
+                    
+                    // Save all to Room
+                    executorService.execute(() -> {
+                        for (HealthMetric metric : metrics) {
+                            dao.insertMetric(metric);
+                        }
+                        Log.d(TAG, "✅ Synced " + metrics.size() + " metrics from Firestore to Room");
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "❌ Failed to sync from Firestore", e);
+                });
+        });
     }
     
     /**

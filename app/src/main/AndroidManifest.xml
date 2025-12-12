@@ -221,6 +221,18 @@
             android:theme="@style/Theme.Base"
             android:screenOrientation="portrait" />
 
+        <!-- DEBUG ACTIVITY - Populate Room DB -->
+        <activity
+            android:name=".debug.PopulateDataActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Base"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".receivers.ReminderReceiver"
             android:enabled="true"

@@ -381,15 +381,25 @@ public class AuthRepository extends BaseRepository {
      * Synchronous version for RxJava chain
      */
     private void updateLastLoginSync(String uid) throws Exception {
-        Task<Void> task = firestore.collection(USERS_COLLECTION)
-                .document(uid)
-                .update("lastLogin", System.currentTimeMillis());
-        Tasks.await(task);
-        
-        if (!task.isSuccessful()) {
-            throw new Exception("Failed to update last login");
+        try {
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("updatedAt", com.google.firebase.Timestamp.now());
+            updates.put("lastLogin", com.google.firebase.Timestamp.now());
+            
+            Task<Void> task = firestore.collection(USERS_COLLECTION)
+                    .document(uid)
+                    .update(updates);
+            Tasks.await(task);
+            
+            if (!task.isSuccessful()) {
+                Log.w(TAG, "Failed to update last login, but continuing");
+            } else {
+                Log.d(TAG, "Last login updated");
+            }
+        } catch (Exception e) {
+            // Don't fail login if lastLogin update fails
+            Log.w(TAG, "Error updating last login, but continuing: " + e.getMessage());
         }
-        Log.d(TAG, "Last login updated");
     }
 
     /**
@@ -417,11 +427,14 @@ public class AuthRepository extends BaseRepository {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 // Step 1: Authenticate with Firebase on background thread
+                Log.d(TAG, "Attempting login for: " + email);
                 Task<AuthResult> task = firebaseAuth.signInWithEmailAndPassword(email, password);
                 Tasks.await(task);
                 
                 if (!task.isSuccessful() || task.getResult() == null) {
-                    throw new Exception("Login failed - authentication unsuccessful");
+                    String errorMsg = task.getException() != null ? 
+                        task.getException().getMessage() : "Authentication unsuccessful";
+                    throw new Exception("Login failed - " + errorMsg);
                 }
                 
                 FirebaseUser firebaseUser = task.getResult().getUser();
@@ -429,8 +442,14 @@ public class AuthRepository extends BaseRepository {
                     throw new Exception("Login failed - no user returned");
                 }
                 
-                // Step 2: Update last login time
-                updateLastLoginSync(firebaseUser.getUid());
+                Log.d(TAG, "Firebase authentication successful for: " + firebaseUser.getEmail());
+                
+                // Step 2: Update last login time (non-blocking, don't fail if this fails)
+                try {
+                    updateLastLoginSync(firebaseUser.getUid());
+                } catch (Exception e) {
+                    Log.w(TAG, "Failed to update last login, but continuing: " + e.getMessage());
+                }
                 
                 // Step 3: Convert FirebaseUser to User model on background thread
                 User user = new User(
@@ -444,7 +463,7 @@ public class AuthRepository extends BaseRepository {
                 return user;
                 
             } catch (Exception e) {
-                Log.e(TAG, "Login failed", e);
+                Log.e(TAG, "Login failed for: " + email, e);
                 throw new CompletionException(e);
             }
         }, getIoExecutor())

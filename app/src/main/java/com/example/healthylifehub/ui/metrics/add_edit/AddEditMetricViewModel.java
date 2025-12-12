@@ -90,12 +90,24 @@ public class AddEditMetricViewModel extends BaseViewModel {
             return;
         }
         
+        // Get current user ID
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ?
+            com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        
+        if (userId == null) {
+            errorMessage.setValue("Vui lòng đăng nhập để lưu chỉ số");
+            return;
+        }
+        
         HealthMetric metric = new HealthMetric();
+        metric.setUserId(userId);
         metric.setType("blood_pressure");
         metric.setSystolic(systolic);
         metric.setDiastolic(diastolic);
         metric.setMeasuredAt(measuredAt);
         metric.setNotes(notes);
+        metric.setNeedsSync(true);
+        metric.setLastSyncedAt(new Date());
         
         saveMetric(metric);
     }
@@ -117,11 +129,23 @@ public class AddEditMetricViewModel extends BaseViewModel {
             return;
         }
         
+        // Get current user ID
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ?
+            com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        
+        if (userId == null) {
+            errorMessage.setValue("Vui lòng đăng nhập để lưu chỉ số");
+            return;
+        }
+        
         HealthMetric metric = new HealthMetric();
+        metric.setUserId(userId);
         metric.setType("blood_sugar");
         metric.setValue(value);
         metric.setMeasuredAt(measuredAt);
         metric.setNotes(notes);
+        metric.setNeedsSync(true);
+        metric.setLastSyncedAt(new Date());
         
         saveMetric(metric);
     }
@@ -143,11 +167,23 @@ public class AddEditMetricViewModel extends BaseViewModel {
             return;
         }
         
+        // Get current user ID
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ?
+            com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        
+        if (userId == null) {
+            errorMessage.setValue("Vui lòng đăng nhập để lưu chỉ số");
+            return;
+        }
+        
         HealthMetric metric = new HealthMetric();
+        metric.setUserId(userId);
         metric.setType("weight");
         metric.setValue(value);
         metric.setMeasuredAt(measuredAt);
         metric.setNotes(notes);
+        metric.setNeedsSync(true);
+        metric.setLastSyncedAt(new Date());
         
         saveMetric(metric);
     }
@@ -169,11 +205,23 @@ public class AddEditMetricViewModel extends BaseViewModel {
             return;
         }
         
+        // Get current user ID
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ?
+            com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        
+        if (userId == null) {
+            errorMessage.setValue("Vui lòng đăng nhập để lưu chỉ số");
+            return;
+        }
+        
         HealthMetric metric = new HealthMetric();
+        metric.setUserId(userId);
         metric.setType("heart_rate");
         metric.setValue(value);
         metric.setMeasuredAt(measuredAt);
         metric.setNotes(notes);
+        metric.setNeedsSync(true);
+        metric.setLastSyncedAt(new Date());
         
         saveMetric(metric);
     }

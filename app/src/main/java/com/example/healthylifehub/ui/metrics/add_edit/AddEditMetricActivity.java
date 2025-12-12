@@ -150,9 +150,16 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
     public void setOnClick() {
         getBinding().ivClose.setOnClickListener(v -> finish());
 
-        getBinding().btnSave.setOnClickListener(v -> saveMetric());
+        // Bind nút "Lưu" ở góc trên phải
+        getBinding().btnSave.setOnClickListener(v -> {
+            android.util.Log.d("AddEditMetricActivity", "Save button clicked!");
+            saveMetric();
+        });
 
-        getBinding().btnSaveAnalyze.setOnClickListener(v -> saveAndAnalyze());
+        // Bind nút "Save and Analyze" ở dưới (nếu có)
+        if (getBinding().btnSaveAnalyze != null) {
+            getBinding().btnSaveAnalyze.setOnClickListener(v -> saveAndAnalyze());
+        }
 
         getBinding().etDate.setOnClickListener(v -> showDatePicker());
 
@@ -258,24 +265,37 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
     }
 
     private void saveMetric() {
+        android.util.Log.d("AddEditMetricActivity", "saveMetric() called");
+        
         if (!validateBasicInputs()) {
+            android.util.Log.w("AddEditMetricActivity", "Validation failed");
             return;
         }
+        
+        android.util.Log.d("AddEditMetricActivity", "Validation passed, saving metric type: " + selectedMetricType);
         
         String notes = getBinding().etNotes.getText().toString().trim();
         
         switch (selectedMetricType) {
             case "blood_pressure":
+                android.util.Log.d("AddEditMetricActivity", "Saving blood pressure");
                 saveBloodPressureMetric(notes);
                 break;
             case "blood_sugar":
+                android.util.Log.d("AddEditMetricActivity", "Saving blood sugar");
                 saveBloodSugarMetric(notes);
                 break;
             case "weight":
+                android.util.Log.d("AddEditMetricActivity", "Saving weight");
                 saveWeightMetric(notes);
                 break;
             case "heart_rate":
+                android.util.Log.d("AddEditMetricActivity", "Saving heart rate");
                 saveHeartRateMetric(notes);
+                break;
+            default:
+                android.util.Log.e("AddEditMetricActivity", "Unknown metric type: " + selectedMetricType);
+                showErrorDialog("Loại chỉ số không hợp lệ");
                 break;
         }
     }
@@ -395,49 +415,87 @@ public class AddEditMetricActivity extends BaseActivity<ActivityAddEditMetricBin
      * Comprehensive validation for all inputs
      */
     private boolean validateBasicInputs() {
-        CrashPreventionHandler.safeExecute(this, () -> {
-            InputValidationHandler.ValidationResult result = new InputValidationHandler.ValidationResult();
-            
+        android.util.Log.d("AddEditMetricActivity", "Validating inputs for type: " + selectedMetricType);
+        
+        try {
             if (selectedMetricType.equals("blood_pressure")) {
-                // Validate blood pressure with comprehensive checking
-                InputValidationHandler.ValidationResult bpResult = 
-                    InputValidationHandler.validateBloodPressure(this, 
-                        getBinding().tilSystolic, getBinding().tilDiastolic);
+                // Validate blood pressure
+                String systolicStr = getBinding().etSystolic.getText().toString().trim();
+                String diastolicStr = getBinding().etDiastolic.getText().toString().trim();
                 
-                if (!bpResult.isValid()) {
-                    InputValidationHandler.showValidationSummary(this, bpResult);
+                if (systolicStr.isEmpty() || diastolicStr.isEmpty()) {
+                    showErrorDialog("Vui lòng nhập đầy đủ huyết áp tâm thu và tâm trương");
+                    return false;
+                }
+                
+                try {
+                    int systolic = Integer.parseInt(systolicStr);
+                    int diastolic = Integer.parseInt(diastolicStr);
+                    
+                    if (systolic < 70 || systolic > 250) {
+                        showErrorDialog("Huyết áp tâm thu phải từ 70-250 mmHg");
+                        return false;
+                    }
+                    
+                    if (diastolic < 40 || diastolic > 150) {
+                        showErrorDialog("Huyết áp tâm trương phải từ 40-150 mmHg");
+                        return false;
+                    }
+                    
+                    if (systolic <= diastolic) {
+                        showErrorDialog("Huyết áp tâm thu phải lớn hơn tâm trương");
+                        return false;
+                    }
+                } catch (NumberFormatException e) {
+                    showErrorDialog("Giá trị không hợp lệ. Vui lòng nhập số nguyên.");
                     return false;
                 }
             } else {
                 // Validate single value field
-                boolean isValidSingle = false;
-                switch (selectedMetricType) {
-                    case "blood_sugar":
-                        isValidSingle = InputValidationHandler.validateBloodSugar(this, getBinding().tilSingleValue);
-                        break;
-                    case "weight":
-                        isValidSingle = InputValidationHandler.validateWeight(this, getBinding().tilSingleValue);
-                        break;
-                    case "heart_rate":
-                        isValidSingle = InputValidationHandler.validateHeartRate(this, getBinding().tilSingleValue);
-                        break;
+                String valueStr = getBinding().etSingleValue.getText().toString().trim();
+                
+                if (valueStr.isEmpty()) {
+                    showErrorDialog("Vui lòng nhập giá trị");
+                    return false;
                 }
                 
-                if (!isValidSingle) {
-                    UserFeedbackManager.showError(this, "Vui lòng nhập giá trị hợp lệ");
+                try {
+                    double value = Double.parseDouble(valueStr);
+                    
+                    switch (selectedMetricType) {
+                        case "blood_sugar":
+                            if (value < 20 || value > 600) {
+                                showErrorDialog("Đường huyết phải từ 20-600 mg/dL");
+                                return false;
+                            }
+                            break;
+                        case "weight":
+                            if (value < 10 || value > 500) {
+                                showErrorDialog("Cân nặng phải từ 10-500 kg");
+                                return false;
+                            }
+                            break;
+                        case "heart_rate":
+                            if (value < 30 || value > 250) {
+                                showErrorDialog("Nhịp tim phải từ 30-250 bpm");
+                                return false;
+                            }
+                            break;
+                    }
+                } catch (NumberFormatException e) {
+                    showErrorDialog("Giá trị không hợp lệ. Vui lòng nhập số.");
                     return false;
                 }
             }
             
-            // Validate notes field
-            if (!InputValidationHandler.validateReminderDescription(this, getBinding().tilNotes)) {
-                return false;
-            }
-            
+            android.util.Log.d("AddEditMetricActivity", "Validation passed!");
             return true;
-        }, false);
-        
-        return false; // Default return for safety
+            
+        } catch (Exception e) {
+            android.util.Log.e("AddEditMetricActivity", "Validation error", e);
+            showErrorDialog("Lỗi khi kiểm tra dữ liệu: " + e.getMessage());
+            return false;
+        }
     }
     
     /**
